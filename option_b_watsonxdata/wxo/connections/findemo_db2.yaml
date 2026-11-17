@@ -1,0 +1,10 @@
+spec_version: v1
+kind: connection
+app_id: findemo_db2
+environments:
+  draft:
+    type: team
+    security_scheme: key_value_creds
+  live:
+    type: team
+    security_scheme: key_value_creds
