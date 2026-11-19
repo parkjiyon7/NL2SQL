@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>교보증권 - AI 데이터 어시스턴트 목업</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- 화면 전환 탭 -->
+<div class="switcher">
+  <div class="wrap">
+    <span class="switcher-label">DEMO MOCKUP</span>
+    <button class="stab active" data-view="home">증권사 홈페이지 화면</button>
+    <button class="stab" data-view="demo">데모 설명</button>
+    <span class="switcher-note">IBM watsonx Orchestrate + watsonx.data intelligence 기반 Text-to-SQL 데모</span>
+  </div>
+</div>
+
+<!-- ============ 홈페이지 화면 ============ -->
+<div id="view-home" class="view active">
+  <div class="util"><div class="wrap">
+    <a href="#">로그인</a><a href="#">회원가입</a><a href="#">고객센터</a><a href="#">ENGLISH</a>
+  </div></div>
+
+  <header class="site-header"><div class="wrap">
+    <div class="logo"><span class="logo-mark"></span><span class="logo-text">교보증권</span><span class="logo-tag">MOCKUP</span></div>
+    <nav class="gnb">
+      <a href="#">MY자산</a><a href="#">국내주식</a><a href="#">해외주식</a><a href="#">금융상품</a><a href="#">연금·퇴직</a><a href="#">투자정보</a><a href="#">고객센터</a>
+    </nav>
+    <div class="search"><input placeholder="종목명, 메뉴 검색" aria-label="검색"><button>검색</button></div>
+  </div></header>
+
+  <section class="ticker"><div class="wrap">
+    <div class="tick"><b>KOSPI</b><span>2,641.07</span><em class="up">▲ 12.40</em></div>
+    <div class="tick"><b>KOSDAQ</b><span>851.22</span><em class="down">▼ 3.18</em></div>
+    <div class="tick"><b>원/달러</b><span>1,372.50</span><em class="up">▲ 2.10</em></div>
+    <div class="tick"><b>국고채 3년</b><span>3.02%</span><em class="down">▼ 0.01</em></div>
+    <span class="ticker-note">목업 표시용 예시 수치</span>
+  </div></section>
+
+  <section class="hero"><div class="wrap hero-grid">
+    <div class="hero-text">
+      <p class="eyebrow">AI 데이터 어시스턴트</p>
+      <h1>말로 물어보면,<br>데이터로 답합니다</h1>
+      <p class="lead">"삼성전자 어제 체결 중 매수만 보여줘"처럼 평소 말로 질문하세요.<br>용어를 확인하고, SQL을 만들어 조회하고, 차트와 근거까지 함께 보여드립니다.</p>
+      <button class="btn-primary" id="open-chat">AI에게 질문하기</button>
+      <div class="chips" id="chips">
+        <button class="chip">삼성전자 어제 체결 중 매수만 보여줘</button>
+        <button class="chip">VIP 고객 수를 지점별로 알려줘</button>
+        <button class="chip">월별 거래대금 추이를 라인 차트로 보여줘</button>
+        <button class="chip">업종별 거래대금 비중을 파이 차트로 보여줘</button>
+        <button class="chip">3월에 거래대금이 왜 늘었어?</button>
+        <button class="chip">한도 대비 노출금액 비율이 80%를 넘는 데스크가 있어?</button>
+      </div>
+    </div>
+    <div class="hero-card">
+      <h3>이렇게 답합니다</h3>
+      <ol class="steps">
+        <li><b>용어 확인</b><span>"약정"은 거래대금(체결대금)으로 이해합니다.</span></li>
+        <li><b>SQL 생성과 조회</b><span>watsonx.data intelligence가 SQL을 만들고 Db2에서 실행합니다.</span></li>
+        <li><b>차트와 설명</b><span>추이는 라인, 비교는 막대, 비중은 파이로 보여줍니다.</span></li>
+        <li><b>근거 보기</b><span>사용한 용어, SQL, 테이블을 함께 제공합니다.</span></li>
+      </ol>
+    </div>
+  </div></section>
+
+  <section class="quick"><div class="wrap">
+    <a href="#"><i>주</i>국내주식</a><a href="#"><i>해</i>해외주식</a><a href="#"><i>펀</i>펀드</a><a href="#"><i>채</i>채권</a>
+    <a href="#"><i>연</i>연금</a><a href="#"><i>E</i>ELS·DLS</a><a href="#"><i>자</i>자산현황</a><a href="#"><i>이</i>이벤트</a>
+  </div></section>
+
+  <section class="cols"><div class="wrap cols-grid">
+    <div class="box"><h3>공지사항</h3><ul>
+      <li><a href="#">시스템 점검 안내 (일요일 02:00~04:00)</a><span>11.17</span></li>
+      <li><a href="#">전자금융거래 이용약관 개정 안내</a><span>11.12</span></li>
+      <li><a href="#">연말 휴장일 및 결제일 안내</a><span>11.08</span></li>
+      <li><a href="#">AI 어시스턴트 시범 운영 안내</a><span>11.05</span></li></ul></div>
+    <div class="box"><h3>이벤트</h3><ul>
+      <li><a href="#">신규 고객 수수료 우대 이벤트</a><span>~12.31</span></li>
+      <li><a href="#">해외주식 소수점 거래 이벤트</a><span>~12.15</span></li>
+      <li><a href="#">연금저축 이전 지원 이벤트</a><span>~12.31</span></li>
+      <li><a href="#">친구 추천 이벤트</a><span>상시</span></li></ul></div>
+    <div class="box"><h3>투자정보</h3><ul>
+      <li><a href="#">[시황] 반도체 업종 강세, 외국인 순매수</a><span>리서치</span></li>
+      <li><a href="#">[채권] 금리 동결 기대와 듀레이션 전략</a><span>리서치</span></li>
+      <li><a href="#">[전략] 4분기 포트폴리오 점검</a><span>리서치</span></li>
+      <li><a href="#">[2차전지] 업황 바닥 확인 구간</a><span>리서치</span></li></ul></div>
+  </div></section>
+
+  <footer class="site-footer"><div class="wrap">
+    <p><b>본 화면은 IBM watsonx Orchestrate 데모를 위한 목업(시안)이며 실제 교보증권의 서비스, 시세, 공지가 아닙니다.</b></p>
+    <p>화면의 수치와 공지는 예시이고, 챗 응답은 합성 데이터(FIN_DEMO)를 조회한 결과입니다. 고객 정보는 모두 가상입니다.</p>
+  </div></footer>
+</div>
+
+<!-- ============ 데모 설명 ============ -->
+<div id="view-demo" class="view">
+  <div class="demo-head"><div class="wrap">
+    <h1>데모 설명</h1>
+    <p>한국어 질문을 SQL로 바꿔 조회하고, 용어집과 메타데이터로 의미를 확인하며, 차트와 근거까지 보여주는 Text-to-SQL 데모입니다.</p>
+  </div></div>
+  <div class="wrap demo-body">
+    <nav class="subnav" id="subnav">
+      <button class="sn active" data-sec="overview">개요와 현황</button>
+      <button class="sn" data-sec="arch">구성도</button>
+      <button class="sn" data-sec="agents">에이전트</button>
+      <button class="sn" data-sec="tools">툴</button>
+      <button class="sn" data-sec="data">데이터 (ERD, 샘플)</button>
+      <button class="sn" data-sec="questions">예상 질문</button>
+      <button class="sn" data-sec="next">한계와 다음 단계</button>
+    </nav>
+    <main class="demo-main">
+
+      <section id="sec-overview" class="sec active">
+        <h2>개요와 현황</h2>
+        <div class="grid3">
+          <div class="stat"><b>4</b><span>에이전트<br>Supervisor, Context, SQL, Insight</span></div>
+          <div class="stat"><b>5</b><span>툴<br>generate_sql, run_sql, map_terms, get_catalog, make_chart</span></div>
+          <div class="stat"><b>9</b><span>테이블<br>모두 300행 이내의 합성 데이터</span></div>
+          <div class="stat"><b>25</b><span>용어집 용어<br>증권업무 용어 카테고리, 게시 완료</span></div>
+          <div class="stat"><b>17</b><span>few-shot 예시<br>Text-to-SQL 학습용 질문과 SQL</span></div>
+          <div class="stat"><b>77%</b><span>골든 질문 정확도<br>10문항 x 3회, 23/30</span></div>
+        </div>
+        <h3>어떻게 동작하나</h3>
+        <ul class="plain">
+          <li><b>watsonx Orchestrate(wxO)</b>는 에이전트가 툴을 부르는 곳입니다. LLM은 호출 순서, 재시도, 답변 정리만 맡습니다.</li>
+          <li><b>watsonx.data intelligence(wxdi)</b>는 데이터 설명서(카탈로그, 용어집)와 Text-to-SQL REST를 제공합니다. SQL을 만들기만 하고 실행하지는 않습니다.</li>
+          <li><b>Db2</b>는 데이터가 있는 곳입니다. 만들어진 SQL은 Db2로 직접 실행하며, 조회(SELECT)만 허용합니다.</li>
+        </ul>
+        <h3>완성 현황</h3>
+        <table class="tbl">
+          <thead><tr><th>영역</th><th>상태</th><th>내용</th></tr></thead>
+          <tbody>
+            <tr><td>데이터</td><td><span class="tag ok">완료</span></td><td>Db2 FIN_DEMO 9개 테이블 적재. 데이터는 적재일 기준이라 날짜가 지나면 "어제" 결과가 비므로 시연 전 재적재가 필요합니다.</td></tr>
+            <tr><td>wxdi 자산</td><td><span class="tag ok">완료</span></td><td>메타데이터 가져오기와 보강, 용어집 25개, few-shot 17건</td></tr>
+            <tr><td>툴 5종</td><td><span class="tag ok">완료</span></td><td>모든 툴이 예외 대신 error 필드를 채우고 engine, elapsed_ms를 돌려줍니다.</td></tr>
+            <tr><td>에이전트 4종</td><td><span class="tag ok">배포</span></td><td>wxO에 배포하고 Supervisor까지 end-to-end 시험을 마쳤습니다.</td></tr>
+            <tr><td>임베디드 챗</td><td><span class="tag warn">설정 필요</span></td><td>이 목업 홈에 붙일 자리와 설정 파일(chat-config.js)이 준비돼 있습니다. 보안 설정이 필요합니다.</td></tr>
+            <tr><td>계보(lineage)</td><td><span class="tag no">미구현</span></td><td>get_lineage 툴은 만들지 않았습니다.</td></tr>
+            <tr><td>접근 제어, 가드레일, 감사 로그</td><td><span class="tag no">2단계</span></td><td>개인정보 마스킹, 위험 입력 차단, 권한별 행 필터는 다음 단계입니다.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="sec-arch" class="sec">
+        <h2>구성도</h2>
+        <h3>에이전트와 툴, 데이터 연결</h3>
+        <div class="diagram" id="dg-arch" data-key="arch"></div>
+        <h3>한 질문이 흐르는 예</h3>
+        <p class="muted">"월별 거래대금 추이를 라인 차트로 보여줘"</p>
+        <div class="diagram" id="dg-seq" data-key="seq"></div>
+        <h3>질문 종류별 경로</h3>
+        <table class="tbl">
+          <thead><tr><th>질문 종류</th><th>예</th><th>호출 경로</th></tr></thead>
+          <tbody>
+            <tr><td>용어, 구조</td><td>약정이 뭐야?</td><td>Supervisor → Context</td></tr>
+            <tr><td>값 조회</td><td>삼성전자 어제 체결 중 매수만</td><td>Supervisor → Context → SQL</td></tr>
+            <tr><td>차트, 원인</td><td>월별 추이, 3월에 왜 늘었어?</td><td>Supervisor → Context → Insight (SQL 에이전트는 건너뜀)</td></tr>
+            <tr><td>모호한 질문</td><td>수익 좋은 고객 보여줘</td><td>Supervisor가 기준을 되묻고 하위 에이전트는 부르지 않음</td></tr>
+            <tr><td>후속 질문</td><td>그럼 강남지점만</td><td>같은 대화에서 직전 조건을 이어 붙여 다시 호출</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="sec-agents" class="sec">
+        <h2>에이전트</h2>
+        <div class="cards">
+          <article class="card">
+            <h3>Supervisor <code>findemo_supervisor_agent</code></h3>
+            <p>사용자와 대화하는 창구입니다. 질문 종류를 나누고, 모호하면 되묻고, 후속 질문에 직전 조건을 이어 붙입니다. 하위 에이전트를 부른 뒤 결과와 "근거 보기"(용어 매핑, SQL, 테이블)를 조립합니다.</p>
+            <dl><dt>모델</dt><dd>Claude Sonnet 4.6 (Bedrock)</dd><dt>호출 대상</dt><dd>Context, SQL, Insight</dd><dt>하지 않는 일</dt><dd>SQL을 직접 만들거나 숫자를 계산하지 않음</dd></dl>
+          </article>
+          <article class="card">
+            <h3>Context <code>findemo_context_agent</code></h3>
+            <p>업무 용어를 컬럼으로 바꾸고 테이블 구조, 조인 경로, 개인정보 컬럼을 알려줍니다. 예: "약정 → 거래대금 → EXECUTIONS.EXEC_AMOUNT".</p>
+            <dl><dt>툴</dt><dd>map_terms, get_catalog</dd><dt>하지 않는 일</dt><dd>SQL을 만들거나 실행하지 않음</dd></dl>
+          </article>
+          <article class="card">
+            <h3>SQL <code>findemo_sql_agent</code></h3>
+            <p>한국어 질문을 wxdi Text-to-SQL로 SQL로 바꿔 Db2에서 실행하고 표로 돌려줍니다. 실행 오류가 나면 오류를 넘겨 최대 2번 다시 만들고, 알려진 오류 패턴은 툴 안에서 먼저 걸러 재생성합니다.</p>
+            <dl><dt>툴</dt><dd>generate_sql, run_sql</dd><dt>하지 않는 일</dt><dd>SQL을 직접 쓰지 않음. 조회만 함</dd></dl>
+          </article>
+          <article class="card">
+            <h3>Insight <code>findemo_insight_agent</code></h3>
+            <p>차트 요청이면 SQL 생성, 실행, 차트 작성까지 맡습니다. "왜 늘었어"에는 업종이나 종목으로 한 번 더 쪼개 보고, 확인된 숫자만 근거로 설명합니다.</p>
+            <dl><dt>툴</dt><dd>generate_sql, run_sql, make_chart</dd><dt>하지 않는 일</dt><dd>확인되지 않은 원인을 단정하지 않음</dd></dl>
+          </article>
+        </div>
+      </section>
+
+      <section id="sec-tools" class="sec">
+        <h2>툴</h2>
+        <p class="muted">모든 툴은 예외 대신 <code>error</code> 필드를 채워 돌려주고, <code>engine</code>과 <code>elapsed_ms</code>를 함께 반환합니다.</p>
+        <table class="tbl">
+          <thead><tr><th>툴</th><th>하는 일</th><th>연결 대상</th><th>주요 출력</th></tr></thead>
+          <tbody>
+            <tr><td><code>generate_sql</code></td><td>한국어 질문을 Db2 SQL로 바꿉니다. 도메인 규칙 10개를 instructions로 넘기고, 알려진 오류(오조인, 최신일 필터 누락, 연도 없는 월별 묶기 등)는 걸러 최대 3번 재생성합니다. 실행하지는 않습니다.</td><td>wxdi Text-to-SQL REST</td><td>ok, sql, score, error</td></tr>
+            <tr><td><code>run_sql</code></td><td>SELECT 또는 WITH 한 문장만 Db2에서 실행합니다. 최대 200행. 쓰기와 다중 문장은 막습니다.</td><td>Db2 FIN_DEMO (SSL)</td><td>columns, rows, row_count, executed_sql, error</td></tr>
+            <tr><td><code>map_terms</code></td><td>질문 속 업무 용어를 용어집 표준 용어와 컬럼에 연결합니다. 동의어(약정, 잔고 등)는 툴 안의 사전으로 보완합니다.</td><td>wxdi 용어집 (25개 게시 용어)</td><td>mappings, ambiguous, unmapped</td></tr>
+            <tr><td><code>get_catalog</code></td><td>테이블 이름이나 키워드로 컬럼 설명, 키, 개인정보 여부, 외래키를 돌려줍니다.</td><td>wxdi 프로젝트 자산</td><td>tables, columns, keys, pii</td></tr>
+            <tr><td><code>make_chart</code></td><td>조회 결과를 line, bar, pie 차트로 만듭니다. 채팅에 바로 보이는 텍스트 렌더링과 ECharts 호환 스펙을 함께 돌려줍니다. 파이는 8개를 넘으면 "기타"로 묶습니다.</td><td>없음 (Python)</td><td>chart_spec, fallback_table, rendered</td></tr>
+          </tbody>
+        </table>
+        <h3>SQL 품질을 지키는 장치</h3>
+        <ul class="plain">
+          <li><b>instructions 10개</b>: 스키마 인용 규칙, 조인 경로, 종목명과 지점명 처리, 거래대금 동의어, 업종, 한도 소진율, 날짜, 숫자 단위(1억 = 100000000) 등</li>
+          <li><b>check_sql</b>: EXEC_ID와 ORDER_ID를 잇는 오조인, ACCOUNT_ID와 CUSTOMER_ID 오조인, 최신일 필터 없는 포지션 조회, 거래대금에 불필요한 테이블 조인, 연도 없는 월별 묶기를 감지하면 오류 설명을 붙여 다시 생성</li>
+          <li><b>fix_qualifiers</b>: Db2가 거부하는 컬럼 한정 방식을 "FIN_DEMO"."T"."C" 형태로 자동 교정</li>
+        </ul>
+      </section>
+
+      <section id="sec-data" class="sec">
+        <h2>데이터 (ERD, 샘플)</h2>
+        <p class="muted">증권사 업무를 흉내 낸 합성 데이터입니다. 개인정보 컬럼은 모두 가상 값이며, 아래 샘플에서는 한 번 더 가렸습니다.</p>
+        <h3>ERD</h3>
+        <div class="diagram big" id="dg-erd" data-key="erd"></div>
+        <h3>테이블 설명과 샘플</h3>
+        <div class="tabs-inline" id="tbl-tabs"></div>
+        <div id="tbl-detail"></div>
+      </section>
+
+      <section id="sec-questions" class="sec">
+        <h2>예상 질문</h2>
+        <p class="muted">"확인됨"은 실제로 실행해 맞는 답을 확인한 것이고, "미검증"은 아직 시험하지 않은 것입니다.</p>
+        <table class="tbl">
+          <thead><tr><th>구분</th><th>질문</th><th>상태</th></tr></thead>
+          <tbody id="qtable"></tbody>
+        </table>
+      </section>
+
+      <section id="sec-next" class="sec">
+        <h2>한계와 다음 단계</h2>
+        <h3>알려진 한계</h3>
+        <ul class="plain">
+          <li><b>생성기의 비결정성</b>: 같은 질문도 요청마다 SQL이 달라질 수 있습니다. 30분 넘게 미체결인 주문, 잔고 1억 이상 고객 질문이 특히 약합니다.</li>
+          <li><b>개인정보</b>: 생성기가 고객 목록 질문에 주민번호, 이메일, 전화번호까지 조회할 수 있습니다. 현재는 Supervisor가 답변에서 빼 줄 뿐이며 SQL 자체는 근거 보기에 보입니다.</li>
+          <li><b>응답 시간</b>: SQL 생성이 질문당 12~40초 걸립니다.</li>
+          <li><b>날짜 기준</b>: 데이터가 적재일을 기준으로 만들어져 시연 전 재적재가 필요합니다.</li>
+        </ul>
+        <h3>다음 단계</h3>
+        <table class="tbl">
+          <thead><tr><th>항목</th><th>내용</th></tr></thead>
+          <tbody>
+            <tr><td>접근 제어</td><td>고객 정보 컬럼 마스킹, 지점별 행 필터(타 지점 고객 조회 거부)</td></tr>
+            <tr><td>가드레일</td><td>입력 검사(주민번호 요청, 삭제 요청, SQL 주입 차단)와 거절 사유 안내</td></tr>
+            <tr><td>감사 로그</td><td>누가, 언제, 어떤 질문과 SQL로, 얼마나 걸렸는지 기록</td></tr>
+            <tr><td>계보</td><td>get_lineage로 답변에 쓰인 데이터의 출처 경로 표시</td></tr>
+            <tr><td>정확도</td><td>약한 질문 보강(few-shot, 규칙), 골든 질문 확대</td></tr>
+            <tr><td>성능</td><td>SQL 생성 시간 단축, 동시 사용자 시험</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+    </main>
+  </div>
+  <footer class="site-footer"><div class="wrap"><p>교보증권 대상 제안용 목업입니다. 실제 서비스가 아닙니다.</p></div></footer>
+</div>
+
+<!-- 챗 영역: 임베디드 에이전트가 붙는 자리 -->
+<div id="root"></div>
+<div id="mock-chat" class="mock-chat" hidden>
+  <div class="mc-head"><b>AI 데이터 어시스턴트</b><button id="mc-close" aria-label="닫기">×</button></div>
+  <div class="mc-body">
+    <div class="mc-banner">임베디드 챗이 아직 연결되지 않았습니다. <code>docs/chat-config.js</code>에 값을 채우면 이 자리에 실제 에이전트가 나타납니다. 아래는 예시 화면입니다.</div>
+    <div class="msg me">월별 거래대금 추이를 라인 차트로 보여줘</div>
+    <div class="msg bot">
+      <p>월별 거래대금은 2025-10부터 2026-11까지 최소 26,667,680원, 최대 744,703,420원으로 변동했습니다.</p>
+      <pre>total_transaction_amount: ▁▄▁▂▂▄▁▃▁▁▂▁▂█
+(최소 26,667,680 / 최대 744,703,420)</pre>
+      <details><summary>근거 보기</summary>
+        <p>용어 매핑: 거래대금 → EXECUTIONS.EXEC_AMOUNT</p>
+        <pre>SELECT YEAR(EXEC_TS), MONTH(EXEC_TS),
+       SUM(EXEC_AMOUNT)
+FROM FIN_DEMO.EXECUTIONS
+GROUP BY YEAR(EXEC_TS), MONTH(EXEC_TS)</pre>
+        <p>사용한 테이블: EXECUTIONS</p>
+      </details>
+    </div>
+    <div class="msg me" id="mc-pending" hidden></div>
+  </div>
+  <div class="mc-input"><input id="mc-text" placeholder="질문을 입력하세요 (예시 화면)" disabled><button disabled>전송</button></div>
+</div>
+<button id="mock-launcher" class="mock-launcher" hidden>AI 질문</button>
+
+<script src="chat-config.js"></script>
+<script src="samples.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
