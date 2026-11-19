@@ -119,7 +119,7 @@
           <div class="stat"><b>4</b><span>에이전트<br>Supervisor, Context, SQL, Insight</span></div>
           <div class="stat"><b>5</b><span>툴<br>generate_sql, run_sql, map_terms, get_catalog, make_chart</span></div>
           <div class="stat"><b>9</b><span>테이블<br>모두 300행 이내의 합성 데이터</span></div>
-          <div class="stat"><b>25</b><span>용어집 용어<br>증권업무 용어 카테고리, 게시 완료</span></div>
+          <div class="stat"><b>24</b><span>용어집 용어<br>증권업무 용어 카테고리, 게시 완료</span></div>
           <div class="stat"><b>17</b><span>few-shot 예시<br>Text-to-SQL 학습용 질문과 SQL</span></div>
           <div class="stat"><b>77%</b><span>골든 질문 정확도<br>10문항 x 3회, 23/30</span></div>
         </div>
@@ -171,7 +171,7 @@
                   <div class="fa-node"><b>get_catalog</b><span>테이블 구조, 키, 개인정보 컬럼 조회</span></div>
                 </div>
               </div>
-              <div class="fa-ds"><div class="fa-vline"></div><div class="fa-ds-card"><b>wxdi 용어집 + 카탈로그</b><span>용어 25개, 테이블 9개</span></div></div>
+              <div class="fa-ds"><div class="fa-vline"></div><div class="fa-ds-card"><b>wxdi 용어집 + 카탈로그</b><span>용어 24개, 테이블 9개</span></div></div>
             </div>
             <div class="fa-col">
               <div class="fa-sa fa-orange">
@@ -224,7 +224,7 @@
           <thead><tr><th>영역</th><th>상태</th><th>내용</th></tr></thead>
           <tbody>
             <tr><td>데이터</td><td><span class="tag ok">완료</span></td><td>Db2 FIN_DEMO 9개 테이블 적재. 데이터는 적재일 기준이라 날짜가 지나면 "어제" 결과가 비므로 시연 전 재적재가 필요합니다.</td></tr>
-            <tr><td>wxdi 자산</td><td><span class="tag ok">완료</span></td><td>메타데이터 가져오기와 보강, 용어집 25개, few-shot 17건</td></tr>
+            <tr><td>wxdi 자산</td><td><span class="tag ok">완료</span></td><td>메타데이터 가져오기와 보강, 용어집 24개, few-shot 17건</td></tr>
             <tr><td>툴 5종</td><td><span class="tag ok">완료</span></td><td>모든 툴이 예외 대신 error 필드를 채우고 engine, elapsed_ms를 돌려줍니다.</td></tr>
             <tr><td>에이전트 4종</td><td><span class="tag ok">배포</span></td><td>wxO에 배포하고 Supervisor까지 end-to-end 시험을 마쳤습니다.</td></tr>
             <tr><td>임베디드 챗</td><td><span class="tag warn">설정 필요</span></td><td>이 목업 홈에 붙일 자리와 설정 파일(chat-config.js)이 준비돼 있습니다. 보안 설정이 필요합니다.</td></tr>
@@ -288,7 +288,7 @@
           <tbody>
             <tr><td><code>generate_sql</code></td><td>한국어 질문을 Db2 SQL로 바꿉니다. 도메인 규칙 10개를 instructions로 넘기고, 알려진 오류(오조인, 최신일 필터 누락, 연도 없는 월별 묶기 등)는 걸러 최대 3번 재생성합니다. 실행하지는 않습니다.</td><td>wxdi Text-to-SQL REST</td><td>ok, sql, score, error</td></tr>
             <tr><td><code>run_sql</code></td><td>SELECT 또는 WITH 한 문장만 Db2에서 실행합니다. 최대 200행. 쓰기와 다중 문장은 막습니다.</td><td>Db2 FIN_DEMO (SSL)</td><td>columns, rows, row_count, executed_sql, error</td></tr>
-            <tr><td><code>map_terms</code></td><td>질문 속 업무 용어를 용어집 표준 용어와 컬럼에 연결합니다. 동의어(약정, 잔고 등)는 툴 안의 사전으로 보완합니다.</td><td>wxdi 용어집 (25개 게시 용어)</td><td>mappings, ambiguous, unmapped</td></tr>
+            <tr><td><code>map_terms</code></td><td>질문 속 업무 용어를 용어집 표준 용어와 컬럼에 연결합니다. 동의어(약정, 잔고 등)는 툴 안의 사전으로 보완합니다.</td><td>wxdi 용어집 (24개 게시 용어)</td><td>mappings, ambiguous, unmapped</td></tr>
             <tr><td><code>get_catalog</code></td><td>테이블 이름이나 키워드로 컬럼 설명, 키, 개인정보 여부, 외래키를 돌려줍니다.</td><td>wxdi 프로젝트 자산</td><td>tables, columns, keys, pii</td></tr>
             <tr><td><code>make_chart</code></td><td>조회 결과를 line, bar, pie 차트로 만듭니다. 채팅에 바로 보이는 텍스트 렌더링과 ECharts 호환 스펙을 함께 돌려줍니다. 파이는 8개를 넘으면 "기타"로 묶습니다.</td><td>없음 (Python)</td><td>chart_spec, fallback_table, rendered</td></tr>
           </tbody>
