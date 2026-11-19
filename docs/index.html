@@ -123,6 +123,96 @@
           <div class="stat"><b>17</b><span>few-shot 예시<br>Text-to-SQL 학습용 질문과 SQL</span></div>
           <div class="stat"><b>77%</b><span>골든 질문 정확도<br>10문항 x 3회, 23/30</span></div>
         </div>
+        <h3>에이전트는 이렇게 연결됩니다</h3>
+        <p class="muted">질문이 들어오면 Supervisor가 종류를 나눠 하위 에이전트에 맡기고, 하위 에이전트는 툴로 wxdi와 Db2를 부릅니다. 결과는 다시 Supervisor가 모아 답합니다.</p>
+        <div class="fa-box">
+          <div class="fa-center"><div class="fa-bubble"><b>사용자 질문</b><span>홈페이지 AI 챗</span></div></div>
+          <div class="fa-svg-conn">
+            <svg viewBox="0 0 200 56" aria-hidden="true">
+              <defs>
+                <marker id="fa-dn" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M1,1 L7,4 L1,7 Z" fill="#9097aa"/></marker>
+                <marker id="fa-up" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M1,1 L7,4 L1,7 Z" fill="#1b5fc1"/></marker>
+              </defs>
+              <line x1="94" y1="2" x2="94" y2="50" stroke="#9097aa" stroke-width="2" marker-end="url(#fa-dn)"/>
+              <line x1="106" y1="50" x2="106" y2="4" stroke="#1b5fc1" stroke-width="2" marker-end="url(#fa-up)"/>
+              <text x="116" y="22" font-size="10" fill="#6b7280">질문 입력</text>
+              <text x="116" y="38" font-size="10" fill="#1b5fc1">최종 답변</text>
+            </svg>
+          </div>
+          <div class="fa-center">
+            <div class="fa-top">
+              <b>Supervisor</b><code>findemo_supervisor_agent</code>
+              <span>질문을 나누고, 모호하면 되묻고, 후속 질문에 직전 조건을 이어 붙입니다</span>
+              <span>모델: Claude Sonnet 4.6</span>
+            </div>
+          </div>
+          <svg class="fa-branch" viewBox="0 0 900 80" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <marker id="fa-bg" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto"><path d="M1,1 L7,4 L1,7 Z" fill="#2e7d32"/></marker>
+              <marker id="fa-bo" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto"><path d="M1,1 L7,4 L1,7 Z" fill="#e65100"/></marker>
+              <marker id="fa-bp" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto"><path d="M1,1 L7,4 L1,7 Z" fill="#6a1b9a"/></marker>
+            </defs>
+            <line x1="450" y1="0" x2="450" y2="22" stroke="#aab4cc" stroke-width="2"/>
+            <line x1="153" y1="22" x2="747" y2="22" stroke="#aab4cc" stroke-width="2"/>
+            <line x1="153" y1="22" x2="153" y2="68" stroke="#2e7d32" stroke-width="2" marker-end="url(#fa-bg)"/>
+            <line x1="450" y1="22" x2="450" y2="68" stroke="#e65100" stroke-width="2" marker-end="url(#fa-bo)"/>
+            <line x1="747" y1="22" x2="747" y2="68" stroke="#6a1b9a" stroke-width="2" marker-end="url(#fa-bp)"/>
+            <text x="175" y="42" font-size="12" fill="#2e7d32" font-weight="600">용어, 구조 질문</text>
+            <text x="472" y="42" font-size="12" fill="#e65100" font-weight="600">값 조회 질문</text>
+            <text x="769" y="42" font-size="12" fill="#6a1b9a" font-weight="600">차트, 원인 질문</text>
+          </svg>
+          <div class="fa-row">
+            <div class="fa-col">
+              <div class="fa-sa fa-green">
+                <div class="fa-sa-hdr"><span class="fa-badge" style="background:#e8f5e9;color:#2e7d32">업무 용어 해석</span>
+                  <b>Context</b><code>findemo_context_agent</code></div>
+                <div class="fa-sa-body">
+                  <div class="fa-node"><b>map_terms</b><span>업무 용어를 표준 용어와 컬럼으로 연결</span></div>
+                  <div class="fa-node"><b>get_catalog</b><span>테이블 구조, 키, 개인정보 컬럼 조회</span></div>
+                </div>
+              </div>
+              <div class="fa-ds"><div class="fa-vline"></div><div class="fa-ds-card"><b>wxdi 용어집 + 카탈로그</b><span>용어 25개, 테이블 9개</span></div></div>
+            </div>
+            <div class="fa-col">
+              <div class="fa-sa fa-orange">
+                <div class="fa-sa-hdr"><span class="fa-badge" style="background:#fff3e0;color:#e65100">조회</span>
+                  <b>SQL</b><code>findemo_sql_agent</code></div>
+                <div class="fa-sa-body">
+                  <div class="fa-node"><b>generate_sql</b><span>한국어를 Db2 SQL로 바꾸고 알려진 오류는 걸러 재생성</span></div>
+                  <div class="fa-arr">↓</div>
+                  <div class="fa-node"><b>run_sql</b><span>SELECT만 실행, 최대 200행</span></div>
+                </div>
+              </div>
+              <div class="fa-ds"><div class="fa-vline"></div><div class="fa-ds-card"><b>wxdi Text-to-SQL → Db2 FIN_DEMO</b><span>SQL 생성은 wxdi, 실행은 Db2</span></div></div>
+            </div>
+            <div class="fa-col">
+              <div class="fa-sa fa-purple">
+                <div class="fa-sa-hdr"><span class="fa-badge" style="background:#f3e5f5;color:#6a1b9a">차트와 해석</span>
+                  <b>Insight</b><code>findemo_insight_agent</code></div>
+                <div class="fa-sa-body">
+                  <div class="fa-node"><b>generate_sql, run_sql</b><span>차트용 집계와 "왜?" 질문의 쪼개 보기</span></div>
+                  <div class="fa-arr">↓</div>
+                  <div class="fa-node"><b>make_chart</b><span>line, bar, pie 차트와 근거 설명</span></div>
+                </div>
+              </div>
+              <div class="fa-ds"><div class="fa-vline"></div><div class="fa-ds-card"><b>wxdi Text-to-SQL → Db2 FIN_DEMO</b><span>차트 스펙은 Python 툴이 생성</span></div></div>
+            </div>
+          </div>
+          <svg class="fa-branch" viewBox="0 0 900 80" preserveAspectRatio="none" aria-hidden="true" style="margin-top:4px">
+            <defs><marker id="fa-bd" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="auto"><path d="M1,1 L7,4 L1,7 Z" fill="#aab4cc"/></marker></defs>
+            <text x="175" y="22" font-size="12" fill="#2e7d32" font-weight="600">▲ 용어 매핑 반환</text>
+            <text x="472" y="22" font-size="12" fill="#e65100" font-weight="600">▲ 표 반환</text>
+            <text x="769" y="22" font-size="12" fill="#6a1b9a" font-weight="600">▲ 차트, 설명 반환</text>
+            <line x1="153" y1="0" x2="153" y2="36" stroke="#2e7d32" stroke-width="2"/>
+            <line x1="450" y1="0" x2="450" y2="36" stroke="#e65100" stroke-width="2"/>
+            <line x1="747" y1="0" x2="747" y2="36" stroke="#6a1b9a" stroke-width="2"/>
+            <line x1="153" y1="36" x2="747" y2="36" stroke="#aab4cc" stroke-width="2"/>
+            <line x1="450" y1="36" x2="450" y2="74" stroke="#aab4cc" stroke-width="2" marker-end="url(#fa-bd)"/>
+          </svg>
+          <div class="fa-center"><div class="fa-bubble fa-final"><b>최종 답변</b><span>표, 차트, 설명 + 근거 보기(용어 매핑, SQL, 테이블)</span></div></div>
+          <p class="fa-note">값 조회는 Context로 용어를 먼저 확인한 뒤 SQL로 이어지고, 차트와 원인 질문은 SQL 에이전트를 건너뛰고 Insight가 처리합니다. 하위 에이전트의 모델은 gpt-oss-120b입니다.</p>
+        </div>
+
         <h3>어떻게 동작하나</h3>
         <ul class="plain">
           <li><b>watsonx Orchestrate(wxO)</b>는 에이전트가 툴을 부르는 곳입니다. LLM은 호출 순서, 재시도, 답변 정리만 맡습니다.</li>
@@ -223,7 +313,7 @@
 
       <section id="sec-questions" class="sec">
         <h2>예상 질문</h2>
-        <p class="muted">"확인됨"은 실제로 실행해 맞는 답을 확인한 것이고, "미검증"은 아직 시험하지 않은 것입니다.</p>
+        <p class="muted">실제로 실행해 맞는 답을 확인한 질문만 모았습니다. 오른쪽 메모는 확인 방법이고, "골든 2/3"은 골든 평가 3회 중 맞은 횟수입니다.</p>
         <table class="tbl">
           <thead><tr><th>구분</th><th>질문</th><th>상태</th></tr></thead>
           <tbody id="qtable"></tbody>
