@@ -134,8 +134,27 @@ wxO 에이전트 end-to-end: "삼성전자 어제 체결 중 매수만"(12건)�
 
 - 툴: [`findemo_context_tools.py`](wxo/tools/findemo_context_tools.py). 엔진은 `ikc`(wxdi REST). 에이전트: [`findemo_context_agent.yaml`](wxo/agents/findemo_context_agent.yaml).
 - `map_terms`는 `GET /v3/search`(`metadata.artifact_type:glossary_term`)로 게시된 용어를 읽고, 질문 속 용어를 긴 표현부터 찾는다. `get_catalog`는 `POST /v2/asset_types/asset/search`(태그 `FIN_DEMO`)와 `FK_CONSTRAINT` 자산 이름에서 컬럼, 키, PII를 구한다. 둘 다 5분 캐시한다.
-- **발견: 가져온 용어의 `synonyms`가 비어 있다.** CSV의 Synonyms 열은 다른 용어 참조를 기대해서 약정, 잔고 같은 동의어가 wxdi에 연결되지 않았다. wxdi Text-to-SQL도 이 동의어를 모른다. `map_terms`는 툴 안의 `SYNONYMS`로 보완한다. 동의어를 제품에 넣으려면 동의어 용어를 따로 만들어야 한다.
+- **발견(초기): 가져온 용어의 `synonyms`가 비어 있었다.** CSV의 Synonyms 열은 글자가 아니라 다른 용어 참조를 기대해서 약정, 잔고 같은 동의어가 wxdi에 연결되지 않았다. 처음에는 `map_terms`의 `SYNONYMS` 사전으로 보완했으나 아래 "동의어를 wxdi로 이전"에서 제거했다.
 - 확인한 질문: "약정 상위 고객" 매핑(약정 → 거래대금, EXECUTIONS.EXEC_AMOUNT), "고객 테이블 개인정보 컬럼"(CUSTOMER_NAME, SSN, PHONE, EMAIL), "체결에서 고객까지 조인 경로"(EXECUTIONS, ORDERS, ACCOUNT, CUSTOMER).
+
+## 동의어를 wxdi로 이전하고 에이전트 구조 변경 (2026-11-19)
+
+**용어집(카테고리 `증권업무 용어`)**
+- 게시된 용어는 24개가 아니라 **표준 용어 24개 + 동의어 용어 32개 = 56개**다. (이전 기록의 "25개"는 틀렸고 실제 표준 용어는 24개다. 카테고리 이름은 `FIN_DEMO Terms`가 아니라 `증권업무 용어`다.)
+- 동의어 형식(시험으로 확인): `Synonyms` 열에는 글자가 아니라 **다른 용어의 경로**(`증권업무 용어 >> 약정`)를 쓴다. 동의어는 그 자체로 하나의 용어라 설명이 있는 별도 행으로 만든다. 한 용어의 값이 여러 개면 **연속된 행**으로 쓰고 둘째 행부터 `Description`을 비운다. 떨어진 위치에서 같은 용어를 다시 쓰면 `GIM00007E ... artifact already imported`로 건너뛴다.
+- 관계: 동의어(`Synonyms`), 관련 용어(`Related Terms`: 주문↔체결, 체결↔미체결, 실현손익↔평가손익, 노출금액↔한도 소진율, VIP 고객↔고객 등급), 부분(`Part of Terms`: 예수금과 평가금액은 총자산의 일부), 유형(`Type of Terms`: 지정가 주문, 시장가 주문, 매수, 매도는 주문의 한 종류).
+- 생성: [`build_glossary_csv.py`](glossary/build_glossary_csv.py)가 [`fin_demo_glossary.csv`](glossary/fin_demo_glossary.csv)를 만든다. 가져오기는 워크플로 초안을 만들므로 인박스의 Publish 작업을 `#publish`로 완료해야 게시된다.
+- **검색 색인에서는 동의어 연결이 한쪽 용어에만 보이는 경우가 있다**(예: 약정은 `synonyms`가 비고 거래대금에 4개가 보임. 예수금은 비고 현금잔고에 예수금이 보임). 32쌍 모두 한쪽 이상에서 보이므로 `map_terms`는 양쪽을 합쳐 그룹을 만든다.
+
+**`map_terms`**
+- `SYNONYMS` 사전을 없앴다. 게시된 용어의 `entity.artifacts.synonyms`로 같은 뜻의 용어를 묶고, 그룹의 **대표는 정의에 컬럼명이 있는 용어 중 정의가 가장 긴 용어**로 정한다. 나머지는 대표의 별칭이 된다. 그룹 수는 24개다.
+- 같은 툴을 용어·메타데이터 검색, SQL, Insight 세 에이전트가 쓴다.
+
+**에이전트 구조**
+- `findemo_context_agent`는 이름은 두고 표시 이름만 **"용어·메타데이터 검색 에이전트"**로 바꿨다(`display_name`). 설명은 "지정된 비즈니스 용어와 메타데이터 구조가 궁금할 때 물어보는 에이전트"이며, 용어와 구조를 직접 묻는 질문에만 쓰이고 값 조회 흐름에는 끼지 않는다.
+- SQL 에이전트는 `map_terms`를 먼저 호출해 별칭을 표준 용어로 바꾼 질문을 `generate_sql`에 넘기고, 응답에 "용어 매핑"을 붙인다. Insight 에이전트도 같은 방식으로 `map_terms`를 쓴다(질문만 받은 경우). Supervisor는 값 조회와 차트 질문에서 더 이상 Context를 먼저 부르지 않고, "근거 보기"의 용어 매핑을 SQL/Insight 응답에서 옮긴다.
+- 한계: `map_terms` 결과가 wxdi Text-to-SQL에 자동으로 전달되지는 않는다. 에이전트가 질문 속 별칭을 표준 용어로 바꿔 넘기는 방식이다. 용어집에서 동의어를 지우면 별칭이 매핑되지 않아 결과가 달라진다.
+- 시험(Supervisor를 gpt-oss-120b로 임시 전환한 상태): "이번 달 체결대금 큰 우수고객 상위 3명" → 체결대금→거래대금, 우수고객→VIP 고객으로 매핑 후 SQL 실행, "약정이 뭐야? 어떤 컬럼이야?" → 용어·메타데이터 검색 에이전트만 호출, "업종별 약정 비중을 파이 차트로" → Insight가 `map_terms` 호출 후 차트. SQL 에이전트 단독: "이번 달 약정이 큰 고객 상위 5명" → 약정→거래대금.
 
 ## Insight 에이전트와 Supervisor (2026-11-19)
 

@@ -17,29 +17,6 @@ WXDI_APP = "findemo_wxdi"
 GLOSSARY_CATEGORY = "증권업무 용어"
 CACHE_SECONDS = 300
 
-# wxdi에 가져온 용어에는 동의어가 연결되지 않아(CSV Synonyms 열은 다른 용어 참조를 기대한다) 여기서 보완한다.
-# 원본: option_b_watsonxdata/glossary/fin_demo_glossary.csv
-SYNONYMS = {
-    "거래대금": ["약정", "약정금액", "체결대금", "약정대금"],
-    "체결": ["체결내역"],
-    "예수금": ["현금잔고", "현금 잔고"],
-    "평가금액": ["주식평가금액"],
-    "총자산": ["잔고", "자산"],
-    "미수금": ["미수"],
-    "신용융자": ["신용거래", "신용 융자"],
-    "VIP 고객": ["VIP", "우수고객"],
-    "고객 등급": ["등급"],
-    "지점": ["영업점", "우리 지점"],
-    "종목": ["상품"],
-    "업종": ["섹터", "산업"],
-    "실현손익": ["실현 PnL", "확정손익"],
-    "평가손익": ["미실현손익", "평가 PnL"],
-    "노출금액": ["익스포저", "포지션 금액"],
-    "한도 소진율": ["한도 대비 노출 비율", "한도율"],
-    "데스크": ["S&T 데스크"],
-    "주민등록번호": ["주민번호", "SSN"],
-}
-
 _token_cache: Dict[str, Any] = {"token": None, "exp": 0.0}
 _cache: Dict[str, Any] = {}
 
@@ -84,24 +61,50 @@ def _headers(cfg: Dict[str, str]) -> Dict[str, str]:
 # ---------------------------------------------------------------- 용어집
 
 def _load_terms(cfg: Dict[str, str]) -> List[Dict[str, Any]]:
+    """게시된 용어를 읽고, wxdi에서 동의어로 연결된 용어끼리 한 그룹으로 묶는다.
+
+    동의어 연결은 한쪽 용어에만 보일 수 있어(검색 색인) 양쪽을 합쳐서 그룹을 만든다.
+    그룹의 대표 용어는 컬럼명이 정의에 있는 용어 중 정의가 가장 긴 것이다. 나머지는 대표의 별칭이 된다.
+    """
     r = requests.get(f"{cfg['url'].rstrip('/')}/v3/search", headers=_headers(cfg), timeout=60,
                      params={"query": "metadata.artifact_type:glossary_term", "auth_scope": "all", "limit": 500})
     r.raise_for_status()
-    terms = []
+    info: Dict[str, Dict[str, Any]] = {}
+    parent: Dict[str, str] = {}
+
+    def find(x: str) -> str:
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
     for row in r.json().get("rows", []):
         meta = row["metadata"]
         category = row.get("categories", {}).get("primary_category_name")
         if category != GLOSSARY_CATEGORY or meta.get("state") != "PUBLISHED":
             continue
         desc = meta.get("description") or ""
-        terms.append({
+        info[meta["name"]] = {
             "term": meta["name"],
             "definition": desc,
             "maps_to": sorted(set(re.findall(r"\b[A-Z][A-Z_]+\.[A-Z][A-Z_]+\b", desc))
                               or set(re.findall(r"(?:테이블|컬럼)\s+([A-Z][A-Z_]+)", desc))),
-            "ref": f"terms/{meta['name']}",
-            "aliases": [meta["name"]] + SYNONYMS.get(meta["name"], []),
-        })
+            "synonyms": row.get("entity", {}).get("artifacts", {}).get("synonyms") or [],
+        }
+        parent[meta["name"]] = meta["name"]
+    for name, t in info.items():
+        for s in t["synonyms"]:
+            if s in parent:
+                parent[find(s)] = find(name)
+    groups: Dict[str, List[str]] = {}
+    for name in info:
+        groups.setdefault(find(name), []).append(name)
+    terms = []
+    for members in groups.values():
+        rep = max(members, key=lambda n: (bool(info[n]["maps_to"]), len(info[n]["definition"])))
+        t = info[rep]
+        terms.append({"term": rep, "definition": t["definition"], "maps_to": t["maps_to"],
+                      "ref": f"terms/{rep}", "aliases": [rep] + [m for m in members if m != rep]})
     return terms
 
 
