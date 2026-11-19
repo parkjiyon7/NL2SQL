@@ -91,6 +91,13 @@ def check_sql(sql: str) -> Optional[str]:
                 "Join EXECUTIONS.ORDER_ID = ORDERS.ORDER_ID.")
     if _BAD_ACCOUNT_JOIN.search(sql):
         return "Wrong join: ACCOUNT_ID and CUSTOMER_ID are different keys. Join ORDERS.ACCOUNT_ID = ACCOUNT.ACCOUNT_ID and ACCOUNT.CUSTOMER_ID = CUSTOMER.CUSTOMER_ID."
+    if re.search(r"EXEC_AMOUNT", sql, re.I) and re.search(r'BALANCE_DAILY|ST_POSITIONS', sql, re.I):
+        return ("Wrong tables: 거래대금 is SUM(EXECUTIONS.EXEC_AMOUNT) and needs only EXECUTIONS (plus ORDERS, PRODUCT, ACCOUNT, CUSTOMER, BRANCH when grouping). "
+                "Do not join BALANCE_DAILY or ST_POSITIONS; use EXECUTIONS.EXEC_TS for dates.")
+    group_by = re.search(r"GROUP\s+BY(.*?)(?:ORDER\s+BY|HAVING|$)", sql, re.I | re.S)
+    if group_by and re.search(r"MONTH", group_by.group(1), re.I) and not re.search(r"YEAR|TO_CHAR|VARCHAR_FORMAT", group_by.group(1), re.I):
+        return ("Monthly grouping must include the year: GROUP BY YEAR(EXECUTIONS.EXEC_TS), MONTH(EXECUTIONS.EXEC_TS), "
+                "because the data spans 14 months and the same month number occurs twice.")
     if re.search(r"ST_POSITIONS", sql, re.I) and not _BASE_DATE_FILTER.search(sql):
         return ("ST_POSITIONS holds many BASE_DATE rows per desk. Filter to the latest day: "
                 'WHERE BASE_DATE = (SELECT MAX(BASE_DATE) FROM "FIN_DEMO"."ST_POSITIONS"), then aggregate per desk.')

@@ -136,3 +136,20 @@ wxO 에이전트 end-to-end: "삼성전자 어제 체결 중 매수만"(12건)�
 - `map_terms`는 `GET /v3/search`(`metadata.artifact_type:glossary_term`)로 게시된 용어를 읽고, 질문 속 용어를 긴 표현부터 찾는다. `get_catalog`는 `POST /v2/asset_types/asset/search`(태그 `FIN_DEMO`)와 `FK_CONSTRAINT` 자산 이름에서 컬럼, 키, PII를 구한다. 둘 다 5분 캐시한다.
 - **발견: 가져온 용어의 `synonyms`가 비어 있다.** CSV의 Synonyms 열은 다른 용어 참조를 기대해서 약정, 잔고 같은 동의어가 wxdi에 연결되지 않았다. wxdi Text-to-SQL도 이 동의어를 모른다. `map_terms`는 툴 안의 `SYNONYMS`로 보완한다. 동의어를 제품에 넣으려면 동의어 용어를 따로 만들어야 한다.
 - 확인한 질문: "약정 상위 고객" 매핑(약정 → 거래대금, EXECUTIONS.EXEC_AMOUNT), "고객 테이블 개인정보 컬럼"(CUSTOMER_NAME, SSN, PHONE, EMAIL), "체결에서 고객까지 조인 경로"(EXECUTIONS, ORDERS, ACCOUNT, CUSTOMER).
+
+## Insight 에이전트와 Supervisor (2026-11-19)
+
+**make_chart** ([`findemo_chart_tools.py`](wxo/tools/findemo_chart_tools.py))
+- line, bar, pie를 받아 ECharts `chart_spec`, `fallback_table`, 채팅용 `rendered`(스파크라인, 막대, 표)를 돌려준다.
+- x에 `"year,month"`처럼 쉼표로 여러 컬럼을 주면 `2025-10` 라벨로 합친다. pie는 8개를 넘으면 상위 7개와 `기타`로 묶는다.
+
+**생성기 오류와 대응** (`findemo_sql_tools.py`)
+- Db2는 `FROM "FIN_DEMO"."T"`로 쓴 테이블의 컬럼을 `"T"."C"`로 한정하면 SQL0206을 낸다. 생성기가 자주 이렇게 쓴다. `fix_qualifiers`가 `"FIN_DEMO"."T"."C"`로 고친다.
+- 월별 거래대금 추이에서 `BALANCE_DAILY.BASE_DATE`를 조인하거나 `MONTH`만으로 묶는 오답이 나온다. `check_sql`에 두 규칙을 추가했다. 거래대금 SQL에 `BALANCE_DAILY`나 `ST_POSITIONS`가 있으면 안 되고, 월별 GROUP BY에는 연도가 있어야 한다.
+- 골든 3회 평가 22/30(73%), 규칙 추가 후 23/30(77%).
+
+**Supervisor** ([`findemo_supervisor_agent.yaml`](wxo/agents/findemo_supervisor_agent.yaml))
+- `collaborators`: context, sql, insight. 모호한 질문은 되묻고, 후속 질문은 직전 조건을 이어 붙이고(같은 `thread_id`), 차트와 원인 질문은 sql 에이전트를 건너뛰고 insight로 보낸다.
+- `groq/openai/gpt-oss-120b`로는 하위 에이전트를 부르고도 응답을 못 받으면 2023년 데이터를 지어내거나, 받은 표의 숫자를 다시 쓰다가 틀렸다. `bedrock/us.anthropic.claude-sonnet-4-6`, style `react`로 바꾸자 숫자가 그대로 옮겨졌다. 하위 에이전트는 gpt-oss-120b를 유지한다.
+- 데이터는 적재일 기준이라 날짜가 지나면 "어제" 결과가 0건이 된다. 시연 전에 `load_db2.py`를 다시 돌린다.
+- 알려진 한계: 생성기가 VIP 목록 질문에 `SSN`, `EMAIL`, `PHONE`까지 SELECT한다. 접근 제어와 가드레일은 2단계 과제다.
