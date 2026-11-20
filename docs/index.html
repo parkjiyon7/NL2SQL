@@ -122,7 +122,7 @@
           <div class="stat"><b>9</b><span>테이블<br>모두 300행 이내의 합성 데이터</span></div>
           <div class="stat"><b>25 + 35</b><span>용어집 용어<br>표준 용어 25개와 동의어 용어 35개, 게시 완료</span></div>
           <div class="stat"><b>0 / 17</b><span>few-shot 반영<br>예시 17건은 업로드만 했고, 현재 SQL 생성 프롬프트에는 들어가지 않음</span></div>
-          <div class="stat"><b>87%</b><span>골든 질문 정확도<br>SQL 정답이 있는 10문항 x 3회, 26/30 (<a href="#demo/eval" class="lnk">평가 결과 보기</a>)</span></div>
+          <div class="stat"><b>90%</b><span>골든 질문 정확도<br>SQL 정답이 있는 10문항 x 3회, 27/30 (<a href="#demo/eval" class="lnk">평가 결과 보기</a>)</span></div>
         </div>
 
         <h3>에이전트 전체 구성도</h3>
@@ -357,7 +357,7 @@
           <tbody>
             <tr><td><code>generate_sql</code></td><td>한국어 질문을 Db2 SQL로 바꿉니다. 호출할 때마다 wxdi 카탈로그에서 FK 조인 조건을 읽고(5분 캐시), map_terms가 준 용어 정의(<code>glossary_hints</code>)와 함께 질문 뒤에 <code>Note:</code>로 붙여 Text-to-SQL에 보냅니다. 실행하지는 않습니다.</td><td>wxdi 카탈로그 + wxdi Text-to-SQL REST (SQL 생성 LLM: Llama 3.3 70B)</td><td>ok, sql, score, error</td></tr>
             <tr><td><code>run_sql</code></td><td>SELECT 또는 WITH 한 문장만 Db2에서 실행합니다. 최대 200행. 쓰기와 다중 문장은 막습니다.</td><td>Db2 FIN_DEMO (SSL)</td><td>columns, rows, row_count, executed_sql, error</td></tr>
-            <tr><td><code>map_terms</code></td><td>질문 속 업무 용어를 용어집 표준 용어와 컬럼에 연결합니다. 동의어(약정, 잔고 등)도 wxdi 용어집에서 동의어로 연결된 용어를 읽어 같은 표준 용어로 묶고, 용어 정의를 <code>glossary_hints</code>로 돌려줍니다. 용어·메타데이터 검색, SQL, Insight 에이전트가 함께 씁니다.</td><td>wxdi 용어집 (표준 용어 25개 + 동의어 35개 게시)</td><td>mappings, ambiguous, unmapped, glossary_hints</td></tr>
+            <tr><td><code>map_terms</code></td><td>질문 속 업무 용어를 용어집 표준 용어와 컬럼에 연결합니다. 동의어(약정, 잔고 등)도 wxdi 용어집에서 동의어로 연결된 용어를 읽어 같은 표준 용어로 묶고, 용어 정의를 <code>glossary_hints</code>로 돌려줍니다. 날짜별 스냅샷 테이블(BALANCE_DAILY)의 값은 정의에 "여러 날짜를 더하지 말고 가장 최근 기준일만 쓴다"고 적어 두었습니다(코드가 아니라 용어집이 원본). 용어·메타데이터 검색, SQL, Insight 에이전트가 함께 씁니다.</td><td>wxdi 용어집 (표준 용어 25개 + 동의어 35개 게시)</td><td>mappings, ambiguous, unmapped, glossary_hints</td></tr>
             <tr><td><code>get_catalog</code></td><td>테이블 이름이나 키워드로 컬럼 설명, 키, 개인정보 여부, 외래키를 돌려줍니다.</td><td>wxdi 프로젝트 자산</td><td>tables, columns, keys, pii</td></tr>
             <tr><td><code>make_chart</code></td><td>조회 결과를 line, bar, pie 차트로 만듭니다. 채팅에 바로 보이는 텍스트 렌더링과 ECharts 호환 스펙을 함께 돌려줍니다. 파이는 8개를 넘으면 "기타"로 묶습니다.</td><td>없음 (Python)</td><td>chart_spec, fallback_table, rendered</td></tr>
           </tbody>
@@ -387,7 +387,7 @@
         <h2>예상 질문</h2>
         <p class="muted">시나리오 질문 목록(<code>shared/spec/questions.md</code>)과 같은 번호입니다. 현재 구성에서 다시 확인한 결과이며, 안 되는 질문도 함께 표시합니다. 오른쪽 메모는 확인 방법입니다.</p>
         <ul class="plain">
-          <li><b>골든 평가</b>: SQL 정답이 있는 10문항(S1-01, S1-02, S1-03, S2-01, S2-02, S2-04, S2-05, S3-03, S3-04, S5-02)을 3번씩 생성해, 생성한 SQL과 정답 SQL을 Db2에서 실행한 <b>결과 값</b>을 비교합니다. SQL 문장이 달라도 값이 같으면 정답입니다. 가장 최근 평가는 26/30 (87%)이고, 질문별 골든 SQL과 생성 SQL, 결과는 <a href="#demo/eval">Text-to-SQL 평가</a> 탭에 있습니다. "골든 2/3"은 3회 중 맞은 횟수입니다.</li>
+          <li><b>골든 평가</b>: SQL 정답이 있는 10문항(S1-01, S1-02, S1-03, S2-01, S2-02, S2-04, S2-05, S3-03, S3-04, S5-02)을 3번씩 생성해, 생성한 SQL과 정답 SQL을 Db2에서 실행한 <b>결과 값</b>을 비교합니다. SQL 문장이 달라도 값이 같으면 정답입니다. 가장 최근 평가는 27/30 (90%)이고, 질문별 골든 SQL과 생성 SQL, 결과는 <a href="#demo/eval">Text-to-SQL 평가</a> 탭에 있습니다. "골든 2/3"은 3회 중 맞은 횟수입니다.</li>
           <li><b>골든에 없는 질문</b>: SQL 정답이 없는 되묻기, 대화, 차트 질문과 정답을 정하지 않은 복합 질의는 에이전트에 직접 물어 확인했습니다.</li>
           <li><b>골든 구성이 바뀌었습니다</b>: 이전 점수(10문항, 27/30)는 번호와 문항이 달라 직접 비교할 수 없습니다.</li>
         </ul>
@@ -413,7 +413,7 @@
         <h2>한계와 다음 단계</h2>
         <h3>알려진 한계</h3>
         <ul class="plain">
-          <li><b>생성기의 비결정성</b>: 같은 질문도 요청마다 SQL이 달라질 수 있습니다. 같은 구성으로 세 번 돌린 점수가 24/30, 24/30, 26/30이었습니다. 계속 약한 질문은 30분 넘게 미체결인 주문(S3-04, 이번 1/3)과 VIP 예수금 순위(S2-01, 이번 1/3)이고, 오늘 강남지점 체결(S1-01)과 이번 달 체결대금 상위 5명(S2-05)은 실행마다 맞기도 틀리기도 합니다.</li>
+          <li><b>생성기의 비결정성</b>: 같은 질문도 요청마다 SQL이 달라질 수 있습니다. 같은 구성으로 세 번 돌린 점수가 24/30, 24/30, 26/30이었고, 잔고 용어(예수금, 평가금액, 미수금) 정의를 보강한 뒤에는 27/30이었습니다. 계속 약한 질문은 30분 넘게 미체결인 주문(S3-04, 1/3)이고, VIP 예수금 순위(S2-01, 2/3)는 가끔 최근 기준일 조건 없이 5일치를 합산합니다. 오늘 강남지점 체결(S1-01)과 이번 달 체결대금 상위 5명(S2-05)은 실행마다 맞기도 틀리기도 했습니다. 생성기가 용어 정의를 항상 따르지는 않아서, 같은 질문도 정의 문구에 따라 정상 비율이 달라집니다(VIP 예수금 질문 기준 정의 보강 전 6~8/10, 후 19/20).</li>
           <li><b>복잡한 질의</b>: 이전 값과의 비교(LAG), 이동평균, 상위 고객의 주력 종목처럼 CTE와 윈도 함수가 겹치는 질문(S3-01, S3-02, S3-05, S5-03)은 오류가 나거나 질문의 일부만 답합니다. 골든에는 넣지 않았습니다.</li>
           <li><b>개인정보</b>: 생성기가 고객 목록 질문에 주민번호, 이메일, 전화번호까지 조회할 수 있습니다. 현재는 Supervisor가 답변에서 빼 줄 뿐이며 SQL 자체는 근거 보기에 보입니다.</li>
           <li><b>응답 시간</b>: SQL 생성이 질문당 12~40초 걸립니다.</li>

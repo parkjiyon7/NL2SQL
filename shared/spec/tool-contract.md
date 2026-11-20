@@ -51,7 +51,7 @@ A안과 B안은 이 계약을 바꾸지 않는다. B안에서 바뀌는 것은 �
 | `previous_sql`, `previous_error` | string, 선택 | 실패한 SQL과 오류. 주면 수정본을 만든다 |
 | `glossary_hints` | string[], 선택 | `map_terms`가 돌려준 값 그대로 |
 
-동작: 호출할 때마다 wxdi 카탈로그(프로젝트 자산, 태그 `FIN_DEMO`)에서 FK `join_condition`, 테이블명, 연결 ID를 읽고(5분 캐시), `glossary_hints`와 FK 조인 조건을 질문 뒤에 `Note:`로 붙여 wxdi Text-to-SQL(`generate_queries`)에 보낸다. 용어 정의와 조인 조건의 원본은 wxdi이고, 툴은 전달만 한다. SQL은 실행하지 않는다.
+동작: 호출할 때마다 wxdi 카탈로그(프로젝트 자산, 태그 `FIN_DEMO`)에서 FK `join_condition`, 테이블명, 연결 ID를 읽고(5분 캐시), `glossary_hints`와 FK 조인 조건을 질문 뒤에 `Note:`로 붙여 wxdi Text-to-SQL(`generate_queries`)에 보낸다. 용어 정의와 조인 조건의 원본은 wxdi이고, 툴은 전달만 한다. 날짜별 스냅샷 테이블(`BALANCE_DAILY`)을 "여러 날짜를 더하지 말고 가장 최근 `BASE_DATE`만 쓴다"로 다루는 규칙도 코드가 아니라 용어집 정의(`예수금`, `평가금액`, `미수금`)에 있다. SQL은 실행하지 않는다.
 
 | 출력 | 타입 | 설명 |
 |---|---|---|

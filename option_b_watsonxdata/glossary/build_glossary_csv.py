@@ -23,14 +23,14 @@ TERMS = {
     "매도": "종목을 파는 주문. ORDERS.SIDE 값 SELL. 실현손익은 매도 체결에서만 발생한다",
     "매수": "종목을 사는 주문. ORDERS.SIDE 값 BUY",
     "미수금": "결제 대금이 부족해 생긴 미수 금액. 컬럼 BALANCE_DAILY.RECEIVABLE. 0보다 크면 미수가 있는 계좌. "
-            "날짜별 스냅샷이라 가장 최근 BASE_DATE 기준으로 본다",
+            "BALANCE_DAILY는 날짜(BASE_DATE)별 스냅샷 테이블이라 여러 날짜의 값을 더하면 안 된다. BASE_DATE가 테이블에서 가장 최근 날짜인 행만 사용한다",
     "미체결": "체결이 하나도 없는 주문. ORDERS에는 있고 EXECUTIONS에는 없는 주문(NOT EXISTS). "
             "미체결 시간은 현재 시각(CURRENT TIMESTAMP)과 주문 시각(ORDERS.ORDER_TS)의 차이다",
     "시장가 주문": "가격을 지정하지 않고 시장 가격으로 내는 주문. ORDERS.ORDER_TYPE 값 MARKET. ORDER_PRICE는 NULL",
     "신용융자": "증권사에서 돈을 빌려 매매하는 계좌. 컬럼 ACCOUNT.CREDIT_LOAN_YN이 Y",
     "실현손익": "매도 체결로 확정된 손익. 컬럼 EXECUTIONS.REALIZED_PNL 또는 ST_POSITIONS.REALIZED_PNL",
     "업종": "종목이 속한 산업 분류. 컬럼 PRODUCT.SECTOR. 예 반도체 2차전지 바이오 채권",
-    "예수금": "계좌에 있는 현금 잔고. 컬럼 BALANCE_DAILY.CASH_BALANCE. 날짜별 스냅샷이라 가장 최근 BASE_DATE만 쓰고, "
+    "예수금": "계좌에 있는 현금 잔고. 컬럼 BALANCE_DAILY.CASH_BALANCE. BALANCE_DAILY는 날짜(BASE_DATE)별 스냅샷 테이블이라 여러 날짜의 값을 더하면 안 된다. BASE_DATE가 테이블에서 가장 최근 날짜인 행만 사용한다. "
             "고객별로 볼 때는 그 날짜의 계좌별 값을 고객 단위로 합산한다",
     "종목": "거래 대상 주식과 채권. 테이블 PRODUCT. 종목명은 PRODUCT_NAME",
     "주문": "고객이 낸 매매 요청 한 건. 테이블 ORDERS. 매매 구분은 SIDE 컬럼으로 BUY는 매수 SELL은 매도",
@@ -40,7 +40,7 @@ TERMS = {
     "체결": "주문이 실제로 매매된 내역. 한 주문이 여러 번 나뉘어 체결될 수 있다. 테이블 EXECUTIONS. "
             "체결에는 계좌 정보가 없고 주문(ORDERS)을 거쳐 계좌와 고객에 연결된다",
     "총자산": "고객의 예수금과 평가금액의 합. 컬럼 CUSTOMER.TOTAL_ASSETS. 잔고라고 부르기도 한다",
-    "평가금액": "보유 종목의 평가액. 컬럼 BALANCE_DAILY.EVAL_AMOUNT. 날짜별 스냅샷이라 가장 최근 BASE_DATE 기준으로 본다",
+    "평가금액": "보유 종목의 평가액. 컬럼 BALANCE_DAILY.EVAL_AMOUNT. BALANCE_DAILY는 날짜(BASE_DATE)별 스냅샷 테이블이라 여러 날짜의 값을 더하면 안 된다. BASE_DATE가 테이블에서 가장 최근 날짜인 행만 사용한다",
     "평가손익": "보유 포지션의 아직 확정되지 않은 손익. 컬럼 ST_POSITIONS.UNREALIZED_PNL",
     "한도 소진율": "데스크별 노출금액 합계를 데스크 한도(DESK.LIMIT_AMOUNT)로 나눈 비율. 노출금액은 날짜별 스냅샷이라 "
                 "가장 최근 BASE_DATE 하루치(ST_POSITIONS.BASE_DATE = 최댓값)만 합산한다",
