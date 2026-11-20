@@ -220,6 +220,7 @@
     } else {
       showView("home");
     }
+    if (typeof syncChat === "function") syncChat();
   }
 
   $$(".stab").forEach(function (b) {
@@ -389,13 +390,27 @@
     box.innerHTML = h;
   }
 
+  /* ---------- 에이전트 탭: 에이전트별 서브탭 ---------- */
+  function resetAgentChatUI() {
+    $$(".ag-chat-host").forEach(function (h) { h.hidden = true; });
+    $$(".ag-chat-btn").forEach(function (b) { b.hidden = false; });
+  }
+
+  function showAgent(key) {
+    $$("#agent-tabs button").forEach(function (b) { b.classList.toggle("active", b.dataset.ag === key); });
+    $$(".agent[data-ag]").forEach(function (a) { a.classList.toggle("on", a.dataset.ag === key); });
+    if (chatMode === "inline") { destroyChat(); resetAgentChatUI(); }
+  }
+
   /* ---------- 챗 ---------- */
   var chatInstance = null;
+  var chatMode = null;   // "float"(홈, Supervisor) | "inline"(에이전트 탭) | null
+  var chatSeq = 0;       // 로딩 중에 요청이 바뀌면 이전 요청을 버린다
   var mockOpen = false;
 
   function chatReady() {
     var c = window.CHAT_CONFIG || {};
-    return !!(c.enabled && c.orchestrationID && c.hostURL && c.crn && c.agentId && c.agentEnvironmentId);
+    return !!(c.enabled && c.orchestrationID && c.hostURL && c.crn && c.agents && c.agents.sup && c.agents.sup.id);
   }
 
   function setMock(open) {
@@ -404,33 +419,99 @@
     $("#mock-launcher").hidden = open;
   }
 
-  function initChat() {
-    if (chatReady()) {
-      var c = window.CHAT_CONFIG;
-      window.wxOConfiguration = {
+  function loadLoader(cb) {
+    if (window.wxoLoader && window.wxoLoader.init) { cb(); return; }
+    var c = window.CHAT_CONFIG;
+    var s = document.createElement("script");
+    s.src = c.hostURL.replace(/\/$/, "") + "/wxochat/wxoLoader.js?embed=true";
+    s.addEventListener("load", cb);
+    document.head.appendChild(s);
+  }
+
+  // 플로팅 챗을 연다. 인스턴스에 toggle()은 없고 changeView()로 런처와 본창을 바꾼다.
+  function openFloat() {
+    if (chatInstance && chatInstance.changeView && chatMode === "float") chatInstance.changeView({ launcher: false, mainWindow: true });
+  }
+
+  function destroyChat() {
+    chatSeq++;
+    if (chatInstance && chatInstance.destroy) { try { chatInstance.destroy(); } catch (e) { /* 이미 정리됨 */ } }
+    chatInstance = null;
+    chatMode = null;
+  }
+
+  // host가 없으면 홈 화면용 플로팅 챗, 있으면 그 요소 안에 챗을 그린다. wxO 설정이 전역 하나라서 한 번에 하나만 띄운다.
+  function mountChat(key, host) {
+    destroyChat();
+    var seq = chatSeq;
+    var c = window.CHAT_CONFIG;
+    chatMode = host ? "inline" : "float";
+    loadLoader(function () {
+      if (seq !== chatSeq) return;
+      var chatOptions = {
+        agentId: c.agents[key].id,
+        onLoad: function (instance) {
+          if (seq !== chatSeq) { try { instance.destroy(); } catch (e) { /* 무시 */ } return; }
+          chatInstance = instance;
+        }
+      };
+      if (c.agentEnvironmentId) chatOptions.agentEnvironmentId = c.agentEnvironmentId;
+      var config = {
         orchestrationID: c.orchestrationID,
         hostURL: c.hostURL,
         rootElementID: "root",
         deploymentPlatform: c.deploymentPlatform || "ibmcloud",
         crn: c.crn,
-        showLauncher: true,
-        layout: { form: "float", showOrchestrateHeader: true, showAgentSwitcher: false },
-        chatOptions: {
-          agentId: c.agentId,
-          agentEnvironmentId: c.agentEnvironmentId,
-          onLoad: function (instance) { chatInstance = instance; }
-        }
+        showLauncher: !host,
+        layout: host ? { form: "custom", customElement: host, showOrchestrateHeader: false }
+                     : { form: "float", showOrchestrateHeader: true, showAgentSwitcher: false },
+        chatOptions: chatOptions
       };
-      var s = document.createElement("script");
-      s.src = c.hostURL.replace(/\/$/, "") + "/wxochat/wxoLoader.js?embed=true";
-      s.addEventListener("load", function () {
-        if (window.wxoLoader && window.wxoLoader.init) window.wxoLoader.init();
-      });
-      document.head.appendChild(s);
+      window.wxoLoader.init(config);   // 전역 window.wxOConfiguration은 폐기 예정이고 챗 하나만 담을 수 있어 쓰지 않는다
+    });
+  }
+
+  // 화면에 맞는 챗을 맞춘다. 에이전트 탭에서는 사용자가 "대화 시작"을 누른 챗만, 그 밖에서는 Supervisor 플로팅 챗.
+  function syncChat() {
+    if (!chatReady()) return;
+    var view = $(".view.active");
+    var sec = $(".sec.active");
+    var inAgents = view && view.id === "view-demo" && sec && sec.id === "sec-agents";
+    if (inAgents) {
+      if (chatMode === "float") destroyChat();
+      return;
+    }
+    if (chatMode !== "float") {
+      resetAgentChatUI();
+      mountChat("sup", null);
+    }
+  }
+
+  function initChat() {
+    $$("#agent-tabs button").forEach(function (b) {
+      b.addEventListener("click", function () { showAgent(b.dataset.ag); });
+    });
+    showAgent("sup");
+
+    if (chatReady()) {
       $("#open-chat").addEventListener("click", function () {
-        if (chatInstance && chatInstance.toggle) chatInstance.toggle();
+        openFloat();
+      });
+      $$(".ag-chat-btn").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var box = btn.closest(".agent-chat");
+          var host = $(".ag-chat-host", box);
+          resetAgentChatUI();
+          host.hidden = false;
+          btn.hidden = true;
+          mountChat(box.dataset.ag, host);
+        });
       });
     } else {
+      $$(".agent-chat").forEach(function (box) {
+        box.hidden = true;
+        if (box.previousElementSibling) box.previousElementSibling.hidden = true;
+      });
       setMock(false);
       $("#mock-launcher").addEventListener("click", function () { setMock(true); });
       $("#mc-close").addEventListener("click", function () { setMock(false); });
@@ -442,9 +523,9 @@
       if (!b) return;
       var text = b.textContent.trim();
       if (chatInstance && chatInstance.send) {
-        if (chatInstance.toggle) chatInstance.toggle();
+        openFloat();
         chatInstance.send(text);
-      } else {
+      } else if (!chatReady()) {
         setMock(true);
         var p = $("#mc-pending");
         p.hidden = false;

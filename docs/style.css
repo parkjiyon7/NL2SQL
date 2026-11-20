@@ -266,3 +266,12 @@ pre code{background:none;padding:0;color:inherit}
 .eval-item .run{border-left:4px solid var(--line);padding-left:12px;margin:12px 0}
 .eval-item .run.pass{border-left-color:#16a34a}
 .eval-item .run.fail{border-left-color:#dc2626}
+
+/* 에이전트 탭: 에이전트별 서브탭과 챗 영역 */
+.agent[data-ag]{display:none}
+.agent[data-ag].on{display:block}
+.btn-dark{background:var(--navy);color:#fff;border:0;padding:10px 20px;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer}
+.btn-dark:hover{background:#0b2f66}
+.agent-chat p{margin:0 0 10px;font-size:13px}
+.ag-chat-host{height:580px;margin-top:10px;border:1px solid var(--line);border-radius:10px;overflow:hidden;position:relative}
+.ag-chat-host[hidden]{display:none}

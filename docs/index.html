@@ -277,8 +277,14 @@
           <span><i class="lg-db"></i>Db2</span>
           <span><i class="lg-user"></i>사용자 입출력</span>
         </div>
+        <div class="tabs-inline" id="agent-tabs">
+          <button data-ag="sup" class="active">Supervisor</button>
+          <button data-ag="ctx">용어·메타데이터 검색</button>
+          <button data-ag="sql">SQL</button>
+          <button data-ag="ins">Insight</button>
+        </div>
 
-        <article class="agent">
+        <article class="agent" data-ag="sup">
           <header><h3>Supervisor</h3><code>findemo_supervisor_agent</code></header>
           <ul class="agent-points">
             <li>사용자와 대화하는 창구</li>
@@ -294,9 +300,15 @@
             <li><b>수익 좋은 고객 보여줘</b><span>기준(실현손익, 수수료 차감 후)을 되묻고 하위 에이전트는 부르지 않음</span></li>
             <li><b>VIP 고객 수를 지점별로 알려줘 → 그럼 강남지점만 보여줘</b><span>후속 질문에 직전 조건(VIP)을 이어 붙임</span></li>
           </ol>
+          <h4>이 에이전트와 직접 대화</h4>
+          <div class="agent-chat" data-ag="sup">
+            <p class="muted">위 샘플 질문을 입력해 보세요. 이 에이전트를 직접 호출합니다.</p>
+            <button class="btn-dark ag-chat-btn">대화 시작</button>
+            <div class="ag-chat-host" hidden></div>
+          </div>
         </article>
 
-        <article class="agent">
+        <article class="agent" data-ag="ctx">
           <header><h3>용어·메타데이터 검색</h3><code>findemo_context_agent</code></header>
           <ul class="agent-points">
             <li>용어와 구조를 직접 묻는 질문에 대답</li>
@@ -311,9 +323,15 @@
             <li><b>VIP는 어떤 기준이야?</b><span>총자산 3억원 이상, CUSTOMER.GRADE 값 VIP</span></li>
             <li><b>EXECUTIONS 테이블에는 어떤 컬럼이 있고 다른 테이블과 어떻게 연결돼?</b><span>컬럼 설명과 ORDER_ID 외래키(ORDERS 참조)</span></li>
           </ol>
+          <h4>이 에이전트와 직접 대화</h4>
+          <div class="agent-chat" data-ag="ctx">
+            <p class="muted">위 샘플 질문을 입력해 보세요. 이 에이전트를 직접 호출합니다.</p>
+            <button class="btn-dark ag-chat-btn">대화 시작</button>
+            <div class="ag-chat-host" hidden></div>
+          </div>
         </article>
 
-        <article class="agent">
+        <article class="agent" data-ag="sql">
           <header><h3>SQL</h3><code>findemo_sql_agent</code></header>
           <ul class="agent-points">
             <li>값 조회 질문을 SQL로 바꿔 Db2에서 실행하고 표로 답변</li>
@@ -329,9 +347,15 @@
             <li><b>이번 달 약정 상위 고객 5명</b><span>S2-02, 골든 3/3. 약정 → 거래대금 보정, CUSTOMER → ACCOUNT → ORDERS → EXECUTIONS 조인</span></li>
             <li><b>한도 대비 노출금액 비율이 80%를 넘는 데스크가 있어?</b><span>S5-02, 골든 3/3. 가장 최근 기준일의 노출금액만 합산해 주식2데스크 86%</span></li>
           </ol>
+          <h4>이 에이전트와 직접 대화</h4>
+          <div class="agent-chat" data-ag="sql">
+            <p class="muted">위 샘플 질문을 입력해 보세요. 이 에이전트를 직접 호출합니다.</p>
+            <button class="btn-dark ag-chat-btn">대화 시작</button>
+            <div class="ag-chat-host" hidden></div>
+          </div>
         </article>
 
-        <article class="agent">
+        <article class="agent" data-ag="ins">
           <header><h3>Insight</h3><code>findemo_insight_agent</code></header>
           <ul class="agent-points">
             <li>차트 요청이면 용어 확인, SQL 생성, 실행, 차트 작성까지 처리</li>
@@ -346,6 +370,12 @@
             <li><b>업종별 거래대금 비중을 파이 차트로 보여줘</b><span>반도체 27%, 2차전지 14%, 채권 13% 순</span></li>
             <li><b>고객 등급별 평균 총자산을 막대 차트로 보여줘</b><span>VIP, GOLD, GENERAL 3개 막대 비교</span></li>
           </ol>
+          <h4>이 에이전트와 직접 대화</h4>
+          <div class="agent-chat" data-ag="ins">
+            <p class="muted">위 샘플 질문을 입력해 보세요. 이 에이전트를 직접 호출합니다.</p>
+            <button class="btn-dark ag-chat-btn">대화 시작</button>
+            <div class="ag-chat-host" hidden></div>
+          </div>
         </article>
       </section>
 
