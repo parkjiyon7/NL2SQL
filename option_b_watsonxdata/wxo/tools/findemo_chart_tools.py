@@ -1,11 +1,13 @@
 """FIN_DEMO 차트 툴 (B안). run_sql 결과를 차트 명세(ECharts option)로 바꾼다.
 
 계약: shared/spec/tool-contract.md (make_chart). 실패해도 예외를 던지지 않고 error 필드를 채운다.
-성공하면 wxO 위젯(user_defined, 종류 chart)과 답변 본문(요약, 표, 용어 매핑, SQL)을 돌려주고,
-실제 차트는 임베디드 챗 페이지(docs/app.js)가 그린다. `build_chart`의 `rendered`(막대 █, 스파크라인)는
-다른 화면용 텍스트 대체이며 wxO 응답에는 쓰지 않는다.
+성공하면 차트 이미지(QuickChart https 주소, 마크다운 이미지)를 답변 맨 위에 넣고 요약, 표, 용어 매핑, SQL까지 조립해 돌려준다.
+위젯(user_defined)은 툴 응답을 그대로 최종 답변으로 쓰게 하려고 함께 싣는다. `build_chart`의 `rendered`(막대 █, 스파크라인)는
+이미지를 못 쓰는 화면용 텍스트 대체이며 wxO 응답에는 쓰지 않는다.
 """
+import json
 import time
+from urllib.parse import quote
 from typing import Any, Dict, List, Optional
 
 from ibm_watsonx_orchestrate.agent_builder.tools import ToolPermission, tool
@@ -94,7 +96,28 @@ def build_chart(chart_type: str, columns: List[str], rows: List[List[Any]], x: s
             share = f" ({v / total:.0%})" if chart_type == "pie" else ""
             body.append([c, _fmt(v) + share, bar])
         rendered = head + _table([x, y[0], "차트"], body)
-    return {"chart_spec": option, "fallback_table": fallback, "rendered": rendered}
+    return {"chart_spec": option, "fallback_table": fallback, "rendered": rendered,
+            "image_url": _chart_url(chart_type, cats, series_vals, y, title)}
+
+
+def _chart_url(chart_type: str, cats: List[str], series_vals: List[List[float]], names: List[str],
+               title: Optional[str]) -> str:
+    """차트 이미지 https 주소(QuickChart). wxO 기본 챗은 https 마크다운 이미지만 그리므로 여기에 맞춘다."""
+    top = max(abs(v) for s in series_vals for v in s)
+    div, unit = (1e8, "억") if top >= 1e8 else (1e4, "만") if top >= 1e5 else (1, "")
+    sets = [{"label": n, "data": [round(v / div, 2) for v in vals]} for n, vals in zip(names, series_vals)]
+    if chart_type == "pie":
+        sets = [{"data": sets[0]["data"]}]
+    else:
+        for d in sets:
+            d["fill"] = False
+    opts: Dict[str, Any] = {"plugins": {"title": {"display": bool(title), "text": title or ""},
+                                        "legend": {"display": chart_type == "pie" or len(sets) > 1}}}
+    if unit and chart_type != "pie":
+        opts["scales"] = {"y": {"title": {"display": True, "text": f"({unit})"}}}
+    cfg = {"type": chart_type, "data": {"labels": cats, "datasets": sets}, "options": opts}
+    return ("https://quickchart.io/chart?v=4&w=640&h=340&bkg=white&c="
+            + quote(json.dumps(cfg, ensure_ascii=False, separators=(",", ":"))))
 
 
 def _answer_text(fallback_table: str, summary: Optional[str], term_mapping: Optional[str],
@@ -114,7 +137,7 @@ def _answer_text(fallback_table: str, summary: Optional[str], term_mapping: Opti
 def make_chart(chart_type: str, columns: List[str], rows: List[List[Any]], x: str, y: List[str],
                title: Optional[str] = None, summary: Optional[str] = None,
                term_mapping: Optional[str] = None, sql: Optional[str] = None) -> dict:
-    """Turn a run_sql result into a chart and show it to the user. On success the chart is drawn in the embedded chat as a real chart (ECharts) and the reply text is built by this tool from summary, a data table, term_mapping and sql, then sent to the user as it is. Nothing can be added after this tool, so pass the full answer text through the arguments. Use line for a time series, bar to compare items, pie for shares of a whole. Pass columns and rows exactly as run_sql returned them.
+    """Turn a run_sql result into a chart and show it to the user. On success the reply starts with the chart as an https image and the reply text is built by this tool from summary, a data table, term_mapping and sql, then sent to the user as it is. Nothing can be added after this tool, so pass the full answer text through the arguments. Use line for a time series, bar to compare items, pie for shares of a whole. Pass columns and rows exactly as run_sql returned them.
 
     Args:
         chart_type (str): One of line, bar, pie.
@@ -131,7 +154,7 @@ def make_chart(chart_type: str, columns: List[str], rows: List[List[Any]], x: st
     """
     t0 = time.time()
     out: Dict[str, Any] = {"chart_spec": None, "fallback_table": None, "rendered": None,
-                           "engine": "python", "elapsed_ms": 0, "error": None}
+                           "image_url": None, "engine": "python", "elapsed_ms": 0, "error": None}
     try:
         out.update(build_chart(chart_type, columns, rows, x, y, title))
     except Exception as exc:  # noqa: BLE001
@@ -141,6 +164,7 @@ def make_chart(chart_type: str, columns: List[str], rows: List[List[Any]], x: st
         out["elapsed_ms"] = _ms(t0)
         return out
     text = _answer_text(out["fallback_table"], summary, term_mapping, sql)
+    text = f"![{title or '차트'}]({out['image_url']})\n\n" + text  # 기본 챗에서도 보이는 https 이미지
     return {
         "content": [{"type": "text", "annotations": {"audience": ["user", "assistant"]}, "text": text}],
         "_meta": {"com.ibm.orchestrate/widget": {

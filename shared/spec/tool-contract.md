@@ -133,7 +133,7 @@ A안과 B안은 이 계약을 바꾸지 않는다. B안에서 바뀌는 것은 �
 | `fallback_table` | 차트를 못 보여줄 때 대신 쓰는 마크다운 표 |
 | `rendered` | 렌더링 결과 형태. A-2에서 wxO 표시 방식을 확인한 뒤 확정 (`image_base64`, `markdown` 등) |
 
-B안(wxO) 구현 메모: 성공하면 위 필드 대신 wxO 응답 규격으로 돌려준다. `content`에 답변 본문(요약, 표, 용어 매핑, SQL)을, `_meta["com.ibm.orchestrate/widget"]`에 `{response_type: "user_defined", user_defined: {user_defined_type: "chart", title, chart_spec}}`를 담는다. 위젯이 있으면 에이전트가 응답을 다시 쓰지 않고 그대로 사용자에게 전달된다. 실제 차트는 임베디드 챗 페이지가 `userDefinedResponse` 이벤트에서 그린다. 실패하면 위젯 없이 `fallback_table`과 `error`를 돌려준다.
+B안(wxO) 구현 메모: 성공하면 위 필드 대신 wxO 응답 규격으로 돌려준다. `content`에 답변 본문(요약, 표, 용어 매핑, SQL)을, `_meta["com.ibm.orchestrate/widget"]`에 `{response_type: "user_defined", user_defined: {user_defined_type: "chart", title, chart_spec}}`를 담는다. 위젯이 있으면 에이전트가 응답을 다시 쓰지 않고 그대로 사용자에게 전달된다. 차트는 `content` 맨 위의 https 마크다운 이미지(QuickChart)로 나와서 기본 챗과 임베디드 챗 모두에서 보인다. 실패하면 위젯 없이 `fallback_table`과 `error`를 돌려준다.
 
 ## check_input (2단계)
 

@@ -359,7 +359,7 @@
           <header><h3>Insight</h3><code>findemo_insight_agent</code></header>
           <ul class="agent-points">
             <li>차트 요청이면 용어 확인, SQL 생성, 실행, 차트 작성까지 처리</li>
-            <li>차트는 채팅 안에 실제 차트(ECharts)로 그려지고, 요약, 데이터 표, 용어 매핑, SQL은 make_chart가 한 번에 구성해 답변으로 돌려줌</li>
+            <li>차트는 이미지(https)로 답변 맨 위에 나오고, 요약, 데이터 표, 용어 매핑, SQL은 make_chart가 한 번에 구성해 답변으로 돌려줌 (wxO 기본 챗과 이 페이지의 챗 모두)</li>
             <li>"왜 늘었어" 질문은 업종이나 종목으로 한 번 더 쪼개 보기</li>
             <li>확인된 숫자만 근거로 설명</li>
           </ul>
@@ -390,7 +390,7 @@
             <tr><td><code>run_sql</code></td><td>SELECT 또는 WITH 한 문장만 Db2에서 실행합니다. 최대 200행. 쓰기와 다중 문장은 막습니다.</td><td>Db2 FIN_DEMO (SSL)</td><td>columns, rows, row_count, executed_sql, error</td></tr>
             <tr><td><code>map_terms</code></td><td>질문 속 업무 용어를 용어집 표준 용어와 컬럼에 연결합니다. 동의어(약정, 잔고 등)도 wxdi 용어집에서 동의어로 연결된 용어를 읽어 같은 표준 용어로 묶고, 용어 정의를 <code>glossary_hints</code>로 돌려줍니다. 날짜별 스냅샷 테이블(BALANCE_DAILY)의 값은 정의에 "여러 날짜를 더하지 말고 가장 최근 기준일만 쓴다"고 적어 두었습니다(코드가 아니라 용어집이 원본). 용어·메타데이터 검색, SQL, Insight 에이전트가 함께 씁니다.</td><td>wxdi 용어집 (표준 용어 25개 + 동의어 35개 게시)</td><td>mappings, ambiguous, unmapped, glossary_hints</td></tr>
             <tr><td><code>get_catalog</code></td><td>테이블 이름이나 키워드로 컬럼 설명, 키, 개인정보 여부, 외래키를 돌려줍니다.</td><td>wxdi 프로젝트 자산</td><td>tables, columns, keys, pii</td></tr>
-            <tr><td><code>make_chart</code></td><td>조회 결과를 line, bar, pie 차트로 만듭니다. 성공하면 ECharts 명세를 wxO 위젯(user_defined, 종류 chart)에 담고, 답변 본문(요약, 데이터 표, 용어 매핑, SQL)도 함께 조립해 돌려줍니다. 위젯이 있으면 툴 응답이 그대로 사용자 답변이 되어서 Insight 에이전트가 요약, 용어 매핑, SQL을 인자로 넘깁니다. 실제 차트는 이 페이지의 임베디드 챗이 그립니다. 실패하면 표만 돌려줍니다. 파이는 8개를 넘으면 "기타"로 묶습니다.</td><td>없음 (Python)</td><td>성공: 답변 본문 + 차트 위젯. 실패: fallback_table, error</td></tr>
+            <tr><td><code>make_chart</code></td><td>조회 결과를 line, bar, pie 차트로 만듭니다. 성공하면 차트 이미지 주소(QuickChart, https)를 마크다운 이미지로 답변 맨 위에 넣고, 요약, 데이터 표, 용어 매핑, SQL까지 조립해 돌려줍니다. 위젯(user_defined)을 함께 실어서 툴 응답이 그대로 사용자 답변이 되고, Insight 에이전트는 요약, 용어 매핑, SQL을 인자로 넘깁니다. 실패하면 표만 돌려줍니다. 파이는 8개를 넘으면 "기타"로 묶습니다.</td><td>없음 (Python)</td><td>성공: 차트 이미지가 든 답변 본문. 실패: fallback_table, error</td></tr>
           </tbody>
         </table>
         <h3>SQL 품질을 지키는 장치</h3>
@@ -449,7 +449,7 @@
           <li><b>개인정보</b>: 생성기가 고객 목록 질문에 주민번호, 이메일, 전화번호까지 조회할 수 있습니다. 현재는 Supervisor가 답변에서 빼 줄 뿐이며 SQL 자체는 근거 보기에 보입니다.</li>
           <li><b>응답 시간</b>: SQL 생성이 질문당 12~40초 걸립니다.</li>
           <li><b>날짜 기준</b>: 데이터가 적재일을 기준으로 만들어져 시연 전 재적재가 필요합니다.</li>
-          <li><b>차트 표시 범위</b>: 차트는 이 페이지의 임베디드 챗에서 Insight 에이전트와 직접 대화할 때(에이전트 탭) 그려집니다. 홈의 Supervisor 챗은 Insight 응답을 다시 써서 답하기 때문에 차트 없이 표와 문장만 나옵니다. wxO 기본 화면에서도 위젯은 보이지 않고 표만 보입니다. 차트 라이브러리(ECharts)는 CDN에서 불러옵니다.</li>
+          <li><b>차트 표시 범위</b>: 차트는 Insight 에이전트와 직접 대화할 때 이미지로 나옵니다. 홈의 Supervisor 챗은 Insight 응답을 다시 써서 답하기 때문에 차트 없이 표와 문장만 나옵니다. 이미지는 외부 서비스(QuickChart)가 그리므로 차트에 쓰이는 값(업종, 금액 등)이 그 주소에 담겨 외부로 나갑니다. 데모의 합성 데이터라서 괜찮지만 실데이터에는 자체 호스팅이 필요합니다.</li>
           <li><b>임베디드 챗 보안</b>: 정적 사이트에는 JWT 서명 서버를 둘 수 없어서 wxO 임베디드 챗 보안을 꺼 둔 상태입니다. 이 주소를 아는 사람은 누구나 에이전트를 호출할 수 있으므로 시연이 끝나면 다시 켜야 합니다.</li>
         </ul>
         <h3>다음 단계</h3>

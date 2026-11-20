@@ -428,44 +428,6 @@
     document.head.appendChild(s);
   }
 
-  // make_chart 툴이 돌려주는 user_defined 위젯(chart_spec은 ECharts option)을 챗 안에 그린다.
-  var echartsLoading = null;
-  function loadECharts() {
-    if (window.echarts) return Promise.resolve(window.echarts);
-    if (!echartsLoading) {
-      echartsLoading = new Promise(function (resolve, reject) {
-        var s = document.createElement("script");
-        s.src = "https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js";
-        s.onload = function () { resolve(window.echarts); };
-        s.onerror = function () { echartsLoading = null; reject(new Error("echarts load failed")); };
-        document.head.appendChild(s);
-      });
-    }
-    return echartsLoading;
-  }
-
-  function renderChartWidget(event) {
-    var w = event && event.message && event.message._meta && event.message._meta["com.ibm.orchestrate/widget"];
-    var data = (w && w.user_defined) || (event && event.contentItem && event.contentItem.user_defined);
-    if (!data || data.user_defined_type !== "chart" || !data.chart_spec) return;
-    var box = document.createElement("div");
-    box.style.cssText = "width:100%;height:320px;";
-    event.hostElement.appendChild(box);
-    loadECharts().then(function (echarts) {
-      var opt = JSON.parse(JSON.stringify(data.chart_spec));   // 챗이 넘긴 객체는 읽기 전용이라 복사해서 쓴다
-      opt.title = Object.assign({ left: "center" }, opt.title);
-      if (opt.legend && (opt.legend.data || []).length < 2) delete opt.legend;
-      opt.grid = { left: 16, right: 24, top: 56, bottom: 24, containLabel: true };
-      if (opt.yAxis && opt.yAxis.type === "value") {
-        opt.yAxis.axisLabel = { formatter: function (v) {
-          var a = Math.abs(v);
-          return a >= 1e8 ? v / 1e8 + "억" : a >= 1e4 ? v / 1e4 + "만" : String(v);
-        } };
-      }
-      echarts.init(box).setOption(opt);
-    }).catch(function () { box.textContent = "차트를 불러오지 못했습니다. 아래 표를 확인하세요."; });
-  }
-
   // 플로팅 챗을 연다. 인스턴스에 toggle()은 없고 changeView()로 런처와 본창을 바꾼다.
   function openFloat() {
     if (chatInstance && chatInstance.changeView && chatMode === "float") chatInstance.changeView({ launcher: false, mainWindow: true });
@@ -491,7 +453,6 @@
         onLoad: function (instance) {
           if (seq !== chatSeq) { try { instance.destroy(); } catch (e) { /* 무시 */ } return; }
           chatInstance = instance;
-          instance.on("userDefinedResponse", renderChartWidget);
         }
       };
       if (c.agentEnvironmentId) chatOptions.agentEnvironmentId = c.agentEnvironmentId;
