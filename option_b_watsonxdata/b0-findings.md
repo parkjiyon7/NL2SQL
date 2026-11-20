@@ -233,3 +233,10 @@ wxO 에이전트 end-to-end: "삼성전자 어제 체결 중 매수만"(12건)�
 - `docs/` 갱신: 통계 카드(80%, 24/30), 용어집 수(25+35), 툴 설명의 날짜 규칙, 에이전트 샘플 질문(현재 결과 기준으로 교체, 종목 순위는 삼성전자, SK하이닉스, 삼성SDI), 예상 질문 표(`questions.md` 번호 전체와 상태), 한계, `samples.js` 재생성(`site/export_samples.py`).
 - 세 번째 골든 평가(같은 구성, `eval_golden.py --export docs/eval_results.js`): **26/30 (87%)**. S1-01 3/3, S2-05 3/3으로 올랐고 S2-01은 1/3으로 내렸다(최근 기준일 조건 없이 5일치를 합산하거나 `TOTAL_ASSETS` 조건으로 대체하는 SQL), S3-04는 1/3(20~30행으로 "30분 안에 체결 없음"으로 해석). 같은 구성의 세 번이 24, 24, 26점이라 실행마다 1~2점 흔들린다고 보면 된다. 질문별 골든 SQL, 생성 SQL, 실행 결과는 HTML "Text-to-SQL 평가" 탭에 들어 있다(고객 이름은 가림).
 - `eval_golden.py`에 `--export <파일>` 옵션을 추가했다. 같은 파일을 다시 만들면 HTML 탭이 갱신된다(점수 이력 "24 · 24 · 26"은 `docs/app.js`의 `initEval`에 적혀 있어 직접 고쳐야 한다).
+
+## Text-to-SQL이 쓰는 모델과 few-shot 상태 (2026-11-20)
+
+- `generate_queries` 응답의 `resource_usage.model_usages`에 모델이 나온다(3번 호출해 같은 값 확인). **LLM(foundation): `meta-llama/llama-3-3-70b-instruct`**, 임베딩: `granite-embedding-278m-multilingual`. `gpt-oss-120b`는 wxO 에이전트 4종의 모델이고 SQL은 쓰지 않는다. 모델 선택 파라미터는 요청에 없다.
+- 프롬프트 원문은 요청 본문 `parameters`가 아니라 **본문 최상위 `include_raw_model_input_output: true`**로 받는다(쿼리 파라미터나 `parameters` 안에 넣으면 응답에 안 온다). 응답의 `raw_model_input_output.model_input`이 프롬프트다.
+- few-shot 확인: 업로드한 CSV(`text_to_sql_fewshots_0.csv`)의 질문과 같은 "SK하이닉스 어제 체결 중 매도만 보여줘"를 보냈는데 프롬프트에 샘플 SQL이 없다(`e.EXEC_ID, e.EXEC_TS` 부재). 프롬프트의 "Examples" 블록은 IBM 고정 서식 예시뿐이다.
+- 가능한 원인: 프로젝트에 있는 job `Onboard for generative AI_Nov 16, 2026 3:02:51 PM`의 유일한 실행이 2026-11-16 06:02Z이고, CSV 자산은 같은 날 16:21Z에 만들어졌다. 샘플이 온보딩 시점에 색인된다면 그 뒤에 올린 파일은 반영되지 않는다. IBM 문서(Providing additional context for converting natural language queries to SQL)에는 파일명 규칙(`text_to_sql_fewshots_<n>.csv`, 헤더 없음, `natural_language_query,evidence,sql`)과 "모든 샘플이 매 변환마다 검색되어 관련 샘플이 few-shot으로 LLM에 제공된다"만 있고 재온보딩 필요 여부는 없다. 이 원인은 아직 검증하지 않았다(job 재실행이 필요하고 wxdi 상태가 바뀌므로 승인 후 시험).
