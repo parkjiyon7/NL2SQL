@@ -130,6 +130,7 @@ def find_terms(cfg: Dict[str, str], question: Optional[str], terms: Optional[Lis
         if not found and not question:
             unmapped.append(text)
     mappings, ambiguous = [], []
+    hints: List[str] = []
     for alias, ts in hits.items():
         uniq = {t["term"]: t for t in ts}
         if len(uniq) > 1:
@@ -139,7 +140,10 @@ def find_terms(cfg: Dict[str, str], question: Optional[str], terms: Optional[Lis
         mappings.append({"matched_text": alias, "term": t["term"], "definition": t["definition"],
                          "maps_to": t["maps_to"], "expression": None,
                          "evidence": {"source": "glossary", "ref": t["ref"]}})
-    return {"mappings": mappings, "unmapped": unmapped, "ambiguous": ambiguous}
+        hint = f"{t['term']}: {t['definition']}"
+        if hint not in hints:
+            hints.append(hint)
+    return {"mappings": mappings, "unmapped": unmapped, "ambiguous": ambiguous, "glossary_hints": hints}
 
 
 # ---------------------------------------------------------------- 카탈로그
@@ -211,10 +215,10 @@ def map_terms(question: Optional[str] = None, terms: Optional[List[str]] = None)
         question (Optional[str]): The user question in natural language. Terms are searched inside this text.
         terms (Optional[List[str]]): Specific words to look up instead of or in addition to the question.
     Returns:
-        dict: mappings, unmapped, ambiguous, engine, elapsed_ms, error. error is null on success.
+        dict: mappings, unmapped, ambiguous, glossary_hints, engine, elapsed_ms, error. glossary_hints is a list of "term: definition" strings to pass unchanged to generate_sql. error is null on success.
     """
     t0 = time.time()
-    out: Dict[str, Any] = {"mappings": [], "unmapped": [], "ambiguous": [], "engine": "ikc", "elapsed_ms": 0, "error": None}
+    out: Dict[str, Any] = {"mappings": [], "unmapped": [], "ambiguous": [], "glossary_hints": [], "engine": "ikc", "elapsed_ms": 0, "error": None}
     try:
         if not question and not terms:
             out["error"] = {"type": "input", "message": "question or terms is required"}

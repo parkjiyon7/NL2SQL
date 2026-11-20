@@ -196,3 +196,73 @@ pre code{background:none;padding:0;color:inherit}
   .fa-top{min-width:0;width:100%;padding:16px}
   .fa-row{margin-top:14px}
 }
+
+/* ---- 에이전트 구성도: 연결선(열과 같은 그리드), 역할 문구 ---- */
+.fa-role{display:block;font-size:12px;color:#334155;margin-top:4px;font-weight:600}
+.fa-top .fa-role{color:#fff;margin:6px 0 2px}
+.fa-top-ul{list-style:none;margin:4px 0 8px;padding:0;font-size:12px;color:rgba(255,255,255,.88);line-height:1.7}
+.fa-top-ul li::before{content:"· ";}
+.fa-ul{margin:4px 0 0;padding-left:16px;font-size:11.5px;color:var(--muted);line-height:1.5}
+.fa-ul li{margin:1px 0}
+.fa-down,.fa-ret{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;--bus:#aab4cc}
+.fa-down .c,.fa-ret .c{position:relative;height:64px}
+.fa-ret .c{height:56px}
+.fa-down .g,.fa-ret .g{--c:#2e7d32}
+.fa-down .o,.fa-ret .o{--c:#e65100}
+.fa-down .p,.fa-ret .p{--c:#6a1b9a}
+.fa-down .c::after,.fa-ret .c::after{content:"";position:absolute;height:0;border-top:2px solid var(--bus);left:-8px;right:-8px}
+.fa-down .c::after{top:24px}
+.fa-ret .c::after{top:32px}
+.fa-down .c:first-child::after,.fa-ret .c:first-child::after{left:50%}
+.fa-down .c:last-child::after,.fa-ret .c:last-child::after{right:50%}
+.fa-down .stem{position:absolute;left:calc(50% - 1px);top:24px;bottom:0;width:0;border-left:2px solid var(--c)}
+.fa-down .mid .stem{top:0}
+.fa-ret .stem{position:absolute;left:calc(50% - 1px);top:0;height:32px;width:0;border-left:2px solid var(--c)}
+.fa-ret .mid .stem{height:100%}
+.fa-down .ah,.fa-ret .ah{position:absolute;left:calc(50% - 6px);bottom:-1px;width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:9px solid var(--c);z-index:1}
+.fa-down .lbl,.fa-ret .lbl{position:absolute;left:calc(50% + 10px);font-size:12px;font-weight:700;color:var(--c);white-space:nowrap}
+.fa-down .lbl{top:34px}
+.fa-ret .lbl{top:6px}
+.fa-down .mid .lbl{top:34px}
+.fa-ret .mid .lbl{top:6px}
+.fa-ret + .fa-center{margin-top:0}
+@media (max-width:860px){.fa-down,.fa-ret{display:none}}
+
+/* ---- 범례, 칩 ---- */
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin:6px 0 10px;font-size:12.5px;color:#334155}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:16px;height:16px;border-radius:4px;border:2px solid;display:inline-block}
+.lg-wxo{background:#dbeafe;border-color:#1b5fc1}
+.lg-wxdi{background:#dcfce7;border-color:#0f7b3f}
+.lg-db{background:#ffedd5;border-color:#c2410c}
+.lg-user{background:#f1f5f9;border-color:#64748b}
+.chip{display:inline-block;padding:1px 8px;border-radius:5px;font-size:11.5px;font-weight:600;border:1px solid;margin:1px 2px 1px 0;white-space:nowrap}
+.chip.wxo{background:#dbeafe;border-color:#1b5fc1;color:#0a2a5e}
+.chip.wxdi{background:#dcfce7;border-color:#0f7b3f;color:#064e2b}
+.chip.db{background:#ffedd5;border-color:#c2410c;color:#7c2d12}
+.tag.bad{background:#fee2e2;color:#b91c1c}
+
+/* ---- 에이전트 탭 ---- */
+.agent{border:1px solid var(--line);border-radius:12px;background:#fff;padding:18px 20px;margin:0 0 18px}
+.agent header{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.agent header h3{margin:0;font-size:18px;color:var(--navy)}
+.agent-points{margin:6px 0 10px;padding-left:20px;font-size:14px}
+.agent-points li{margin:3px 0}
+.agent dl{margin:0 0 14px;display:grid;grid-template-columns:90px 1fr;gap:4px 10px;font-size:13px}
+.agent dt{color:var(--muted)}
+.agent dd{margin:0}
+.agent h4{margin:16px 0 6px;font-size:14px;color:#0f172a}
+.agent .diagram{margin-top:4px}
+.samples{margin:0;padding-left:22px;font-size:14px}
+.samples li{margin:6px 0}
+.samples li span{display:block;font-size:12.5px;color:var(--muted)}
+
+/* ---- Text-to-SQL 평가 탭 ---- */
+.lnk{color:var(--blue);text-decoration:underline}
+.eval-item{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:8px 0;background:#fff}
+.eval-item summary{cursor:pointer;font-size:14px}
+.eval-item h4{margin:14px 0 4px;font-size:13.5px;color:#0f172a}
+.eval-item pre{white-space:pre-wrap;word-break:break-word}
+.eval-item .run{border-left:4px solid var(--line);padding-left:12px;margin:12px 0}
+.eval-item .run.pass{border-left-color:#16a34a}
+.eval-item .run.fail{border-left-color:#dc2626}

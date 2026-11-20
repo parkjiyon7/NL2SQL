@@ -43,6 +43,21 @@ A안과 B안은 이 계약을 바꾸지 않는다. B안에서 바뀌는 것은 �
 
 `error.type` 값: `syntax`, `unknown_object`, `execution`, `timeout`, `blocked`(2단계)
 
+## generate_sql
+
+| 입력 | 타입 | 설명 |
+|---|---|---|
+| `question` | string | 사용자 질문 (동의어는 표준 용어로 바꾼 것) |
+| `previous_sql`, `previous_error` | string, 선택 | 실패한 SQL과 오류. 주면 수정본을 만든다 |
+| `glossary_hints` | string[], 선택 | `map_terms`가 돌려준 값 그대로 |
+
+동작: 호출할 때마다 wxdi 카탈로그(프로젝트 자산, 태그 `FIN_DEMO`)에서 FK `join_condition`, 테이블명, 연결 ID를 읽고(5분 캐시), `glossary_hints`와 FK 조인 조건을 질문 뒤에 `Note:`로 붙여 wxdi Text-to-SQL(`generate_queries`)에 보낸다. 용어 정의와 조인 조건의 원본은 wxdi이고, 툴은 전달만 한다. SQL은 실행하지 않는다.
+
+| 출력 | 타입 | 설명 |
+|---|---|---|
+| `ok`, `sql`, `score` | | 성공 여부, 생성된 SQL, 제품이 준 점수 |
+| `engine`, `elapsed_ms`, `error` | | `engine`은 `wxdi_text2sql` |
+
 ## map_terms
 
 | 입력 | 타입 | 설명 |
@@ -55,6 +70,7 @@ A안과 B안은 이 계약을 바꾸지 않는다. B안에서 바뀌는 것은 �
 | `mappings` | object[] | 아래 항목의 배열 |
 | `unmapped` | string[] | 용어집에 없는 용어 후보 |
 | `ambiguous` | object[] | 정의가 여러 개라 되물어야 하는 용어와 선택지 |
+| `glossary_hints` | string[] | `"용어: 정의"` 목록. 에이전트가 고치지 않고 `generate_sql`에 그대로 넘긴다 |
 | `engine` | string | `yaml_glossary` 또는 `ikc` |
 | `elapsed_ms` | int | 소요 시간 |
 

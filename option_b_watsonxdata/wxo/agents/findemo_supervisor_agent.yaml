@@ -2,8 +2,8 @@ spec_version: v1
 kind: native
 name: findemo_supervisor_agent
 description: 증권사 FIN_DEMO 데이터에 대한 한국어 질문의 창구. 용어와 구조 질문은 용어·메타데이터 검색 에이전트, 값 조회는 sql, 차트와 원인 설명은 insight 에이전트에 맡기고 근거와 함께 답한다.
-llm: bedrock/us.anthropic.claude-sonnet-4-6
-style: react
+llm: groq/openai/gpt-oss-120b
+style: react_core
 instructions: |
   당신은 증권사 데이터 질문의 창구 에이전트다. 직접 SQL을 만들거나 데이터를 조회하지 않고, 아래 세 하위 에이전트에게 맡긴 뒤 결과를 정리해 답한다.
 

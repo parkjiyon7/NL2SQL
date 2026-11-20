@@ -10,6 +10,7 @@ import os
 import re
 import tempfile
 import time
+from concurrent.futures import ThreadPoolExecutor
 from typing import Any, Dict, List, Optional
 
 import requests
@@ -20,21 +21,33 @@ from ibm_watsonx_orchestrate.run import connections
 WXDI_APP = "findemo_wxdi"
 DB2_APP = "findemo_db2"
 
-# Text-to-SQL에 넘기는 도메인 규칙 (최대 10개). 용어집과 별개로 조인 경로 같은 규칙을 못 박는다.
+# Text-to-SQL에 넘기는 고정 규칙. Db2 문법과 한국어 날짜, 숫자 표현만 둔다. 업무 용어, 조인 경로, 데이터 값 위치는 두지 않는다.
+#  - 업무 용어의 뜻: wxdi 용어집이 정의하고, 에이전트가 map_terms로 읽어 glossary_hints로 넘긴다.
+#  - 조인 경로: wxdi 카탈로그의 FK(foreign_keys.join_condition)를 generate_sql이 읽는다.
+# 용어 정의와 조인 조건은 wxdi 제품이 LLM에 자동으로 넘기지 않으므로, 질문 뒤에 "Note:"로 붙여 보낸다(공식 질문별 보충 방식).
 INSTRUCTIONS = [
     'Use only tables in the FIN_DEMO schema. Write schema and table as separate quoted identifiers, e.g. "FIN_DEMO"."PRODUCT", never "FIN_DEMO.PRODUCT".',
-    "EXECUTIONS has no account or customer column. Join EXECUTIONS.ORDER_ID = ORDERS.ORDER_ID, ORDERS.ACCOUNT_ID = ACCOUNT.ACCOUNT_ID, ACCOUNT.CUSTOMER_ID = CUSTOMER.CUSTOMER_ID, CUSTOMER.BRANCH_CODE = BRANCH.BRANCH_CODE. The product of an execution is ORDERS.PRODUCT_CODE = PRODUCT.PRODUCT_CODE.",
-    "Stock names such as 삼성전자 are values of PRODUCT.PRODUCT_NAME. Branch names such as 강남지점 are values of BRANCH.BRANCH_NAME. Always filter by these name columns through the joins. ORDERS.SIDE is 'BUY' for 매수 and 'SELL' for 매도.",
-    "거래대금, 약정, 체결대금 all mean SUM(EXECUTIONS.EXEC_AMOUNT).",
-    "업종 means PRODUCT.SECTOR. 업종 내 순위 means RANK() OVER (PARTITION BY PRODUCT.SECTOR ORDER BY SUM(EXEC_AMOUNT) DESC).",
-    "Desk limit usage (한도 소진율) = SUM(ST_POSITIONS.EXPOSURE_AMOUNT) per desk on the latest BASE_DATE divided by DESK.LIMIT_AMOUNT. Aggregate per desk with GROUP BY and compare with HAVING, never per row.",
-    "Dates use Db2 syntax: 어제 is CURRENT DATE - 1 DAY, compared with DATE(EXEC_TS) or DATE(ORDER_TS). A month such as 3월 means MONTH(date) = 3; never assume a year unless the question gives one. A monthly trend groups by YEAR(EXEC_TS) and MONTH(EXEC_TS) of the execution time, never by MONTH alone.",
+    "Dates use Db2 syntax: 어제 is CURRENT DATE - 1 DAY, compared with DATE(EXEC_TS) or DATE(ORDER_TS). A month such as 3월 means MONTH(date) = 3; never assume a year unless the question gives one. 이번 달 means YEAR(date) = YEAR(CURRENT DATE) AND MONTH(date) = MONTH(CURRENT DATE). Whenever results are grouped by month (monthly trend, per-month comparison), group by both YEAR(date) and MONTH(date), never by MONTH alone, because the data spans more than 12 months.",
     'Db2 quoted identifiers are case sensitive. Always write table and column names in UPPERCASE exactly as in the catalog, e.g. "EXEC_AMOUNT", never "exec_amount".',
     "When joining tables, qualify every column with its table name or alias, including in GROUP BY, HAVING and SELECT, so that no column such as DESK_ID is ambiguous.",
-    "Korean number units: 1억 = 100000000, 1만 = 10000, 1조 = 1000000000000. A customer's 총자산 or 잔고 is CUSTOMER.TOTAL_ASSETS; use BALANCE_DAILY only for daily or per-account balances. ACCOUNT.CUSTOMER_ID joins CUSTOMER.CUSTOMER_ID; never join ACCOUNT_ID to CUSTOMER_ID.",
+    "Korean number units: 1억 = 100000000, 1만 = 10000, 1조 = 1000000000000.",
 ]
 
+
+def build_note(glossary_hints: Optional[List[str]], joins: List[str]) -> str:
+    """질문 뒤에 붙일 Note. 틀 문구만 코드에 있고, 용어 정의는 wxdi 용어집, 조인 조건은 wxdi 카탈로그가 원본이다."""
+    parts = []
+    if glossary_hints:
+        parts.append("Business glossary from watsonx.data intelligence. Interpret these terms exactly as defined: "
+                     + " | ".join(glossary_hints) + ".")
+    if joins:
+        parts.append("Join tables only with these foreign keys defined in the watsonx.data intelligence catalog and never "
+                     "invent other join columns: " + "; ".join(joins))
+    return ("\nNote: " + " ".join(parts)) if parts else ""
+
+
 _token_cache: Dict[str, Any] = {"token": None, "exp": 0.0}
+_catalog_cache: Dict[str, Any] = {"val": None, "exp": 0.0}
 
 
 def _ms(t0: float) -> int:
@@ -65,51 +78,60 @@ def _iam_token(api_key: str) -> str:
     return _token_cache["token"]
 
 
-# 생성기가 자주 틀리는 패턴. 걸리면 retry_on_error로 다시 생성한다(최대 GUARD_RETRIES회).
-GUARD_RETRIES = 3
-_BAD_EXEC_JOIN = re.compile(
-    r'"?EXEC_ID"?\s*=\s*(?:"?\w+"?\.)*"?ORDER_ID"?|"?ORDER_ID"?\s*=\s*(?:"?\w+"?\.)*"?EXEC_ID"?', re.I)
-_BAD_ACCOUNT_JOIN = re.compile(
-    r'"?ACCOUNT_ID"?\s*=\s*(?:"?\w+"?\.)*"?CUSTOMER_ID"?|"?CUSTOMER_ID"?\s*=\s*(?:"?\w+"?\.)*"?ACCOUNT_ID"?', re.I)
-_BASE_DATE_FILTER = re.compile(r'BASE_DATE"?\s*(=|>=|<=|>|<|BETWEEN)', re.I)
+def load_catalog_info(cfg: Dict[str, str]) -> Dict[str, Any]:
+    """wxdi 카탈로그(프로젝트 자산, 태그 FIN_DEMO)에서 테이블명, FK 조인 조건, 연결 ID를 읽는다. 5분 캐시."""
+    if _catalog_cache["val"] and time.time() < _catalog_cache["exp"]:
+        return _catalog_cache["val"]
+    base, pid = cfg["url"].rstrip("/"), cfg["project_id"]
+    headers = {"Authorization": f"Bearer {_iam_token(cfg['api_key'])}", "Content-Type": "application/json"}
+    r = requests.post(f"{base}/v2/asset_types/asset/search", headers=headers, timeout=60,
+                      params={"project_id": pid, "limit": 100}, json={"query": "asset.tags:FIN_DEMO"})
+    r.raise_for_status()
+    ids = [it["metadata"]["asset_id"] for it in r.json().get("results", [])]
+
+    def fetch(asset_id: str) -> dict:
+        return requests.get(f"{base}/v2/assets/{asset_id}", headers=headers, timeout=60, params={"project_id": pid}).json()
+
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        assets = list(pool.map(fetch, ids))
+    tables: List[str] = []
+    joins: List[str] = []
+    conns: List[str] = []
+    for a in assets:
+        entity = a.get("entity", {})
+        if not entity.get("data_asset", {}).get("columns"):
+            continue  # 제약 조건 자산 등 테이블이 아닌 것
+        tables.append(a["metadata"]["name"])
+        disc = entity.get("discovered_asset", {})
+        if disc.get("connection_id") and disc["connection_id"] not in conns:
+            conns.append(disc["connection_id"])
+        for p in disc.get("extended_metadata", []):
+            if p["name"] == "foreign_keys":
+                joins += [fk["join_condition"] for fk in p["value"] if fk.get("join_condition")]
+    if not tables:
+        raise RuntimeError("wxdi 카탈로그에서 FIN_DEMO 태그 테이블을 찾지 못했다")
+    val = {"tables": sorted(tables), "joins": sorted(joins), "connection_ids": conns}
+    _catalog_cache.update(val=val, exp=time.time() + 300)
+    return val
 
 
-_TABLES = ("BRANCH", "CUSTOMER", "ACCOUNT", "PRODUCT", "ORDERS", "EXECUTIONS", "BALANCE_DAILY", "DESK", "ST_POSITIONS")
-_BARE_QUALIFIER = re.compile(r'(?<![\w."])"(' + "|".join(_TABLES) + r')"\.(?=")')
-
-
-def fix_qualifiers(sql: str) -> str:
+def fix_qualifiers(sql: str, tables: List[str]) -> str:
     """Db2는 FROM에 "FIN_DEMO"."T"로 쓴 테이블의 컬럼을 "T"."C"로 한정하면 SQL0206을 낸다. 별칭이 아니면 스키마를 붙여 고친다."""
+    bare = re.compile(r'(?<![\w."])"(' + "|".join(map(re.escape, tables)) + r')"\.(?=")')
     aliased = set(re.findall(r'"(\w+)"\s*(?:AS\s+)?"\1"', sql, re.I))
-    return _BARE_QUALIFIER.sub(lambda m: m.group(0) if m.group(1) in aliased else f'"FIN_DEMO"."{m.group(1)}".', sql)
+    return bare.sub(lambda m: m.group(0) if m.group(1) in aliased else f'"FIN_DEMO"."{m.group(1)}".', sql)
 
 
-def check_sql(sql: str) -> Optional[str]:
-    """알려진 오류 패턴이 있으면 생성기에 돌려줄 오류 설명을, 없으면 None을 돌려준다."""
-    if _BAD_EXEC_JOIN.search(sql):
-        return ("Wrong join: EXECUTIONS.EXEC_ID is the execution's own key and is not related to ORDERS.ORDER_ID. "
-                "Join EXECUTIONS.ORDER_ID = ORDERS.ORDER_ID.")
-    if _BAD_ACCOUNT_JOIN.search(sql):
-        return "Wrong join: ACCOUNT_ID and CUSTOMER_ID are different keys. Join ORDERS.ACCOUNT_ID = ACCOUNT.ACCOUNT_ID and ACCOUNT.CUSTOMER_ID = CUSTOMER.CUSTOMER_ID."
-    if re.search(r"EXEC_AMOUNT", sql, re.I) and re.search(r'BALANCE_DAILY|ST_POSITIONS', sql, re.I):
-        return ("Wrong tables: 거래대금 is SUM(EXECUTIONS.EXEC_AMOUNT) and needs only EXECUTIONS (plus ORDERS, PRODUCT, ACCOUNT, CUSTOMER, BRANCH when grouping). "
-                "Do not join BALANCE_DAILY or ST_POSITIONS; use EXECUTIONS.EXEC_TS for dates.")
-    group_by = re.search(r"GROUP\s+BY(.*?)(?:ORDER\s+BY|HAVING|$)", sql, re.I | re.S)
-    if group_by and re.search(r"MONTH", group_by.group(1), re.I) and not re.search(r"YEAR|TO_CHAR|VARCHAR_FORMAT", group_by.group(1), re.I):
-        return ("Monthly grouping must include the year: GROUP BY YEAR(EXECUTIONS.EXEC_TS), MONTH(EXECUTIONS.EXEC_TS), "
-                "because the data spans 14 months and the same month number occurs twice.")
-    if re.search(r"ST_POSITIONS", sql, re.I) and not _BASE_DATE_FILTER.search(sql):
-        return ("ST_POSITIONS holds many BASE_DATE rows per desk. Filter to the latest day: "
-                'WHERE BASE_DATE = (SELECT MAX(BASE_DATE) FROM "FIN_DEMO"."ST_POSITIONS"), then aggregate per desk.')
-    return None
-
-
-def _call_wxdi(cfg: Dict[str, str], question: str, retry: Optional[List[Dict[str, str]]]) -> dict:
+def call_wxdi(cfg: Dict[str, str], question: str, retry: Optional[List[Dict[str, str]]] = None,
+              glossary_hints: Optional[List[str]] = None) -> dict:
+    """카탈로그의 FK와 용어 정의를 질문 뒤에 Note로 붙여 wxdi generate_queries를 부른다. 결과에 tables를 함께 돌려준다."""
+    info = load_catalog_info(cfg)
     params: Dict[str, Any] = {
         "type": "sql",
         "sql_dialect": "db2",
-        "instructions": INSTRUCTIONS,
-        "context": {"containers": [{"container_id": cfg["project_id"], "container_type": "project"}]},
+        "instructions": list(INSTRUCTIONS),
+        "context": {"containers": [{"container_id": cfg["project_id"], "container_type": "project"}],
+                    "connection_ids": info["connection_ids"]},
     }
     if retry:
         params["retry_on_error"] = retry
@@ -117,23 +139,27 @@ def _call_wxdi(cfg: Dict[str, str], question: str, retry: Optional[List[Dict[str
         f"{cfg['url'].rstrip('/')}/semantic_automation/v1/generate_queries",
         params={"top_n": 1},
         headers={"Authorization": f"Bearer {_iam_token(cfg['api_key'])}", "Content-Type": "application/json"},
-        json={"input_question": question, "parameters": params},
+        json={"input_question": question + build_note(glossary_hints, info["joins"]), "parameters": params},
         timeout=180,
     )
     if r.status_code >= 400:
         raise RuntimeError(f"HTTP {r.status_code}: {r.text[:300]}")
-    return r.json()["results"][0]
+    res = r.json()["results"][0]
+    res["tables"] = info["tables"]
+    return res
 
 
 @tool(permission=ToolPermission.READ_ONLY,
       expected_credentials=[ExpectedCredentials(app_id=WXDI_APP, type=ConnectionType.KEY_VALUE)])
-def generate_sql(question: str, previous_sql: Optional[str] = None, previous_error: Optional[str] = None) -> dict:
+def generate_sql(question: str, previous_sql: Optional[str] = None, previous_error: Optional[str] = None,
+                 glossary_hints: Optional[List[str]] = None) -> dict:
     """Convert a Korean business question into a Db2 SQL query for the FIN_DEMO schema using the watsonx.data intelligence Text-to-SQL service. It only generates SQL and does not run it. If a previous SQL failed, pass previous_sql and previous_error to get a corrected query.
 
     Args:
         question (str): The user question in natural language, for example "삼성전자 어제 체결 중 매수만 보여줘".
         previous_sql (Optional[str]): A SQL generated earlier that failed or returned a wrong result. Leave empty on the first attempt.
         previous_error (Optional[str]): The error message returned when previous_sql was run. Leave empty on the first attempt.
+        glossary_hints (Optional[List[str]]): The glossary_hints list returned by map_terms for this question, passed through unchanged. Leave empty if map_terms found no terms.
     Returns:
         dict: ok, sql, score, engine, elapsed_ms, error. error is null on success.
     """
@@ -142,14 +168,9 @@ def generate_sql(question: str, previous_sql: Optional[str] = None, previous_err
     try:
         cfg = _cfg(WXDI_APP, "url", "api_key", "project_id")
         retry = [{"original_query": previous_sql, "error": previous_error}] if previous_sql and previous_error else None
-        for _ in range(GUARD_RETRIES + 1):
-            res = _call_wxdi(cfg, question, retry)
-            sql = fix_qualifiers(res["generated_query"].strip().rstrip(";"))
-            out.update(sql=sql, score=res.get("score"), ok=True)
-            problem = check_sql(sql)
-            if not problem:
-                break
-            retry = [{"original_query": sql, "error": problem}]
+        res = call_wxdi(cfg, question, retry, glossary_hints)
+        sql = fix_qualifiers(res["generated_query"].strip().rstrip(";"), res["tables"])
+        out.update(sql=sql, score=res.get("score"), ok=True)
     except Exception as exc:  # noqa: BLE001
         out["error"] = {"type": "generation", "message": f"{type(exc).__name__}: {exc}"[:300]}
     out["elapsed_ms"] = _ms(t0)

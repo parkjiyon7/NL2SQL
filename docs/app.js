@@ -27,7 +27,8 @@
     '  INS --> T5["make_chart"]',
     '  T1 --> G["wxdi 용어집"]',
     '  T2 --> C["wxdi 카탈로그 (프로젝트 자산)"]',
-    '  T3 --> TS["wxdi Text-to-SQL REST"]',
+    '  T3 -->|"FK 조인 조건 읽기"| C',
+    '  T3 -->|"질문 + Note"| TS["wxdi Text-to-SQL REST"]',
     '  T4 --> DB[("Db2 FIN_DEMO")]',
     '  T5 --> CH["차트 스펙, 텍스트 렌더링"]'
   ].join("\n");
@@ -44,7 +45,8 @@
     "  S->>I: 차트 요청",
     "  I->>W: map_terms (용어집 조회)",
     "  W-->>I: 거래대금 = EXEC_AMOUNT (약정 같은 동의어도 같은 용어)",
-    "  I->>W: generate_sql (표준 용어로 바꾼 질문, 필요 시 재생성)",
+    "  I->>W: generate_sql (표준 용어로 바꾼 질문 + 용어 정의)",
+    "  W->>W: 카탈로그에서 FK 조인 조건을 읽어 Note로 첨부",
     "  W-->>I: SQL",
     "  I->>D: run_sql",
     "  D-->>I: 월별 집계 행",
@@ -52,6 +54,146 @@
     "  I-->>S: 차트와 요약",
     "  S-->>U: 답변 + 근거 보기"
   ].join("\n");
+
+  /* ---------- 에이전트별 구조도 (wxO = 파랑, wxdi = 초록, Db2 = 주황) ---------- */
+  function agentDiagram(lines) {
+    return ["flowchart TB"].concat(lines, [
+      "  classDef wxo fill:#dbeafe,stroke:#1b5fc1,stroke-width:2px,color:#0a2a5e",
+      "  classDef wxdi fill:#dcfce7,stroke:#0f7b3f,stroke-width:2px,color:#064e2b",
+      "  classDef db fill:#ffedd5,stroke:#c2410c,stroke-width:2px,color:#7c2d12",
+      "  classDef user fill:#f1f5f9,stroke:#64748b,stroke-width:2px,color:#1f2937",
+      "  style WXO fill:#f0f6ff,stroke:#1b5fc1,stroke-width:2px,stroke-dasharray:6 4",
+      "  style WXDI fill:#f0fdf4,stroke:#0f7b3f,stroke-width:2px,stroke-dasharray:6 4"
+    ]).join("\n");
+  }
+
+  var AG_SUP = agentDiagram([
+    '  U(["사용자 질문<br/>홈페이지 AI 챗"]):::user --> SUP',
+    '  subgraph WXO["watsonx Orchestrate (wxO)"]',
+    '    SUP["Supervisor<br/>질문 분류, 되묻기, 맥락 유지, 근거 조립"]:::wxo',
+    '    CTX["용어·메타데이터 검색 에이전트"]:::wxo',
+    '    SQLA["SQL 에이전트"]:::wxo',
+    '    INS["Insight 에이전트"]:::wxo',
+    '    SUP -->|"용어, 구조 질문"| CTX',
+    '    SUP -->|"값 조회 질문"| SQLA',
+    '    SUP -->|"차트, 원인 질문"| INS',
+    "  end",
+    '  subgraph WXDI["watsonx.data intelligence (wxdi)"]',
+    '    GL[("용어집")]:::wxdi',
+    '    CAT[("카탈로그")]:::wxdi',
+    '    TS["Text-to-SQL"]:::wxdi',
+    '    GL ~~~ CAT ~~~ TS',
+    "  end",
+    '  DB[("Db2 FIN_DEMO")]:::db',
+    '  CTX -->|"map_terms, get_catalog"| WXDI',
+    '  SQLA -->|"map_terms, generate_sql"| WXDI',
+    '  INS -->|"map_terms, generate_sql"| WXDI',
+    '  SQLA -->|"run_sql"| DB',
+    '  INS -->|"run_sql"| DB',
+    '  SUP --> R(["표, 차트, 설명<br/>+ 근거 보기"]):::user'
+  ]);
+
+  var AG_CTX = agentDiagram([
+    '  U(["용어, 구조 질문<br/>예: 약정이 뭐야?"]):::user --> CTX',
+    '  subgraph WXO["watsonx Orchestrate (wxO)"]',
+    '    CTX["용어·메타데이터 검색 에이전트<br/>findemo_context_agent"]:::wxo',
+    '    M["map_terms<br/>질문 속 용어를 표준 용어와 컬럼에 연결"]:::wxo',
+    '    G["get_catalog<br/>테이블 구조, 키, 개인정보 컬럼 조회"]:::wxo',
+    "    CTX --> M",
+    "    CTX --> G",
+    "  end",
+    '  subgraph WXDI["watsonx.data intelligence (wxdi)"]',
+    '    GL[("용어집<br/>표준 용어 25 + 동의어 35")]:::wxdi',
+    '    CAT[("카탈로그<br/>테이블 9, PK, FK, PII 표시")]:::wxdi',
+    "  end",
+    '  M -->|"용어, 동의어, 정의 조회"| GL',
+    '  G -->|"테이블, 컬럼, 조인 키 조회"| CAT',
+    '  CTX --> R(["용어 정의 + 대응 컬럼<br/>+ 조인 경로 + 개인정보 여부"]):::user'
+  ]);
+
+  var AG_SQL = agentDiagram([
+    '  U(["값 조회 질문<br/>예: 고객별 총 거래 약정 상위 5명"]):::user --> SQLA',
+    '  subgraph WXO["watsonx Orchestrate (wxO)"]',
+    '    SQLA["SQL 에이전트<br/>findemo_sql_agent"]:::wxo',
+    '    T1["① map_terms<br/>동의어를 표준 용어로 보정"]:::wxo',
+    '    T2["② generate_sql<br/>카탈로그에서 조인 조건을 조회해 질문 뒤에 첨부"]:::wxo',
+    '    T3["③ run_sql<br/>SELECT만 실행"]:::wxo',
+    "    SQLA --> T1 --> T2 --> T3",
+    "  end",
+    '  subgraph WXDI["watsonx.data intelligence (wxdi)"]',
+    '    GL[("용어집<br/>표준 용어 25 + 동의어 35")]:::wxdi',
+    '    CAT[("카탈로그<br/>테이블 9, FK 8")]:::wxdi',
+    '    TS["Text-to-SQL<br/>SQL 생성"]:::wxdi',
+    '    GL ~~~ CAT ~~~ TS',
+    "  end",
+    '  DB[("Db2 FIN_DEMO")]:::db',
+    '  T1 -->|"용어, 정의 조회"| GL',
+    '  T2 -->|"조인 조건 조회"| CAT',
+    '  T2 -->|"질문 + Note"| TS',
+    '  T3 -->|"SQL 실행"| DB',
+    '  T3 --> R(["표 + SQL + 용어 매핑"]):::user'
+  ]);
+
+  var AG_INS = agentDiagram([
+    '  U(["차트, 원인 질문<br/>예: 업종별 거래대금 비중을 파이 차트로"]):::user --> INS',
+    '  subgraph WXO["watsonx Orchestrate (wxO)"]',
+    '    INS["Insight 에이전트<br/>findemo_insight_agent"]:::wxo',
+    '    T1["① map_terms<br/>동의어를 표준 용어로 보정"]:::wxo',
+    '    T2["② generate_sql<br/>카탈로그에서 조인 조건을 조회해 질문 뒤에 첨부"]:::wxo',
+    '    T3["③ run_sql<br/>집계 결과 조회"]:::wxo',
+    '    T4["④ make_chart<br/>line, bar, pie 차트 작성"]:::wxo',
+    "    INS --> T1 --> T2 --> T3 --> T4",
+    "  end",
+    '  subgraph WXDI["watsonx.data intelligence (wxdi)"]',
+    '    GL[("용어집")]:::wxdi',
+    '    CAT[("카탈로그")]:::wxdi',
+    '    TS["Text-to-SQL"]:::wxdi',
+    '    GL ~~~ CAT ~~~ TS',
+    "  end",
+    '  DB[("Db2 FIN_DEMO")]:::db',
+    '  T1 -->|"용어, 정의 조회"| GL',
+    '  T2 -->|"조인 조건 조회"| CAT',
+    '  T2 -->|"질문 + Note"| TS',
+    '  T3 -->|"SQL 실행"| DB',
+    '  T4 --> R(["차트 + 요약 + 근거 설명"]):::user'
+  ]);
+
+  /* ---------- DB 포함 전체 구조도 (솔루션 매핑) ---------- */
+  var FULL = agentDiagram([
+    '  U(["사용자<br/>홈페이지 AI 챗"]):::user --> SUP',
+    '  subgraph WXO["watsonx Orchestrate (wxO)  ·  에이전트 실행"]',
+    '    SUP["Supervisor<br/>질문 분류, 되묻기, 맥락 유지"]:::wxo',
+    '    CTX["용어·메타데이터 검색<br/>map_terms, get_catalog"]:::wxo',
+    '    SQLA["SQL<br/>map_terms, generate_sql, run_sql"]:::wxo',
+    '    INS["Insight<br/>map_terms, generate_sql,<br/>run_sql, make_chart"]:::wxo',
+    '    subgraph TOOLS["툴 (Python)"]',
+    '      T1["map_terms"]:::wxo',
+    '      T2["get_catalog"]:::wxo',
+    '      T3["generate_sql"]:::wxo',
+    '      T4["run_sql"]:::wxo',
+    '      T5["make_chart"]:::wxo',
+    "    end",
+    "    SUP --> CTX",
+    "    SUP --> SQLA",
+    "    SUP --> INS",
+    '    CTX --> TOOLS',
+    '    SQLA -->|"툴 호출"| TOOLS',
+    '    INS --> TOOLS',
+    "  end",
+    '  subgraph WXDI["watsonx.data intelligence (wxdi)"]',
+    '    GL[("비즈니스 용어집<br/>표준 용어 25 + 동의어 35")]:::wxdi',
+    '    CAT[("카탈로그<br/>테이블 9, FK 8, PII 표시")]:::wxdi',
+    '    TS["Text-to-SQL<br/>generate_queries REST"]:::wxdi',
+    "  end",
+    '  DB[("Db2 FIN_DEMO<br/>9개 테이블")]:::db',
+    '  T1 -->|"용어, 정의 조회"| GL',
+    '  T2 -->|"구조 조회"| CAT',
+    '  T3 -->|"FK 조인 조건 조회"| CAT',
+    '  T3 -->|"질문 + Note"| TS',
+    '  T4 -->|"SELECT 실행"| DB',
+    '  TS -.->|"스키마 참조"| CAT',
+    '  DB -.->|"메타데이터 가져오기"| CAT'
+  ]);
 
   /* ---------- 화면 / 서브탭 전환 ---------- */
   var rendered = {};
@@ -94,6 +236,11 @@
   function diagramText(key) {
     if (key === "arch") return ARCH;
     if (key === "seq") return SEQ;
+    if (key === "full") return FULL;
+    if (key === "ag-sup") return AG_SUP;
+    if (key === "ag-ctx") return AG_CTX;
+    if (key === "ag-sql") return AG_SQL;
+    if (key === "ag-ins") return AG_INS;
     if (key === "erd") return (window.SAMPLES && window.SAMPLES.erd) || "";
     return "";
   }
@@ -109,7 +256,8 @@
         return;
       }
       if (!mermaidReady) {
-        window.mermaid.initialize({ startOnLoad: false, securityLevel: "loose", theme: "neutral", flowchart: { htmlLabels: true, curve: "basis" } });
+        window.mermaid.initialize({ startOnLoad: false, securityLevel: "loose", theme: "neutral", themeVariables: { fontSize: "15px" },
+          flowchart: { htmlLabels: true, curve: "basis", nodeSpacing: 40, rankSpacing: 46, padding: 14 } });
         mermaidReady = true;
       }
       rendered[key] = true;
@@ -163,28 +311,82 @@
 
   /* ---------- 예상 질문 ---------- */
   var Q = [
-    ["1막 값 조회", "오늘 강남지점 체결 건수와 거래대금", "확인됨", "골든 3/3"],
-    ["1막 값 조회", "삼성전자 어제 체결 중 매수만 보여줘", "확인됨", "Supervisor 시험, 11건"],
-    ["2막 용어", "약정이 뭐야? 약정 상위 고객", "확인됨", "용어·메타데이터 검색 에이전트, SQL 에이전트 시험"],
-    ["2막 용어", "VIP 고객 수를 지점별로 알려줘", "확인됨", "Supervisor 시험"],
-    ["2막 용어", "신용융자를 쓰는 고객은 몇 명이야?", "확인됨", "골든 3/3"],
-    ["2막 용어", "고객별 총 거래대금 상위 5명", "확인됨", "골든 3/3"],
-    ["3막 복잡 질의", "3월 거래대금 큰 종목 상위 3개", "확인됨", "골든 2/3"],
-    ["3막 복잡 질의", "종목별 거래대금을 업종 내 순위로", "확인됨", "골든 3/3"],
-    ["4막 대화", "수익 좋은 고객 보여줘", "확인됨", "기준을 되묻기"],
-    ["4막 대화", "VIP 고객을 지점별로 → 그럼 강남지점만", "확인됨", "맥락 유지"],
-    ["5막 트레이딩", "한도 대비 노출금액이 80%를 넘는 데스크가 있어?", "확인됨", "골든 2/3"],
-    ["6막 차트", "월별 거래대금 추이를 라인 차트로 보여줘", "확인됨", "Supervisor 시험, 14개월"],
-    ["6막 차트", "업종별 거래대금 비중을 파이 차트로", "확인됨", "Insight 시험"],
-    ["6막 차트", "3월에 거래대금이 왜 늘었어?", "확인됨", "Insight 시험, 반도체 쏠림"]
+    ["S1-01", "1막 단순 조회", "오늘 우리 지점(강남지점) 체결 건수와 거래대금 알려줘", "불안정", "골든 3/3 (직전 평가는 1/3). Supervisor 시험에서는 오늘 7건, 104,115,980원. 가끔 없는 컬럼을 지어내 SQL0206 오류가 남"],
+    ["S1-02", "1막 단순 조회", "잔고가 1억 이상인 고객 이름과 총자산을 보여줘", "확인됨", "골든 3/3. Supervisor 시험(부산지점 조건 추가)에서도 3명 확인"],
+    ["S1-03", "1막 단순 조회", "삼성전자 어제 체결 중 매수만 보여줘", "확인됨", "골든 3/3"],
+    ["S2-01", "2막 업무 용어", "VIP 고객 중 예수금 많은 순으로 10명", "불안정", "골든 1/3 (직전 2/3, 정의 보강 전 0/3). 정의를 넣었지만 최근 기준일 조건 없이 5일치를 합산하는 SQL이 가끔 나옴"],
+    ["S2-02", "2막 업무 용어", "이번 달 약정 상위 고객 5명", "확인됨", "골든 3/3. 약정은 거래대금의 동의어"],
+    ["S2-03", "2막 업무 용어", "미수 있는 계좌 보여줘", "부분 확인", "1회 시험. 미수금이 0보다 큰 행을 찾지만 날짜별 행을 그대로 나열해 30행이 나옴"],
+    ["S2-04", "2막 업무 용어", "신용융자 계좌 보여줘", "확인됨", "골든 3/3. ACCOUNT.CREDIT_LOAN_YN = 'Y'"],
+    ["S2-05", "2막 업무 용어", "이번 달 체결대금 상위 고객 5명", "불안정", "골든 3/3 (직전 2/3). S2-02와 같은 값이 나와야 하는데 가끔 값이 달라짐"],
+    ["S3-01", "3막 복잡 질의", "이번 달 약정 상위 10 고객과 이들의 주력 종목", "미해결", "1회 시험. CTE에서 정의한 별칭을 잘못 참조해 SQL0206 오류"],
+    ["S3-02", "3막 복잡 질의", "고객별 월 거래대금과 전월 대비 증감률", "미해결", "1회 시험. LAG는 쓰나 첫 달을 0으로 나눠 SQL0801 오류"],
+    ["S3-03", "3막 복잡 질의", "종목별 거래대금 순위를 섹터 내에서 매겨줘", "확인됨", "골든 3/3. 용어집에 '업종 내 순위'를 추가한 뒤 순위 컬럼이 생김"],
+    ["S3-04", "3막 복잡 질의", "주문 후 30분 넘게 미체결인 지정가 주문", "불안정", "골든 1/3 (직전 1/3). '30분 안에 체결이 없는 주문'으로 해석하면 20~30행, 정답은 체결이 하나도 없는 5행. 가끔 Db2 날짜 연산 문법 오류(SQL0182)"],
+    ["S3-05", "3막 복잡 질의", "계좌 잔고의 7일 이동평균", "부분 확인", "1회 시험. 실행은 되나 계좌별로 나누지 않고 전체 행을 날짜순으로 평균냄"],
+    ["S4-01", "4막 대화", "수익 좋은 고객 보여줘", "확인됨", "Supervisor가 수익 기준(실현손익, 수수료 차감 후)을 되물음"],
+    ["S4-02", "4막 대화", "이번 분기 실현손익 기준 상위 10명", "확인됨", "S4-01에 이어 질의 실행, 10명 표 반환"],
+    ["S4-03", "4막 대화", "그 중에 코스닥 종목 위주로 거래한 고객만", "부분 확인", "분기, 실현손익, 상위 10명 조건은 이어 붙임. 직전 10명으로 한정하지 않고 코스닥 조건으로 다시 집계"],
+    ["S4-04", "4막 대화", "작년 같은 기간이랑 비교해줘", "부분 확인", "맥락은 이어 붙이나 올해와 작년이 한 표에 섞이고 조건 우선순위가 틀려 순위 제한이 한쪽에만 걸림"],
+    ["S5-01", "5막 트레이딩", "데스크별 오늘 PnL과 한도 소진율", "부분 확인", "1회 시험. 4개 데스크의 소진율(주식2데스크 0.86 등)은 나오나 기준일을 오늘 날짜로 고정함"],
+    ["S5-02", "5막 트레이딩", "한도의 80%를 넘긴 데스크가 있어?", "확인됨", "골든 3/3. 용어집 정의에 '가장 최근 기준일만 합산'을 넣은 뒤 정답 1행(주식2데스크 86%)"],
+    ["S5-03", "5막 트레이딩", "채권 데스크 포지션 상위 5종목과 전일 대비 변동", "미해결", "1회 시험. 상위 5종목 노출금액은 나오나 전일 대비 변동은 계산하지 않음"],
+    ["S6-01", "6막 차트", "월별 거래대금 추이 보여줘 (라인 차트)", "확인됨", "Insight 시험, 연도와 월로 묶어 14개월이 나옴"],
+    ["S6-02", "6막 차트", "데스크별 PnL 비교해줘", "부분 확인", "Supervisor 시험. 막대 차트는 나오나 데스크 이름 대신 ID를 쓰고 날짜별 스냅샷을 전부 합산함"],
+    ["S6-03", "6막 차트", "왜 3월에 급증했어?", "부분 확인", "Insight 시험, 2월 대비 증가 값은 나오나 업종별로 쪼개지는 않음 (실행마다 설명이 다름)"]
   ];
 
   function initQuestions() {
-    var cls = { "확인됨": "ok" };
+    var cls = { "확인됨": "ok", "불안정": "warn", "부분 확인": "warn", "미해결": "bad" };
     $("#qtable").innerHTML = Q.map(function (q) {
-      return "<tr><td>" + esc(q[0]) + "</td><td>" + esc(q[1]) + '</td><td><span class="tag ' + (cls[q[2]] || "") + '">' + esc(q[2]) + "</span>" +
-        (q[3] ? ' <span class="muted">' + esc(q[3]) + "</span>" : "") + "</td></tr>";
+      return "<tr><td>" + esc(q[0]) + "</td><td>" + esc(q[1]) + "</td><td>" + esc(q[2]) + '</td><td><span class="tag ' + (cls[q[3]] || "") + '">' + esc(q[3]) + "</span>" +
+        (q[4] ? ' <span class="muted">' + esc(q[4]) + "</span>" : "") + "</td></tr>";
     }).join("");
+  }
+
+  /* ---------- Text-to-SQL 평가 결과 (eval_results.js) ---------- */
+  function evalTable(r) {
+    if (!r) return "";
+    var h = '<div class="scroll-x"><table class="tbl"><thead><tr>' + r.columns.map(function (c) { return "<th>" + esc(c) + "</th>"; }).join("") + "</tr></thead><tbody>";
+    r.rows.forEach(function (row) {
+      h += "<tr>" + row.map(function (v) { return "<td>" + esc(v) + "</td>"; }).join("") + "</tr>";
+    });
+    return h + "</tbody></table></div><p class=\"muted\">총 " + esc(r.row_count) + "행" + (r.row_count > r.rows.length ? " 중 앞 " + r.rows.length + "행" : "") + "</p>";
+  }
+
+  function initEval() {
+    var box = $("#eval-body");
+    var E = window.EVAL;
+    if (!E || !E.items) return;
+    var pct = Math.round(E.ok * 100 / E.total);
+    var h = '<div class="grid3"><div class="stat"><b>' + E.ok + " / " + E.total + "</b><span>통과 (" + pct + '%)<br>' + E.items.length + "문항 x " + E.n + '회</span></div>' +
+      '<div class="stat"><b>' + esc(E.date) + '</b><span>실행일<br>' + (E.glossary ? "용어집 사용(SQL 에이전트와 같은 구성)" : "용어집 없음") + "</span></div>" +
+      '<div class="stat"><b>24 · 24 · 26</b><span>같은 구성으로 세 번 돌린 점수(30점 만점)<br>이 탭은 마지막 실행입니다. 실행마다 1~2점 달라집니다</span></div></div>';
+    h += "<h3>질문별 점수</h3>";
+    h += '<table class="tbl"><thead><tr><th>번호</th><th>질문</th><th>점수</th><th>3회 결과</th></tr></thead><tbody>';
+    E.items.forEach(function (it) {
+      var ok = it.runs.filter(function (r) { return r.pass; }).length;
+      var cls = ok === it.runs.length ? "ok" : (ok === 0 ? "bad" : "warn");
+      h += "<tr><td>" + esc(it.id) + "</td><td>" + esc(it.question) + '</td><td><span class="tag ' + cls + '">' + ok + " / " + it.runs.length + "</span></td><td>" +
+        it.runs.map(function (r) { return '<span class="tag ' + (r.pass ? "ok" : "bad") + '">' + (r.pass ? "통과" : "실패") + "</span>"; }).join(" ") + "</td></tr>";
+    });
+    h += "</tbody></table>";
+    h += "<h3>질문별 상세 (골든 SQL, 생성 SQL, 결과)</h3><p class=\"muted\">질문을 눌러 펼치세요. 골든 SQL은 사람이 정한 정답이고, 시도 1~3은 wxdi Text-to-SQL이 실제로 만든 SQL과 Db2 실행 결과입니다.</p>";
+    E.items.forEach(function (it) {
+      var ok = it.runs.filter(function (r) { return r.pass; }).length;
+      var cls = ok === it.runs.length ? "ok" : (ok === 0 ? "bad" : "warn");
+      h += '<details class="eval-item"><summary><b>' + esc(it.id) + "</b> " + esc(it.question) + ' <span class="tag ' + cls + '">' + ok + " / " + it.runs.length + "</span></summary>";
+      h += "<h4>골든 SQL (정답)</h4><pre>" + esc(it.golden_sql) + "</pre>" + evalTable(it.golden_result);
+      it.runs.forEach(function (r, i) {
+        h += '<div class="run ' + (r.pass ? "pass" : "fail") + '"><h4>시도 ' + (i + 1) + ' <span class="tag ' + (r.pass ? "ok" : "bad") + '">' + (r.pass ? "통과" : "실패") + "</span> <span class=\"muted\">" + esc(r.pass ? "골든과 같은 값" : r.status) + "</span></h4>";
+        h += r.sql ? "<pre>" + esc(r.sql) + "</pre>" : '<p class="muted">SQL을 만들지 못했습니다.</p>';
+        if (r.result) h += evalTable(r.result);
+        else if (r.error) h += '<p class="muted">실행 오류: ' + esc(r.error) + "</p>";
+        h += "</div>";
+      });
+      h += "</details>";
+    });
+    box.innerHTML = h;
   }
 
   /* ---------- 챗 ---------- */
@@ -256,6 +458,7 @@
   /* ---------- 시작 ---------- */
   initData();
   initQuestions();
+  initEval();
   initChat();
   applyHash();
 })();
