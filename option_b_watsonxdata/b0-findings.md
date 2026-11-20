@@ -159,7 +159,8 @@ wxO 에이전트 end-to-end: "삼성전자 어제 체결 중 매수만"(12건)�
 ## Insight 에이전트와 Supervisor (2026-11-19)
 
 **make_chart** ([`findemo_chart_tools.py`](wxo/tools/findemo_chart_tools.py))
-- line, bar, pie를 받아 ECharts `chart_spec`, `fallback_table`, 채팅용 `rendered`(스파크라인, 막대, 표)를 돌려준다.
+- line, bar, pie를 받아 ECharts `chart_spec`을 만든다. 성공하면 wxO 위젯 규격(`_meta["com.ibm.orchestrate/widget"]`, `response_type: user_defined`, `user_defined_type: chart`)과 본문 텍스트(`summary`, 데이터 표, `term_mapping`, `sql`)를 돌려준다. 임베디드 챗에서는 [`docs/app.js`](../docs/app.js)의 `userDefinedResponse` 핸들러가 ECharts로 실제 차트를 그린다. 위젯이 있으면 툴 응답이 그대로 사용자 답변이 되므로, Insight 에이전트가 요약·용어 매핑·SQL을 인자로 함께 넘긴다.
+- 실패하면 위젯 없이 `fallback_table`과 `error`를 돌려준다. 위젯은 임베디드 챗에서만 렌더링된다.
 - x에 `"year,month"`처럼 쉼표로 여러 컬럼을 주면 `2025-10` 라벨로 합친다. pie는 8개를 넘으면 상위 7개와 `기타`로 묶는다.
 
 **생성기 오류와 대응** (`findemo_sql_tools.py`)
