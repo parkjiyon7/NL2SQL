@@ -111,6 +111,7 @@
       <button class="sn" data-sec="questions">예상 질문</button>
       <button class="sn" data-sec="eval">Text-to-SQL 평가</button>
       <button class="sn" data-sec="next">한계와 다음 단계</button>
+      <button class="sn" data-sec="qstatus">질문별 검증 현황</button>
     </nav>
     <main class="demo-main">
 
@@ -130,6 +131,7 @@
           <span><i class="lg-wxo"></i>watsonx Orchestrate (wxO)</span>
           <span><i class="lg-wxdi"></i>watsonx.data intelligence (wxdi)</span>
           <span><i class="lg-db"></i>Db2</span>
+          <span><i class="lg-ext"></i>외부 서비스 (QuickChart)</span>
         </div>
         <div class="fa-box">
           <div class="fa-center"><div class="fa-bubble"><b>사용자 질문</b><span>홈페이지 AI 챗</span></div></div>
@@ -237,6 +239,7 @@
           <span><i class="lg-wxo"></i>watsonx Orchestrate (wxO)</span>
           <span><i class="lg-wxdi"></i>watsonx.data intelligence (wxdi)</span>
           <span><i class="lg-db"></i>Db2</span>
+          <span><i class="lg-ext"></i>외부 서비스 (QuickChart)</span>
           <span><i class="lg-user"></i>사용자</span>
         </div>
         <div class="diagram" id="dg-full" data-key="full"></div>
@@ -246,6 +249,7 @@
           <li><b>watsonx Orchestrate(wxO)</b>는 에이전트가 툴을 부르는 곳입니다. LLM은 호출 순서, 재시도, 답변 정리만 맡습니다.</li>
           <li><b>watsonx.data intelligence(wxdi)</b>는 데이터 설명서(카탈로그, 용어집)와 Text-to-SQL REST를 제공합니다. SQL을 만들기만 하고 실행하지는 않습니다. SQL을 쓰는 모델은 wxdi 내부의 <code>meta-llama/llama-3-3-70b-instruct</code>(질문과 스키마를 맞추는 임베딩은 <code>granite-embedding-278m-multilingual</code>)이며, 응답의 <code>resource_usage.model_usages</code>에서 확인했습니다. 에이전트의 <code>gpt-oss-120b</code>는 SQL을 쓰지 않고 툴 호출 순서와 답변 정리만 맡습니다.</li>
           <li><b>Db2</b>는 데이터가 있는 곳입니다. 만들어진 SQL은 Db2로 직접 실행하며, 조회(SELECT)만 허용합니다.</li>
+          <li><b>QuickChart</b>(외부 서비스)는 차트 이미지를 그려 주는 곳입니다. make_chart가 차트 값(라벨, 숫자)을 보내고 이미지 주소를 받습니다. 값이 이 서비스로 나가므로 실데이터에는 쓰지 않거나 자체 호스팅이 필요합니다.</li>
         </ul>
       </section>
 
@@ -294,11 +298,11 @@
           </ul>
           <dl><dt>모델</dt><dd>gpt-oss-120b</dd><dt>호출 대상</dt><dd>용어·메타데이터 검색, SQL, Insight</dd><dt>하지 않는 일</dt><dd>SQL을 직접 만들거나 숫자를 계산하지 않음</dd></dl>
           <div class="diagram" id="dg-ag-sup" data-key="ag-sup"></div>
-          <h4>샘플 질문 (잘 답하는 3개)</h4>
+          <h4>샘플 질문</h4>
           <ol class="samples">
-            <li><b>삼성전자 어제 체결 중 매수만 보여줘</b><span>S1-03, 골든 3/3. 값 조회는 SQL 에이전트로 연결</span></li>
-            <li><b>수익 좋은 고객 보여줘</b><span>기준(실현손익, 수수료 차감 후)을 되묻고 하위 에이전트는 부르지 않음</span></li>
-            <li><b>VIP 고객 수를 지점별로 알려줘 → 그럼 강남지점만 보여줘</b><span>후속 질문에 직전 조건(VIP)을 이어 붙임</span></li>
+            <li><b>삼성전자 어제 체결 중 매수만 보여줘</b></li>
+            <li><b>수익 좋은 고객 보여줘</b></li>
+            <li><b>VIP 고객 수를 지점별로 알려줘 → 그럼 강남지점만 보여줘</b></li>
           </ol>
           <h4>이 에이전트와 직접 대화</h4>
           <div class="agent-chat" data-ag="sup">
@@ -317,11 +321,11 @@
           </ul>
           <dl><dt>모델</dt><dd>gpt-oss-120b</dd><dt>툴</dt><dd>map_terms, get_catalog</dd><dt>하지 않는 일</dt><dd>SQL을 만들거나 실행하지 않음. 값을 조회하지 않음</dd></dl>
           <div class="diagram" id="dg-ag-ctx" data-key="ag-ctx"></div>
-          <h4>샘플 질문 (잘 답하는 3개)</h4>
+          <h4>샘플 질문</h4>
           <ol class="samples">
-            <li><b>약정이 뭐야?</b><span>동의어 → 표준 용어(거래대금) → EXECUTIONS.EXEC_AMOUNT</span></li>
-            <li><b>VIP는 어떤 기준이야?</b><span>총자산 3억원 이상, CUSTOMER.GRADE 값 VIP</span></li>
-            <li><b>EXECUTIONS 테이블에는 어떤 컬럼이 있고 다른 테이블과 어떻게 연결돼?</b><span>컬럼 설명과 ORDER_ID 외래키(ORDERS 참조)</span></li>
+            <li><b>약정이 뭐야?</b></li>
+            <li><b>VIP는 어떤 기준이야?</b></li>
+            <li><b>EXECUTIONS 테이블에는 어떤 컬럼이 있고 다른 테이블과 어떻게 연결돼?</b></li>
           </ol>
           <h4>이 에이전트와 직접 대화</h4>
           <div class="agent-chat" data-ag="ctx">
@@ -341,11 +345,11 @@
           </ul>
           <dl><dt>모델</dt><dd>gpt-oss-120b (SQL은 쓰지 않고 툴 호출 순서와 답변 정리만. SQL 생성은 wxdi 내부 Llama 3.3 70B)</dd><dt>툴</dt><dd>map_terms, generate_sql, run_sql</dd><dt>하지 않는 일</dt><dd>SQL을 직접 쓰지 않음. 조회만 함</dd></dl>
           <div class="diagram" id="dg-ag-sql" data-key="ag-sql"></div>
-          <h4>샘플 질문 (잘 답하는 3개)</h4>
+          <h4>샘플 질문</h4>
           <ol class="samples">
-            <li><b>잔고가 1억 이상인 고객 이름과 총자산을 보여줘</b><span>S1-02, 골든 3/3. 잔고 → 총자산(CUSTOMER.TOTAL_ASSETS)로 보정</span></li>
-            <li><b>이번 달 약정 상위 고객 5명</b><span>S2-02, 골든 3/3. 약정 → 거래대금 보정, CUSTOMER → ACCOUNT → ORDERS → EXECUTIONS 조인</span></li>
-            <li><b>한도 대비 노출금액 비율이 80%를 넘는 데스크가 있어?</b><span>S5-02, 골든 3/3. 가장 최근 기준일의 노출금액만 합산해 주식2데스크 86%</span></li>
+            <li><b>잔고가 1억 이상인 고객 이름과 총자산을 보여줘</b></li>
+            <li><b>이번 달 약정 상위 고객 5명</b></li>
+            <li><b>한도 대비 노출금액 비율이 80%를 넘는 데스크가 있어?</b></li>
           </ol>
           <h4>이 에이전트와 직접 대화</h4>
           <div class="agent-chat" data-ag="sql">
@@ -359,17 +363,17 @@
           <header><h3>Insight</h3><code>findemo_insight_agent</code></header>
           <ul class="agent-points">
             <li>차트 요청이면 용어 확인, SQL 생성, 실행, 차트 작성까지 처리</li>
-            <li>차트는 이미지(https)로 답변 맨 위에 나오고, 요약, 데이터 표, 용어 매핑, SQL은 make_chart가 한 번에 구성해 답변으로 돌려줌 (wxO 기본 챗과 이 페이지의 챗 모두)</li>
+            <li>차트는 외부 서비스(QuickChart)가 그린 이미지(https)로 답변 맨 위에 나오고, 요약, 데이터 표, 용어 매핑, SQL은 make_chart가 한 번에 구성해 답변으로 돌려줌 (wxO 기본 챗, Supervisor 경유, 이 페이지의 챗 모두)</li>
             <li>"왜 늘었어" 질문은 업종이나 종목으로 한 번 더 쪼개 보기</li>
             <li>확인된 숫자만 근거로 설명</li>
           </ul>
           <dl><dt>모델</dt><dd>gpt-oss-120b (SQL 생성은 wxdi 내부 Llama 3.3 70B)</dd><dt>툴</dt><dd>map_terms, generate_sql, run_sql, make_chart</dd><dt>하지 않는 일</dt><dd>확인되지 않은 원인을 단정하지 않음</dd></dl>
           <div class="diagram" id="dg-ag-ins" data-key="ag-ins"></div>
-          <h4>샘플 질문 (잘 답하는 3개)</h4>
+          <h4>샘플 질문</h4>
           <ol class="samples">
-            <li><b>월별 거래대금 추이를 라인 차트로 보여줘</b><span>S6-01. 연도와 월로 묶어 14개월 추이를 라인 차트로</span></li>
-            <li><b>업종별 거래대금 비중을 파이 차트로 보여줘</b><span>반도체 27%, 2차전지 14%, 채권 13% 순</span></li>
-            <li><b>고객 등급별 평균 총자산을 막대 차트로 보여줘</b><span>VIP, GOLD, GENERAL 3개 막대 비교</span></li>
+            <li><b>월별 거래대금 추이를 라인 차트로 보여줘</b></li>
+            <li><b>업종별 거래대금 비중을 파이 차트로 보여줘</b></li>
+            <li><b>고객 등급별 평균 총자산을 막대 차트로 보여줘</b></li>
           </ol>
           <h4>이 에이전트와 직접 대화</h4>
           <div class="agent-chat" data-ag="ins">
@@ -390,7 +394,7 @@
             <tr><td><code>run_sql</code></td><td>SELECT 또는 WITH 한 문장만 Db2에서 실행합니다. 최대 200행. 쓰기와 다중 문장은 막습니다.</td><td>Db2 FIN_DEMO (SSL)</td><td>columns, rows, row_count, executed_sql, error</td></tr>
             <tr><td><code>map_terms</code></td><td>질문 속 업무 용어를 용어집 표준 용어와 컬럼에 연결합니다. 동의어(약정, 잔고 등)도 wxdi 용어집에서 동의어로 연결된 용어를 읽어 같은 표준 용어로 묶고, 용어 정의를 <code>glossary_hints</code>로 돌려줍니다. 날짜별 스냅샷 테이블(BALANCE_DAILY)의 값은 정의에 "여러 날짜를 더하지 말고 가장 최근 기준일만 쓴다"고 적어 두었습니다(코드가 아니라 용어집이 원본). 용어·메타데이터 검색, SQL, Insight 에이전트가 함께 씁니다.</td><td>wxdi 용어집 (표준 용어 25개 + 동의어 35개 게시)</td><td>mappings, ambiguous, unmapped, glossary_hints</td></tr>
             <tr><td><code>get_catalog</code></td><td>테이블 이름이나 키워드로 컬럼 설명, 키, 개인정보 여부, 외래키를 돌려줍니다.</td><td>wxdi 프로젝트 자산</td><td>tables, columns, keys, pii</td></tr>
-            <tr><td><code>make_chart</code></td><td>조회 결과를 line, bar, pie 차트로 만듭니다. 성공하면 차트 이미지 주소(QuickChart, https)를 마크다운 이미지로 답변 맨 위에 넣고, 요약, 데이터 표, 용어 매핑, SQL까지 조립해 돌려줍니다. 위젯(user_defined)을 함께 실어서 툴 응답이 그대로 사용자 답변이 되고, Insight 에이전트는 요약, 용어 매핑, SQL을 인자로 넘깁니다. 실패하면 표만 돌려줍니다. 파이는 8개를 넘으면 "기타"로 묶습니다.</td><td>없음 (Python)</td><td>성공: 차트 이미지가 든 답변 본문. 실패: fallback_table, error</td></tr>
+            <tr><td><code>make_chart</code></td><td>조회 결과를 line, bar, pie 차트로 만듭니다. 차트 값(라벨, 숫자)을 외부 서비스 QuickChart에 POST해 짧은 이미지 주소(https)를 받고(실패하면 긴 주소로 대체), 그 주소를 마크다운 이미지로 답변 맨 위에 넣고, 요약, 데이터 표, 용어 매핑, SQL까지 조립해 돌려줍니다. 위젯(user_defined)을 함께 실어서 툴 응답이 그대로 사용자 답변이 되고, Insight 에이전트는 요약, 용어 매핑, SQL을 인자로 넘깁니다. 실패하면 표만 돌려줍니다. 파이는 8개를 넘으면 "기타"로 묶습니다.</td><td>없음 (Python)</td><td>성공: 차트 이미지가 든 답변 본문. 실패: fallback_table, error</td></tr>
           </tbody>
         </table>
         <h3>SQL 품질을 지키는 장치</h3>
@@ -416,16 +420,8 @@
 
       <section id="sec-questions" class="sec">
         <h2>예상 질문</h2>
-        <p class="muted">시나리오 질문 목록(<code>shared/spec/questions.md</code>)과 같은 번호입니다. 현재 구성에서 다시 확인한 결과이며, 안 되는 질문도 함께 표시합니다. 오른쪽 메모는 확인 방법입니다.</p>
-        <ul class="plain">
-          <li><b>골든 평가</b>: SQL 정답이 있는 10문항(S1-01, S1-02, S1-03, S2-01, S2-02, S2-04, S2-05, S3-03, S3-04, S5-02)을 3번씩 생성해, 생성한 SQL과 정답 SQL을 Db2에서 실행한 <b>결과 값</b>을 비교합니다. SQL 문장이 달라도 값이 같으면 정답입니다. 가장 최근 평가는 27/30 (90%)이고, 질문별 골든 SQL과 생성 SQL, 결과는 <a href="#demo/eval">Text-to-SQL 평가</a> 탭에 있습니다. "골든 2/3"은 3회 중 맞은 횟수입니다.</li>
-          <li><b>골든에 없는 질문</b>: SQL 정답이 없는 되묻기, 대화, 차트 질문과 정답을 정하지 않은 복합 질의는 에이전트에 직접 물어 확인했습니다.</li>
-          <li><b>골든 구성이 바뀌었습니다</b>: 이전 점수(10문항, 27/30)는 번호와 문항이 달라 직접 비교할 수 없습니다.</li>
-        </ul>
-        <table class="tbl">
-          <thead><tr><th>번호</th><th>구분</th><th>질문</th><th>상태</th></tr></thead>
-          <tbody id="qtable"></tbody>
-        </table>
+        <p class="muted">막(질문 종류)별로 잘 답하는 질문만 골랐습니다. 이런 질문을 할 수 있고, 이런 답이 나와야 하며, 실제로 이런 답이 나오는 것을 확인했습니다. 2026-11-20에 홈 화면의 Supervisor 에이전트에 직접 물어 확인한 결과이고, 에이전트 응답은 실행마다 조금 다를 수 있습니다. 질문 문구가 달라지면 결과가 달라질 수 있으니 아래 문구 그대로 쓰는 것을 권장합니다. 안 되는 질문까지 포함한 전체 목록은 <a href="#demo/qstatus" class="lnk">질문별 검증 현황</a>에 있습니다.</p>
+        <div id="exp-body"></div>
       </section>
 
       <section id="sec-eval" class="sec">
@@ -449,7 +445,8 @@
           <li><b>개인정보</b>: 생성기가 고객 목록 질문에 주민번호, 이메일, 전화번호까지 조회할 수 있습니다. 현재는 Supervisor가 답변에서 빼 줄 뿐이며 SQL 자체는 근거 보기에 보입니다.</li>
           <li><b>응답 시간</b>: SQL 생성이 질문당 12~40초 걸립니다.</li>
           <li><b>날짜 기준</b>: 데이터가 적재일을 기준으로 만들어져 시연 전 재적재가 필요합니다.</li>
-          <li><b>차트 표시 범위</b>: 차트는 Insight 에이전트와 직접 대화할 때 이미지로 나옵니다. 홈의 Supervisor 챗은 Insight 응답을 다시 써서 답하기 때문에 차트 없이 표와 문장만 나옵니다. 이미지는 외부 서비스(QuickChart)가 그리므로 차트에 쓰이는 값(업종, 금액 등)이 그 주소에 담겨 외부로 나갑니다. 데모의 합성 데이터라서 괜찮지만 실데이터에는 자체 호스팅이 필요합니다.</li>
+          <li><b>차트 표시 범위와 외부 전송</b>: 차트는 이미지로 나옵니다. Supervisor 챗에서도 Insight 답변의 이미지 줄을 그대로 옮기도록 지시해 원 · 막대 · 선 차트가 나오는 것을 확인했습니다. 다만 LLM이 옮기는 방식이라 주소가 깨질 가능성이 남아 있어, 짧은 주소를 쓰도록 바꿨습니다. 이미지는 외부 서비스(QuickChart)가 그리므로 차트에 쓰이는 값(업종, 금액 등)이 그 서버로 나가고 저장됩니다. 데모의 합성 데이터라서 괜찮지만 실데이터에는 자체 호스팅이 필요합니다. QuickChart의 보관 정책은 확인하지 못했습니다.</li>
+<li><b>표현에 민감한 질문</b>: 같은 뜻이어도 문장이 달라지면 결과가 달라지는 질문이 있습니다(S3-03, S5-02). 또 "약정"을 "약속"으로 잘못 옮겨 용어 매핑이 빠지는 일이 두 번 있어, 질문을 한 글자도 바꾸지 말고 넘기라는 지시를 에이전트에 넣었습니다. 이후에는 맞았지만 완전히 막지는 못했습니다.</li>
           <li><b>임베디드 챗 보안</b>: 정적 사이트에는 JWT 서명 서버를 둘 수 없어서 wxO 임베디드 챗 보안을 꺼 둔 상태입니다. 이 주소를 아는 사람은 누구나 에이전트를 호출할 수 있으므로 시연이 끝나면 다시 켜야 합니다.</li>
         </ul>
         <h3>다음 단계</h3>
@@ -463,6 +460,21 @@
             <tr><td>정확도</td><td>약한 질문 보강(few-shot, 규칙), 골든 질문 확대</td></tr>
             <tr><td>성능</td><td>SQL 생성 시간 단축, 동시 사용자 시험</td></tr>
           </tbody>
+        </table>
+      </section>
+
+      <section id="sec-qstatus" class="sec">
+        <h2>질문별 검증 현황</h2>
+        <p class="muted">시나리오 질문 목록(<code>shared/spec/questions.md</code>)과 같은 번호입니다. 현재 구성에서 다시 확인한 결과이며, 안 되는 질문도 함께 표시합니다. 오른쪽 메모는 확인 방법입니다.</p>
+        <ul class="plain">
+          <li><b>골든 평가</b>: SQL 정답이 있는 10문항(S1-01, S1-02, S1-03, S2-01, S2-02, S2-04, S2-05, S3-03, S3-04, S5-02)을 3번씩 생성해, 생성한 SQL과 정답 SQL을 Db2에서 실행한 <b>결과 값</b>을 비교합니다. SQL 문장이 달라도 값이 같으면 정답입니다. 가장 최근 평가는 27/30 (90%)이고, 질문별 골든 SQL과 생성 SQL, 결과는 <a href="#demo/eval">Text-to-SQL 평가</a> 탭에 있습니다. "골든 2/3"은 3회 중 맞은 횟수입니다.</li>
+          <li><b>표현에 민감한 질문</b>: S3-03과 S5-02는 이 표에 골든 평가에 쓴 문구로 적었습니다. 같은 뜻의 다른 문구("종목별 거래대금 순위를 섹터 내에서 매겨줘", "한도의 80%를 넘긴 데스크가 있어?")로 물으면 전체 순위가 나오거나 "없음"이 나온 적이 있어 '불안정'으로 표시했습니다.</li>
+          <li><b>골든에 없는 질문</b>: SQL 정답이 없는 되묻기, 대화, 차트 질문과 정답을 정하지 않은 복합 질의는 에이전트에 직접 물어 확인했습니다.</li>
+          <li><b>골든 구성이 바뀌었습니다</b>: 이전 점수(10문항, 27/30)는 번호와 문항이 달라 직접 비교할 수 없습니다.</li>
+        </ul>
+        <table class="tbl">
+          <thead><tr><th>번호</th><th>구분</th><th>질문</th><th>상태</th></tr></thead>
+          <tbody id="qtable"></tbody>
         </table>
       </section>
 

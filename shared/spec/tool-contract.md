@@ -133,7 +133,7 @@ A안과 B안은 이 계약을 바꾸지 않는다. B안에서 바뀌는 것은 �
 | `fallback_table` | 차트를 못 보여줄 때 대신 쓰는 마크다운 표 |
 | `rendered` | 렌더링 결과 형태. A-2에서 wxO 표시 방식을 확인한 뒤 확정 (`image_base64`, `markdown` 등) |
 
-B안(wxO) 구현 메모: 성공하면 위 필드 대신 wxO 응답 규격으로 돌려준다. `content`에 답변 본문(요약, 표, 용어 매핑, SQL)을, `_meta["com.ibm.orchestrate/widget"]`에 `{response_type: "user_defined", user_defined: {user_defined_type: "chart", title, chart_spec}}`를 담는다. 위젯이 있으면 에이전트가 응답을 다시 쓰지 않고 그대로 사용자에게 전달된다. 차트는 `content` 맨 위의 https 마크다운 이미지(QuickChart)로 나와서 기본 챗과 임베디드 챗 모두에서 보인다. 실패하면 위젯 없이 `fallback_table`과 `error`를 돌려준다.
+B안(wxO) 구현 메모: 성공하면 위 필드 대신 wxO 응답 규격으로 돌려준다. `content`에 답변 본문(요약, 표, 용어 매핑, SQL)을, `_meta["com.ibm.orchestrate/widget"]`에 `{response_type: "user_defined", user_defined: {user_defined_type: "chart", title, chart_spec}}`를 담는다. 위젯이 있으면 에이전트가 응답을 다시 쓰지 않고 그대로 사용자에게 전달된다. 차트는 `content` 맨 위의 https 마크다운 이미지(QuickChart)로 나와서 기본 챗과 임베디드 챗 모두에서 보인다. 이미지 주소는 차트 설정을 `https://quickchart.io/chart/create`에 POST해 받은 짧은 주소(`/chart/render/<id>`)를 쓰고, 실패하면 `%` 인코딩한 긴 주소로 대체한다(긴 주소는 Supervisor LLM이 옮기다 글자를 빠뜨린 적이 있어 짧은 주소를 우선한다). 차트 값(라벨, 숫자)이 외부 서비스로 나가고 POST 시에는 그쪽 서버에 저장되므로 실데이터에는 자체 호스팅이 필요하다. 실패하면 위젯 없이 `fallback_table`과 `error`를 돌려준다.
 
 ## check_input (2단계)
 

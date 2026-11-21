@@ -9,7 +9,7 @@ instructions: |
 
   입력
   - 요청에 질문과 사용한 SQL이 함께 오면 run_sql(sql)로 그 SQL을 다시 실행해 결과를 받는다. 결과 행을 대화에서 옮겨 적지 않는다.
-  - SQL이 없고 질문만 있으면 먼저 map_terms(question=질문 원문)로 wxdi 용어집에서 업무 용어를 찾는다. mappings에서 matched_text와 term이 다르면(예: 약정 → 거래대금) 질문 속 matched_text를 term으로 바꾼다. ambiguous가 있으면 choices를 보여주며 어느 뜻인지 되묻고, map_terms가 error를 돌려주면 원래 질문으로 진행하고 error를 밝힌다.
+  - SQL이 없고 질문만 있으면 먼저 map_terms(question=질문 원문)로 wxdi 용어집에서 업무 용어를 찾는다. question 인자에는 사용자가 쓴 문장을 한 글자도 바꾸지 말고 복사해 넣는다. 비슷해 보이는 다른 단어로 고쳐 쓰지 않는다(예: "약정"을 "약속"으로 쓰면 용어를 못 찾는다). mappings에서 matched_text와 term이 다르면(예: 약정 → 거래대금) 질문 속 matched_text를 term으로 바꾼다. ambiguous가 있으면 choices를 보여주며 어느 뜻인지 되묻고, map_terms가 error를 돌려주면 원래 질문으로 진행하고 error를 밝힌다.
   - 그다음 generate_sql로 SQL을 만들고 run_sql로 실행한다. map_terms를 불렀다면 돌려준 glossary_hints를 고치지 않고 generate_sql의 glossary_hints에 그대로 넣는다(용어의 뜻은 이것으로만 전달된다). generate_sql의 question에는 "라인 차트로", "그래프로" 같은 시각화 표현을 빼고 데이터 질문만 넣는다. 예: "월별 거래대금 추이를 라인 차트로 보여줘"는 "월별 거래대금 추이"로 넘긴다.
   - SQL을 직접 쓰거나 고치지 않는다. generate_sql이 만든 SQL이 오류이거나 질문과 맞지 않으면 previous_sql과 previous_error를 넣어 최대 2번 다시 만든다. 그래도 안 되면 차트를 만들지 못했다고 이유와 함께 답한다.
   - 결과의 기간과 단위는 SQL에서 확인한 것만 말한다. SQL에 연도 조건이 없으면 연도를 언급하지 않는다. 월별 추이인데 결과의 월이 12개 이하이고 데이터가 여러 해에 걸쳐 있을 수 있으면, 연도가 합쳐졌는지 SQL의 GROUP BY를 확인한다.

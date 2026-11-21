@@ -1,7 +1,7 @@
 """FIN_DEMO 차트 툴 (B안). run_sql 결과를 차트 명세(ECharts option)로 바꾼다.
 
 계약: shared/spec/tool-contract.md (make_chart). 실패해도 예외를 던지지 않고 error 필드를 채운다.
-성공하면 차트 이미지(QuickChart https 주소, 마크다운 이미지)를 답변 맨 위에 넣고 요약, 표, 용어 매핑, SQL까지 조립해 돌려준다.
+성공하면 차트 이미지(QuickChart https 주소, 마크다운 이미지; 먼저 /chart/create POST로 짧은 주소를 받고 실패하면 긴 주소)를 답변 맨 위에 넣고 요약, 표, 용어 매핑, SQL까지 조립해 돌려준다.
 위젯(user_defined)은 툴 응답을 그대로 최종 답변으로 쓰게 하려고 함께 싣는다. `build_chart`의 `rendered`(막대 █, 스파크라인)는
 이미지를 못 쓰는 화면용 텍스트 대체이며 wxO 응답에는 쓰지 않는다.
 """
@@ -10,6 +10,7 @@ import time
 from urllib.parse import quote
 from typing import Any, Dict, List, Optional
 
+import requests
 from ibm_watsonx_orchestrate.agent_builder.tools import ToolPermission, tool
 
 CHART_TYPES = ("line", "bar", "pie")
@@ -116,6 +117,13 @@ def _chart_url(chart_type: str, cats: List[str], series_vals: List[List[float]],
     if unit and chart_type != "pie":
         opts["scales"] = {"y": {"title": {"display": True, "text": f"({unit})"}}}
     cfg = {"type": chart_type, "data": {"labels": cats, "datasets": sets}, "options": opts}
+    try:  # 짧은 주소를 먼저 받는다. LLM이 긴 %인코딩 주소를 복사하다 글자를 빠뜨리기 때문
+        r = requests.post("https://quickchart.io/chart/create", timeout=8, json={
+            "version": "4", "width": 640, "height": 340, "backgroundColor": "white", "format": "png", "chart": cfg})
+        if r.ok and r.json().get("url", "").startswith("https://"):
+            return r.json()["url"]
+    except Exception:  # noqa: BLE001
+        pass
     return ("https://quickchart.io/chart?v=4&w=640&h=340&bkg=white&c="
             + quote(json.dumps(cfg, ensure_ascii=False, separators=(",", ":"))))
 

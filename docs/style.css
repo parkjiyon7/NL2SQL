@@ -236,6 +236,7 @@ pre code{background:none;padding:0;color:inherit}
 .lg-wxdi{background:#dcfce7;border-color:#0f7b3f}
 .lg-db{background:#ffedd5;border-color:#c2410c}
 .lg-user{background:#f1f5f9;border-color:#64748b}
+.lg-ext{background:#fef3c7;border-color:#b45309}
 .chip{display:inline-block;padding:1px 8px;border-radius:5px;font-size:11.5px;font-weight:600;border:1px solid;margin:1px 2px 1px 0;white-space:nowrap}
 .chip.wxo{background:#dbeafe;border-color:#1b5fc1;color:#0a2a5e}
 .chip.wxdi{background:#dcfce7;border-color:#0f7b3f;color:#064e2b}
@@ -275,3 +276,13 @@ pre code{background:none;padding:0;color:inherit}
 .agent-chat p{margin:0 0 10px;font-size:13px}
 .ag-chat-host{height:580px;margin-top:10px;border:1px solid var(--line);border-radius:10px;overflow:hidden;position:relative}
 .ag-chat-host[hidden]{display:none}
+
+/* ---- 예상 질문 카드 ---- */
+.qa{border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin:10px 0;background:#fff}
+.qa .q{font-weight:700;font-size:15px;margin-bottom:8px;color:#0f172a}
+.qa dl{margin:0;display:grid;grid-template-columns:120px 1fr;gap:6px 14px;font-size:13.5px}
+.qa dt{color:var(--muted);font-weight:600}
+.qa dd{margin:0}
+.qa dd.ok-line{color:var(--ok)}
+.qa .warn-note{color:var(--warn);font-size:12.5px}
+.qa img{display:block;max-width:100%;width:560px;border:1px solid var(--line);border-radius:6px;margin-top:8px}
