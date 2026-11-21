@@ -318,6 +318,32 @@
     renderTable(names[0]);
   }
 
+  /* ---------- 툴 섹션 탭, 용어집 ---------- */
+  function initGlossary() {
+    var tabs = $("#tool-tabs");
+    tabs.addEventListener("click", function (e) {
+      var b = e.target.closest("button");
+      if (!b) return;
+      $$("#tool-tabs button").forEach(function (x) { x.classList.toggle("active", x === b); });
+      $("#tp-tools").hidden = b.dataset.p !== "tools";
+      $("#tp-gloss").hidden = b.dataset.p !== "gloss";
+    });
+    var G = window.GLOSSARY;
+    if (!G) { $("#tp-gloss").innerHTML = '<p class="muted">glossary.js를 불러오지 못했습니다.</p>'; return; }
+    $("#gl-cat").textContent = G.category;
+    $("#gl-n").textContent = G.terms.length;
+    $("#gl-syn").textContent = G.synonymCount;
+    $("#gl-body").innerHTML = G.terms.map(function (t) {
+      var rel = [];
+      if (t.partOf.length) rel.push("일부: " + t.partOf.join(", "));
+      if (t.typeOf.length) rel.push("종류: " + t.typeOf.join(", "));
+      if (t.related.length) rel.push("관련: " + t.related.join(", "));
+      return "<tr><td><b>" + esc(t.name) + "</b></td><td>" + esc(t.desc) + "</td><td>" +
+        t.synonyms.map(function (x) { return '<span class="chip wxdi">' + esc(x) + "</span>"; }).join(" ") +
+        "</td><td>" + esc(rel.join(" / ")) + "</td></tr>";
+    }).join("");
+  }
+
   /* ---------- 질문별 검증 현황 (전체 목록) ---------- */
   var Q = [
     ["S1-01", "단순 조회", "오늘 우리 지점(강남지점) 체결 건수와 거래대금 알려줘", "불안정", "골든 3/3 (직전 3/3, 그 앞 1/3). Supervisor 시험에서는 오늘 7건, 104,115,980원. 가끔 없는 컬럼을 지어내 SQL0206 오류가 남"],
@@ -615,6 +641,7 @@
   initData();
   initQuestions();
   initExpected();
+  initGlossary();
   initEval();
   initChat();
   applyHash();

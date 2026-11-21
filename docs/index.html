@@ -386,6 +386,11 @@
 
       <section id="sec-tools" class="sec">
         <h2>툴</h2>
+        <div class="tabs-inline" id="tool-tabs">
+          <button data-p="tools" class="active">툴 목록</button>
+          <button data-p="gloss">용어집 (wxdi)</button>
+        </div>
+        <div id="tp-tools">
         <p class="muted">모든 툴은 예외 대신 <code>error</code> 필드를 채워 돌려주고, <code>engine</code>과 <code>elapsed_ms</code>를 함께 반환합니다.</p>
         <table class="tbl">
           <thead><tr><th>툴</th><th>하는 일</th><th>연결 대상</th><th>주요 출력</th></tr></thead>
@@ -406,6 +411,20 @@
           <li><b>고정 규칙 5개(instructions)</b>: 스키마 인용 규칙, 날짜(어제, 월), 대문자 식별자, 컬럼 한정, 숫자 단위(1억 = 100000000). Db2 문법과 한국어 표현만 두었습니다</li>
           <li><b>fix_qualifiers</b>: Db2가 거부하는 컬럼 한정 방식을 "FIN_DEMO"."T"."C" 형태로 자동 교정. 테이블 목록은 카탈로그에서 읽음</li>
         </ul>
+        </div>
+        <div id="tp-gloss" hidden>
+          <p class="muted">업무 용어와 동의어는 코드나 에이전트 지시문에 적지 않고 <b>watsonx.data intelligence(wxdi) 비즈니스 용어집</b>에 등록했습니다. 카테고리 <b id="gl-cat"></b>에 표준 용어 <b id="gl-n"></b>개와 동의어 용어 <b id="gl-syn"></b>개를 가져와 게시했고(wxdi 용어집에서 "약정", "업종 내 순위"를 조회해 게시된 것을 확인했습니다), <code>map_terms</code>가 질문을 받을 때마다 여기서 읽습니다. 용어를 고치거나 늘려도 툴 코드는 바뀌지 않습니다.</p>
+          <ul class="plain">
+            <li><b>정의에 컬럼명을 적어 둡니다</b>: 정의 속 <code>EXECUTIONS.EXEC_AMOUNT</code> 같은 컬럼명을 map_terms가 읽어 "대응 컬럼"으로 돌려주고, generate_sql이 질문 뒤에 Note로 붙입니다.</li>
+            <li><b>동의어도 하나의 용어입니다</b>: "약정"은 별도 용어이며 표준 용어 "거래대금"에 동의어로 연결돼 있습니다. 질문의 "약정"을 찾으면 "거래대금"의 정의를 가져옵니다.</li>
+            <li><b>같은 정의를 두지 않고 관계로 잇습니다</b>: 관련 용어, 일부(예수금은 총자산의 일부), 하위 종류(지정가 주문은 주문의 한 종류)로 표시했습니다.</li>
+          </ul>
+          <table class="tbl">
+            <thead><tr><th>표준 용어</th><th>정의 (wxdi 용어집)</th><th>동의어</th><th>관계</th></tr></thead>
+            <tbody id="gl-body"></tbody>
+          </table>
+          <p class="muted">이 표는 wxdi에 가져온 용어집 원본(<code>option_b_watsonxdata/glossary/build_glossary_csv.py</code>)에서 만들었습니다. wxdi를 실시간으로 읽는 화면은 아닙니다.</p>
+        </div>
       </section>
 
       <section id="sec-data" class="sec">
@@ -511,6 +530,7 @@ GROUP BY YEAR(EXEC_TS), MONTH(EXEC_TS)</pre>
 
 <script src="chat-config.js"></script>
 <script src="samples.js"></script>
+<script src="glossary.js"></script>
 <script src="eval_results.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 <script src="app.js"></script>
