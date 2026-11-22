@@ -378,8 +378,7 @@
     if (!F) { $("#tp-fewshot").innerHTML = '<p class="muted">fewshots.js를 불러오지 못했습니다.</p>'; return; }
     $("#fs-n").textContent = F.length;
     body.innerHTML = F.map(function (f, i) {
-      return "<tr><td>" + (i + 1) + "</td><td>" + esc(f.q) + "</td><td>" + esc(f.evidence) + "</td></tr>" +
-        '<tr><td>SQL</td><td colspan="2"><pre>' + esc(f.sql) + "</pre></td></tr>";
+      return "<tr><td>" + (i + 1) + "</td><td>" + esc(f.q) + "</td><td>" + esc(f.evidence) + "</td><td><details><summary>SQL 보기</summary><pre>" + esc(f.sql) + "</pre></details></td></tr>";
     }).join("");
     var ab = $("#fs-ab");
     if (ab) ab.innerHTML = evalAB();

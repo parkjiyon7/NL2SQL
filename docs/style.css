@@ -293,3 +293,4 @@ pre code{background:none;padding:0;color:inherit}
 .pill.ag{background:#fff;border-color:#1b5fc1;color:#0a2a5e}
 .pill.tl{background:#f1f5f9;border-color:#64748b;color:#1f2937;font-family:ui-monospace,Menlo,monospace;font-size:.92em}
 .stat .pill{font-size:12px;margin:2px 2px 2px 0}
+#fs-body pre{max-height:200px;overflow:auto;white-space:pre-wrap;word-break:break-word;margin:6px 0 0}
