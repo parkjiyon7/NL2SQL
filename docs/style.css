@@ -294,3 +294,9 @@ pre code{background:none;padding:0;color:inherit}
 .pill.tl{background:#f1f5f9;border-color:#64748b;color:#1f2937;font-family:ui-monospace,Menlo,monospace;font-size:.92em}
 .stat .pill{font-size:12px;margin:2px 2px 2px 0}
 #fs-body pre{max-height:200px;overflow:auto;white-space:pre-wrap;word-break:break-word;margin:6px 0 0}
+#dg-arch .cluster-label foreignObject{overflow:visible}
+#dg-arch .cluster-label .nodeLabel{font-size:30px!important;font-weight:800!important;letter-spacing:1px}
+#dg-arch #AGENTS .cluster-label div{transform:translateX(-418px)}
+#dg-arch #TOOLS .cluster-label div{transform:translateX(-455px)}
+#dg-arch #AGENTS .cluster-label .nodeLabel{color:#1b5fc1!important}
+#dg-arch #TOOLS .cluster-label .nodeLabel{color:#334155!important}

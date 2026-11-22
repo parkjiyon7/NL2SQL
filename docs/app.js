@@ -291,7 +291,7 @@
       }
       if (!mermaidReady) {
         window.mermaid.initialize({ startOnLoad: false, securityLevel: "loose", theme: "neutral", themeVariables: { fontSize: "15px" },
-          flowchart: { htmlLabels: true, curve: "basis", nodeSpacing: 40, rankSpacing: 46, padding: 14 } });
+          flowchart: { htmlLabels: true, curve: "basis", nodeSpacing: 40, rankSpacing: 46, padding: 14, subGraphTitleMargin: { top: 6, bottom: 24 } } });
         mermaidReady = true;
       }
       rendered[key] = true;
