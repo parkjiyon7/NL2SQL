@@ -288,3 +288,8 @@ pre code{background:none;padding:0;color:inherit}
 .qa img{display:block;max-width:100%;width:560px;border:1px solid var(--line);border-radius:6px;margin-top:8px}
 #gl-body td:last-child{min-width:130px}
 #qtable td:first-child{white-space:nowrap}
+
+.pill{display:inline-block;padding:2px 12px;border-radius:999px;border:1px solid;font-style:normal;font-weight:600;white-space:nowrap;line-height:1.5}
+.pill.ag{background:#fff;border-color:#1b5fc1;color:#0a2a5e}
+.pill.tl{background:#f1f5f9;border-color:#64748b;color:#1f2937;font-family:ui-monospace,Menlo,monospace;font-size:.92em}
+.stat .pill{font-size:12px;margin:2px 2px 2px 0}
