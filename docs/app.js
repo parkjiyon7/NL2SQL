@@ -362,9 +362,11 @@
     if (!F) { $("#tp-fewshot").innerHTML = '<p class="muted">fewshots.js를 불러오지 못했습니다.</p>'; return; }
     $("#fs-n").textContent = F.length;
     body.innerHTML = F.map(function (f, i) {
-      var g = f.golden ? esc(f.golden) + (f.diff ? '<br><span class="muted">다른 점: ' + esc(f.diff) + "</span>" : "") : "-";
-      return "<tr><td>" + (i + 1) + "</td><td>" + esc(f.q) + "</td><td>" + esc(f.evidence) + "</td><td><details><summary>SQL 보기</summary><pre>" + esc(f.sql) + "</pre></details></td><td>" + g + "</td></tr>";
+      return "<tr><td>" + (i + 1) + "</td><td>" + esc(f.q) + "</td><td>" + esc(f.evidence) + "</td></tr>" +
+        '<tr><td>SQL</td><td colspan="2"><pre>' + esc(f.sql) + "</pre></td></tr>";
     }).join("");
+    var ab = $("#fs-ab");
+    if (ab) ab.innerHTML = evalAB();
   }
 
   /* ---------- 질문별 검증 현황 (전체 목록) ---------- */
@@ -516,7 +518,7 @@
     var pct = Math.round(E.ok * 100 / E.total);
     var h = '<div class="grid3"><div class="stat"><b>' + E.ok + " / " + E.total + "</b><span>통과 (" + pct + '%)<br>' + E.items.length + "문항 x " + E.n + '회</span></div>' +
       '<div class="stat"><b>' + esc(E.date) + '</b><span>실행일<br>' + (E.glossary ? "용어집 사용(SQL 에이전트와 같은 구성)" : "용어집 없음") + "</span></div>" +
-      (window.EVAL_AB ? '<div class="stat"><b>' + window.EVAL_AB["with"].ok + " vs " + window.EVAL_AB.without.ok + "</b><span>few-shot 있음 vs 없음 (각 " + window.EVAL_AB["with"].total + '번 중 통과)<br>아래 비교표 참고. 이 탭의 상세는 "있음" 실행입니다</span></div></div>' : "</div>");
+      '<div class="stat"><b>값 비교</b><span>채점 방식<br>골든 SQL과 생성 SQL을 Db2에서 실행해 결과 값이 같은지 봅니다</span></div></div>';
     h += "<h3>질문별 점수</h3>";
     h += '<table class="tbl"><thead><tr><th>번호</th><th>질문</th><th>점수</th><th>회별 결과</th></tr></thead><tbody>';
     E.items.forEach(function (it) {
@@ -526,7 +528,6 @@
         it.runs.map(function (r) { return '<span class="tag ' + (r.pass ? "ok" : "bad") + '">' + (r.pass ? "통과" : "실패") + "</span>"; }).join(" ") + "</td></tr>";
     });
     h += "</tbody></table>";
-    h += evalAB();
     h += "<h3>질문별 상세 (골든 SQL, 생성 SQL, 결과)</h3><p class=\"muted\">질문을 눌러 펼치세요. 골든 SQL은 사람이 정한 정답이고, 시도 번호는 wxdi Text-to-SQL이 실제로 만든 SQL과 Db2 실행 결과입니다.</p>";
     E.items.forEach(function (it) {
       var ok = it.runs.filter(function (r) { return r.pass; }).length;
