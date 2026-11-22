@@ -29,6 +29,7 @@
     '  T2 --> C["wxdi 카탈로그 (프로젝트 자산)"]',
     '  T3 -->|"FK 조인 조건 읽기"| C',
     '  T3 -->|"질문 + Note"| TS["wxdi Text-to-SQL REST<br/>(내부 LLM: Llama 3.3 70B)"]',
+    '  FS["wxdi SQL 예시 (few-shot 17건)"] -->|"비슷한 예시 3건"| TS',
     '  T4 --> DB[("Db2 FIN_DEMO")]',
     '  T5 -->|"차트 값(라벨, 숫자)"| QC["QuickChart (외부 서비스)<br/>차트 이미지(https) 생성"]'
   ].join("\n");
@@ -48,6 +49,7 @@
     "  W-->>I: 거래대금 = EXEC_AMOUNT (약정 같은 동의어도 같은 용어)",
     "  I->>W: generate_sql (표준 용어로 바꾼 질문 + 용어 정의)",
     "  W->>W: 카탈로그에서 FK 조인 조건을 읽어 Note로 첨부",
+    "  W->>W: 질문과 비슷한 SQL 예시(few-shot) 3건을 프롬프트에 추가",
     "  W-->>I: SQL",
     "  I->>D: run_sql",
     "  D-->>I: 월별 집계 행",
@@ -84,8 +86,9 @@
     '  subgraph WXDI["watsonx.data intelligence (wxdi)"]',
     '    GL[("용어집")]:::wxdi',
     '    CAT[("카탈로그")]:::wxdi',
+    '    FS[("SQL 예시<br/>few-shot 17건")]:::wxdi',
     '    TS["Text-to-SQL<br/>Llama 3.3 70B"]:::wxdi',
-    '    GL ~~~ CAT ~~~ TS',
+    '    GL ~~~ CAT ~~~ FS ~~~ TS',
     "  end",
     '  DB[("Db2 FIN_DEMO")]:::db',
     '  CTX -->|"map_terms, get_catalog"| WXDI',
@@ -126,8 +129,10 @@
     '  subgraph WXDI["watsonx.data intelligence (wxdi)"]',
     '    GL[("용어집<br/>표준 용어 25 + 동의어 35")]:::wxdi',
     '    CAT[("카탈로그<br/>테이블 9, FK 8")]:::wxdi',
+    '    FS[("SQL 예시<br/>few-shot 17건")]:::wxdi',
     '    TS["Text-to-SQL<br/>SQL 생성, Llama 3.3 70B"]:::wxdi',
-    '    GL ~~~ CAT ~~~ TS',
+    '    GL ~~~ CAT ~~~ FS ~~~ TS',
+    '    FS -->|"비슷한 예시 3건"| TS',
     "  end",
     '  DB[("Db2 FIN_DEMO")]:::db',
     '  T1 -->|"용어, 정의 조회"| GL',
@@ -150,8 +155,10 @@
     '  subgraph WXDI["watsonx.data intelligence (wxdi)"]',
     '    GL[("용어집")]:::wxdi',
     '    CAT[("카탈로그")]:::wxdi',
+    '    FS[("SQL 예시<br/>few-shot 17건")]:::wxdi',
     '    TS["Text-to-SQL<br/>Llama 3.3 70B"]:::wxdi',
-    '    GL ~~~ CAT ~~~ TS',
+    '    GL ~~~ CAT ~~~ FS ~~~ TS',
+    '    FS -->|"비슷한 예시 3건"| TS',
     "  end",
     '  DB[("Db2 FIN_DEMO")]:::db',
     '  T1 -->|"용어, 정의 조회"| GL',
@@ -189,6 +196,7 @@
     '  subgraph WXDI["watsonx.data intelligence (wxdi)"]',
     '    GL[("비즈니스 용어집<br/>표준 용어 25 + 동의어 35")]:::wxdi',
     '    CAT[("카탈로그<br/>테이블 9, FK 8, PII 표시")]:::wxdi',
+    '    FS[("SQL 예시 (few-shot)<br/>17건, 데이터 자산 CSV")]:::wxdi',
     '    TS["Text-to-SQL (generate_queries REST)<br/>LLM: meta-llama/llama-3-3-70b-instruct<br/>임베딩: granite-embedding-278m-multilingual"]:::wxdi',
     "  end",
     '  DB[("Db2 FIN_DEMO<br/>9개 테이블")]:::db',
@@ -199,6 +207,7 @@
     '  T3 -->|"FK 조인 조건 조회"| CAT',
     '  T3 -->|"질문 + Note"| TS',
     '  T4 -->|"SELECT 실행"| DB',
+    '  FS -->|"비슷한 예시 3건"| TS',
     '  TS -.->|"스키마 참조"| CAT',
     '  DB -.->|"메타데이터 가져오기"| CAT'
   ]);
@@ -327,6 +336,7 @@
       $$("#tool-tabs button").forEach(function (x) { x.classList.toggle("active", x === b); });
       $("#tp-tools").hidden = b.dataset.p !== "tools";
       $("#tp-gloss").hidden = b.dataset.p !== "gloss";
+      $("#tp-fewshot").hidden = b.dataset.p !== "fewshot";
     });
     var G = window.GLOSSARY;
     if (!G) { $("#tp-gloss").innerHTML = '<p class="muted">glossary.js를 불러오지 못했습니다.</p>'; return; }
@@ -341,6 +351,19 @@
       return "<tr><td><b>" + esc(t.name) + "</b></td><td>" + esc(t.desc) + "</td><td>" +
         t.synonyms.map(function (x) { return '<span class="chip wxdi">' + esc(x) + "</span>"; }).join(" ") +
         "</td><td>" + esc(rel.join(" / ")) + "</td></tr>";
+    }).join("");
+  }
+
+  /* ---------- Few-shot 예시 (fewshots.js) ---------- */
+  function initFewshots() {
+    var body = $("#fs-body");
+    if (!body) return;
+    var F = window.FEWSHOTS;
+    if (!F) { $("#tp-fewshot").innerHTML = '<p class="muted">fewshots.js를 불러오지 못했습니다.</p>'; return; }
+    $("#fs-n").textContent = F.length;
+    body.innerHTML = F.map(function (f, i) {
+      var g = f.golden ? esc(f.golden) + (f.diff ? '<br><span class="muted">다른 점: ' + esc(f.diff) + "</span>" : "") : "-";
+      return "<tr><td>" + (i + 1) + "</td><td>" + esc(f.q) + "</td><td>" + esc(f.evidence) + "</td><td><details><summary>SQL 보기</summary><pre>" + esc(f.sql) + "</pre></details></td><td>" + g + "</td></tr>";
     }).join("");
   }
 
@@ -467,6 +490,25 @@
     return h + "</tbody></table></div><p class=\"muted\">총 " + esc(r.row_count) + "행" + (r.row_count > r.rows.length ? " 중 앞 " + r.rows.length + "행" : "") + "</p>";
   }
 
+  function evalAB() {
+    var A = window.EVAL_AB;
+    if (!A) return "";
+    var h = "<h3>few-shot 있음 / 없음 비교</h3>" +
+      '<p class="muted">같은 데이터, 같은 골든 10문항을 ' + A["with"].n + "번씩 생성했습니다(" + esc(A["with"].date) + "). 있음 " + A["with"].ok + "/" + A["with"].total +
+      ", 없음 " + A.without.ok + "/" + A.without.total + ". 표본이 작고 실행마다 결과가 달라서 방향만 볼 수 있습니다. 예시 17건 중 10건은 골든과 구조가 비슷해서, 구조가 다른 새 질문에서의 효과는 아직 확인하지 못했습니다.</p>";
+    h += '<div class="scroll-x"><table class="tbl"><thead><tr><th>번호</th><th>질문</th><th>있음</th><th>없음</th><th>없음에서 실패한 이유</th></tr></thead><tbody>';
+    A.items.forEach(function (it) {
+      var w = it["with"].filter(function (x) { return x; }).length;
+      var wo = it.without.filter(function (x) { return x.pass; }).length;
+      var c1 = w === it["with"].length ? "ok" : (w === 0 ? "bad" : "warn");
+      var c2 = wo === it.without.length ? "ok" : (wo === 0 ? "bad" : "warn");
+      var why = [];
+      it.without.forEach(function (x) { if (!x.pass && why.indexOf(x.status) < 0) why.push(x.status); });
+      h += "<tr><td>" + esc(it.id) + "</td><td>" + esc(it.question) + '</td><td><span class="tag ' + c1 + '">' + w + " / " + it["with"].length + '</span></td><td><span class="tag ' + c2 + '">' + wo + " / " + it.without.length + "</span></td><td>" + (why.length ? esc(why.join(", ")) : "-") + "</td></tr>";
+    });
+    return h + "</tbody></table></div>";
+  }
+
   function initEval() {
     var box = $("#eval-body");
     var E = window.EVAL;
@@ -474,9 +516,9 @@
     var pct = Math.round(E.ok * 100 / E.total);
     var h = '<div class="grid3"><div class="stat"><b>' + E.ok + " / " + E.total + "</b><span>통과 (" + pct + '%)<br>' + E.items.length + "문항 x " + E.n + '회</span></div>' +
       '<div class="stat"><b>' + esc(E.date) + '</b><span>실행일<br>' + (E.glossary ? "용어집 사용(SQL 에이전트와 같은 구성)" : "용어집 없음") + "</span></div>" +
-      '<div class="stat"><b>27 → 27</b><span>few-shot 반영 전(11-20)과 반영 후(11-22), 30점 만점<br>총점은 같고 실패한 문항이 바뀌었습니다. 이 탭은 마지막 실행입니다</span></div></div>';
+      (window.EVAL_AB ? '<div class="stat"><b>' + window.EVAL_AB["with"].ok + " vs " + window.EVAL_AB.without.ok + "</b><span>few-shot 있음 vs 없음 (각 " + window.EVAL_AB["with"].total + '번 중 통과)<br>아래 비교표 참고. 이 탭의 상세는 "있음" 실행입니다</span></div></div>' : "</div>");
     h += "<h3>질문별 점수</h3>";
-    h += '<table class="tbl"><thead><tr><th>번호</th><th>질문</th><th>점수</th><th>3회 결과</th></tr></thead><tbody>';
+    h += '<table class="tbl"><thead><tr><th>번호</th><th>질문</th><th>점수</th><th>회별 결과</th></tr></thead><tbody>';
     E.items.forEach(function (it) {
       var ok = it.runs.filter(function (r) { return r.pass; }).length;
       var cls = ok === it.runs.length ? "ok" : (ok === 0 ? "bad" : "warn");
@@ -484,7 +526,8 @@
         it.runs.map(function (r) { return '<span class="tag ' + (r.pass ? "ok" : "bad") + '">' + (r.pass ? "통과" : "실패") + "</span>"; }).join(" ") + "</td></tr>";
     });
     h += "</tbody></table>";
-    h += "<h3>질문별 상세 (골든 SQL, 생성 SQL, 결과)</h3><p class=\"muted\">질문을 눌러 펼치세요. 골든 SQL은 사람이 정한 정답이고, 시도 1~3은 wxdi Text-to-SQL이 실제로 만든 SQL과 Db2 실행 결과입니다.</p>";
+    h += evalAB();
+    h += "<h3>질문별 상세 (골든 SQL, 생성 SQL, 결과)</h3><p class=\"muted\">질문을 눌러 펼치세요. 골든 SQL은 사람이 정한 정답이고, 시도 번호는 wxdi Text-to-SQL이 실제로 만든 SQL과 Db2 실행 결과입니다.</p>";
     E.items.forEach(function (it) {
       var ok = it.runs.filter(function (r) { return r.pass; }).length;
       var cls = ok === it.runs.length ? "ok" : (ok === 0 ? "bad" : "warn");
@@ -653,6 +696,7 @@
   initQuestions();
   initExpected();
   initGlossary();
+  initFewshots();
   initEval();
   initChat();
   applyHash();

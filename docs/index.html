@@ -122,8 +122,8 @@
           <div class="stat"><b>5</b><span>툴<br>generate_sql, run_sql, map_terms, get_catalog, make_chart</span></div>
           <div class="stat"><b>9</b><span>테이블<br>모두 300행 이내의 합성 데이터</span></div>
           <div class="stat"><b>25 + 35</b><span>용어집 용어<br>표준 용어 25개와 동의어 용어 35개, 게시 완료</span></div>
-          <div class="stat"><b>17 / 17</b><span>few-shot 반영<br>예시 17건이 SQL 생성 프롬프트에 들어감(질문마다 비슷한 3건). 골든과 겹치지 않게 바꿔 시험했고 총점은 27/30으로 같음</span></div>
-          <div class="stat"><b>90%</b><span>골든 질문 정확도<br>SQL 정답이 있는 10문항 x 3회, 27/30 (<a href="#demo/eval" class="lnk">평가 결과 보기</a>)</span></div>
+          <div class="stat"><b>17건</b><span>few-shot 반영<br>wxdi에 올린 SQL 예시 17건이 프롬프트에 들어감(질문마다 비슷한 3건). <a href="#demo/tools" class="lnk">예시 보기</a></span></div>
+          <div class="stat"><b>100%</b><span>골든 질문 정확도(few-shot 있음)<br>10문항 x 5회, 50/50. 예시를 뺀 같은 시험은 45/50 (90%) (<a href="#demo/eval" class="lnk">평가 결과 보기</a>)</span></div>
         </div>
 
         <h3>에이전트 전체 구성도</h3>
@@ -190,6 +190,7 @@
                     <ul class="fa-ul">
                       <li>wxdi 카탈로그에서 FK 조인 조건 조회</li>
                       <li>용어 정의와 함께 질문 뒤에 Note로 첨부</li>
+                      <li>wxdi가 질문과 비슷한 SQL 예시(few-shot) 3건을 프롬프트에 자동 추가</li>
                       <li>wxdi Text-to-SQL로 Db2 SQL 생성 (wxdi 내부 LLM: Llama 3.3 70B)</li>
                     </ul>
                   </div>
@@ -197,7 +198,7 @@
                   <div class="fa-node"><b>run_sql</b><span>SELECT만 실행, 최대 200행</span></div>
                 </div>
               </div>
-              <div class="fa-ds"><div class="fa-vline"></div><div class="fa-ds-card"><b>wxdi 용어집 + 카탈로그 → Text-to-SQL → Db2</b><span>용어는 용어집, 조인 조건은 카탈로그, SQL 생성은 wxdi, 실행은 Db2</span></div></div>
+              <div class="fa-ds"><div class="fa-vline"></div><div class="fa-ds-card"><b>wxdi 용어집 + 카탈로그 + SQL 예시 → Text-to-SQL → Db2</b><span>용어는 용어집, 조인 조건은 카탈로그, 비슷한 SQL 예시는 few-shot, SQL 생성은 wxdi, 실행은 Db2</span></div></div>
             </div>
             <div class="fa-col">
               <div class="fa-sa fa-purple">
@@ -212,7 +213,7 @@
                   <div class="fa-node"><b>make_chart</b><span>line, bar, pie 차트와 근거 설명</span></div>
                 </div>
               </div>
-              <div class="fa-ds"><div class="fa-vline"></div><div class="fa-ds-card"><b>wxdi 용어집 + 카탈로그 → Text-to-SQL → Db2</b><span>차트 명세는 Python 툴이 생성, 채팅 화면이 그림</span></div></div>
+              <div class="fa-ds"><div class="fa-vline"></div><div class="fa-ds-card"><b>wxdi 용어집 + 카탈로그 + SQL 예시 → Text-to-SQL → Db2</b><span>차트 이미지는 외부 서비스(QuickChart)가 그림</span></div></div>
             </div>
           </div>
           <div class="fa-ret">
@@ -229,8 +230,8 @@
           <tbody>
             <tr><td><b>Supervisor</b></td><td>질문 창구. 유형을 나눠 하위 에이전트에 연결하고, 모호하면 되묻고, 후속 질문의 맥락을 유지</td><td>하위 에이전트 3종 호출</td><td><span class="chip wxo">wxO</span></td></tr>
             <tr><td><b>용어·메타데이터 검색</b></td><td>용어와 구조를 직접 묻는 질문에 대답</td><td>map_terms, get_catalog</td><td><span class="chip wxo">wxO</span> <span class="chip wxdi">wxdi 용어집, 카탈로그</span></td></tr>
-            <tr><td><b>SQL</b></td><td>값 조회 질문을 SQL로 바꿔 실행하고 표로 답변</td><td>map_terms, generate_sql, run_sql</td><td><span class="chip wxo">wxO</span> <span class="chip wxdi">wxdi 용어집, 카탈로그, Text-to-SQL</span> <span class="chip db">Db2</span></td></tr>
-            <tr><td><b>Insight</b></td><td>차트 작성, "왜 늘었어" 같은 원인 설명</td><td>map_terms, generate_sql, run_sql, make_chart</td><td><span class="chip wxo">wxO</span> <span class="chip wxdi">wxdi 용어집, 카탈로그, Text-to-SQL</span> <span class="chip db">Db2</span></td></tr>
+            <tr><td><b>SQL</b></td><td>값 조회 질문을 SQL로 바꿔 실행하고 표로 답변</td><td>map_terms, generate_sql, run_sql</td><td><span class="chip wxo">wxO</span> <span class="chip wxdi">wxdi 용어집, 카탈로그, SQL 예시, Text-to-SQL</span> <span class="chip db">Db2</span></td></tr>
+            <tr><td><b>Insight</b></td><td>차트 작성, "왜 늘었어" 같은 원인 설명</td><td>map_terms, generate_sql, run_sql, make_chart</td><td><span class="chip wxo">wxO</span> <span class="chip wxdi">wxdi 용어집, 카탈로그, SQL 예시, Text-to-SQL</span> <span class="chip db">Db2</span></td></tr>
           </tbody>
         </table>
 
@@ -247,7 +248,7 @@
         <h3>어떻게 동작하나</h3>
         <ul class="plain">
           <li><b>watsonx Orchestrate(wxO)</b>는 에이전트가 툴을 부르는 곳입니다. LLM은 호출 순서, 재시도, 답변 정리만 맡습니다.</li>
-          <li><b>watsonx.data intelligence(wxdi)</b>는 데이터 설명서(카탈로그, 용어집)와 Text-to-SQL REST를 제공합니다. SQL을 만들기만 하고 실행하지는 않습니다. SQL을 쓰는 모델은 wxdi 내부의 <code>meta-llama/llama-3-3-70b-instruct</code>(질문과 스키마를 맞추는 임베딩은 <code>granite-embedding-278m-multilingual</code>)이며, 응답의 <code>resource_usage.model_usages</code>에서 확인했습니다. 에이전트의 <code>gpt-oss-120b</code>는 SQL을 쓰지 않고 툴 호출 순서와 답변 정리만 맡습니다.</li>
+          <li><b>watsonx.data intelligence(wxdi)</b>는 데이터 설명서(카탈로그, 용어집)와 Text-to-SQL REST를 제공합니다. SQL을 만들기만 하고 실행하지는 않습니다. 프로젝트에 올려 둔 SQL 예시(few-shot) 17건 중 질문과 비슷한 3건을 프롬프트에 자동으로 넣습니다. SQL을 쓰는 모델은 wxdi 내부의 <code>meta-llama/llama-3-3-70b-instruct</code>(질문과 스키마를 맞추는 임베딩은 <code>granite-embedding-278m-multilingual</code>)이며, 응답의 <code>resource_usage.model_usages</code>에서 확인했습니다. 에이전트의 <code>gpt-oss-120b</code>는 SQL을 쓰지 않고 툴 호출 순서와 답변 정리만 맡습니다.</li>
           <li><b>Db2</b>는 데이터가 있는 곳입니다. 만들어진 SQL은 Db2로 직접 실행하며, 조회(SELECT)만 허용합니다.</li>
           <li><b>QuickChart</b>(외부 서비스)는 차트 이미지를 그려 주는 곳입니다. make_chart가 차트 값(라벨, 숫자)을 보내고 이미지 주소를 받습니다. 값이 이 서비스로 나가므로 실데이터에는 쓰지 않거나 자체 호스팅이 필요합니다.</li>
         </ul>
@@ -389,13 +390,14 @@
         <div class="tabs-inline" id="tool-tabs">
           <button data-p="tools" class="active">툴 목록</button>
           <button data-p="gloss">용어집 (wxdi)</button>
+          <button data-p="fewshot">Few-shot 예시 (wxdi)</button>
         </div>
         <div id="tp-tools">
         <p class="muted">모든 툴은 예외 대신 <code>error</code> 필드를 채워 돌려주고, <code>engine</code>과 <code>elapsed_ms</code>를 함께 반환합니다.</p>
         <table class="tbl">
           <thead><tr><th>툴</th><th>역할</th><th>연결 대상</th><th>주요 출력</th></tr></thead>
           <tbody>
-            <tr><td><code>generate_sql</code></td><td>한국어 질문을 Db2 SQL로 바꾸는 역할. 만들기만 하고 실행하지는 않습니다.</td><td>wxdi 카탈로그 + wxdi Text-to-SQL REST (SQL 생성 LLM: Llama 3.3 70B)</td><td>ok, sql, score, error</td></tr>
+            <tr><td><code>generate_sql</code></td><td>한국어 질문을 Db2 SQL로 바꾸는 역할. 만들기만 하고 실행하지는 않습니다.</td><td>wxdi 카탈로그 + wxdi Text-to-SQL REST (SQL 생성 LLM: Llama 3.3 70B, wxdi에 올린 few-shot 예시 17건 참조)</td><td>ok, sql, score, error</td></tr>
             <tr><td><code>run_sql</code></td><td>만들어진 SQL을 Db2에서 실행해 결과 표를 가져오는 역할. 조회(SELECT)만 허용합니다.</td><td>Db2 FIN_DEMO (SSL)</td><td>columns, rows, row_count, executed_sql, error</td></tr>
             <tr><td><code>map_terms</code></td><td>질문 속 업무 용어(동의어 포함)를 용어집의 표준 용어와 컬럼에 연결하는 역할.</td><td>wxdi 용어집 (표준 용어 25개 + 동의어 35개 게시)</td><td>mappings, ambiguous, unmapped, glossary_hints</td></tr>
             <tr><td><code>get_catalog</code></td><td>테이블과 컬럼의 설명, 키, 개인정보 여부, 외래키 같은 데이터 구조 정보를 알려주는 역할.</td><td>wxdi 프로젝트 자산</td><td>tables, columns, keys, pii</td></tr>
@@ -407,6 +409,7 @@
         <ul class="plain">
           <li><b>용어 정의 → Note</b>: map_terms가 wxdi 용어집에서 읽은 정의(예: 거래대금 = EXECUTIONS.EXEC_AMOUNT)를 질문 뒤에 붙임</li>
           <li><b>FK 조인 조건 → Note</b>: generate_sql이 wxdi 카탈로그의 foreign_keys(join_condition)를 읽어 "이 조건으로만 조인하라"고 질문 뒤에 붙임. wxdi 제품은 FK를 LLM에 자동 전달하지 않기 때문입니다</li>
+          <li><b>few-shot 예시</b>: 질문과 비슷한 SQL 예시(질문, 힌트, SQL) 3건을 wxdi가 프롬프트에 자동으로 넣음. 예시 17건은 wxdi 프로젝트에 올려 둔 CSV이고 툴 코드에는 없습니다(<a href="#demo/tools" class="lnk">Few-shot 예시 (wxdi)</a> 탭)</li>
           <li><b>연결 제한</b>: 카탈로그에서 얻은 FIN_DEMO 연결 ID로 스키마 검색 범위를 제한</li>
           <li><b>고정 규칙 5개(instructions)</b>: 스키마 인용 규칙, 날짜(어제, 월), 대문자 식별자, 컬럼 한정, 숫자 단위(1억 = 100000000). Db2 문법과 한국어 표현만 두었습니다</li>
           <li><b>fix_qualifiers</b>: Db2가 거부하는 컬럼 한정 방식을 "FIN_DEMO"."T"."C" 형태로 자동 교정. 테이블 목록은 카탈로그에서 읽음</li>
@@ -424,6 +427,20 @@
             <tbody id="gl-body"></tbody>
           </table>
           <p class="muted">이 표는 wxdi에 가져온 용어집 원본(<code>option_b_watsonxdata/glossary/build_glossary_csv.py</code>)에서 만들었습니다. wxdi를 실시간으로 읽는 화면은 아닙니다.</p>
+        </div>
+        <div id="tp-fewshot" hidden>
+          <p class="muted">Text-to-SQL이 SQL을 만들 때 참고하도록 <b>질문, 힌트, 정답 SQL</b> 세트 <b id="fs-n"></b>건을 wxdi 프로젝트에 데이터 자산(<code>text_to_sql_fewshots_0.csv</code>)으로 올려 두었습니다. wxdi는 질문마다 이 중 비슷한 3건을 골라 프롬프트에 넣습니다(모델 입력 원문에서 확인). 에이전트 지시문이나 툴 코드에는 예시가 없습니다.</p>
+          <ul class="plain">
+            <li><b>어떻게 만들었나</b>: 예시마다 SQL을 Db2에서 실제로 실행해 오류가 없는 것만 넣었습니다(<code>option_b_watsonxdata/fewshots/build_fewshots.py</code>). 힌트 열에는 용어 뜻, 조인 순서, 날짜 계산 같은 업무 규칙을 적었습니다.</li>
+            <li><b>골든과 겹치지 않게</b>: 골든 질문과 같은 문장을 넣으면 점수가 예시를 베낀 결과일 수 있어, 구조가 비슷한 예시는 값(종목, 지점, 숫자, 등급, 매수·매도)을 바꿨습니다. 표의 "비슷한 골든"은 구조가 비슷한 골든 번호와 달라진 점입니다.</li>
+            <li><b>반영 방법</b>: CSV를 프로젝트에 올린 뒤 온보딩 작업(Onboard for generative AI)을 다시 실행해야 프롬프트에 들어갑니다. 올리기만 했을 때는 들어가지 않았습니다.</li>
+            <li><b>효과</b>: 같은 데이터에서 골든 10문항 x 5회, 예시 있음 50/50(100%), 없음 45/50(90%)입니다. 차이는 <a href="#demo/eval" class="lnk">Text-to-SQL 평가</a> 탭의 비교표에 있고, 단정하기에는 표본이 작습니다.</li>
+          </ul>
+          <table class="tbl">
+            <thead><tr><th>#</th><th>예시 질문</th><th>힌트 (evidence)</th><th>SQL</th><th>비슷한 골든</th></tr></thead>
+            <tbody id="fs-body"></tbody>
+          </table>
+          <p class="muted">이 표는 wxdi에 올린 CSV 원본에서 만들었습니다. wxdi를 실시간으로 읽는 화면은 아닙니다.</p>
         </div>
       </section>
 
@@ -448,7 +465,7 @@
         <ul class="plain">
           <li><b>평가 경로</b>: 질문 → <code>map_terms</code>(동의어를 표준 용어로 바꾸고 용어 정의 전달) → <code>generate_sql</code>(카탈로그 FK와 용어 정의를 Note로 붙여 wxdi Text-to-SQL 호출) → Db2 실행. 에이전트 LLM(gpt-oss-120b)의 판단은 빠지고 SQL 생성 툴과 같은 코드 경로만 잽니다. 평가 대상은 wxdi 내부 모델(meta-llama/llama-3-3-70b-instruct)이 쓴 SQL입니다.</li>
           <li><b>채점</b>: 골든 SQL과 생성 SQL을 Db2에서 실행해 <b>결과 값</b>을 비교합니다. 행 수가 같고 골든의 각 행 값이 생성 결과에 모두 들어 있으면 통과이며, 컬럼 순서와 이름, 추가 컬럼, SQL 문장 모양은 보지 않습니다. 실행 오류와 불일치는 실패입니다.</li>
-          <li><b>반복</b>: 같은 질문을 3번씩 생성합니다. 생성기가 매번 다른 SQL을 낼 수 있어서입니다.</li>
+          <li><b>반복</b>: 같은 질문을 5번씩 생성합니다. 생성기가 매번 다른 SQL을 낼 수 있어서입니다. few-shot 효과를 보려고 예시가 있을 때와 없을 때를 같은 데이터에서 각각 돌렸습니다(아래 비교표).</li>
           <li><b>개인정보</b>: 결과의 고객 이름은 가려서 표시합니다.</li>
         </ul>
         <div id="eval-body"><p class="muted">eval_results.js를 불러오지 못했습니다.</p></div>
@@ -458,9 +475,9 @@
         <h2>한계와 다음 단계</h2>
         <h3>알려진 한계</h3>
         <ul class="plain">
-          <li><b>생성기의 비결정성</b>: 같은 질문도 요청마다 SQL이 달라질 수 있습니다. 같은 구성으로 세 번 돌린 점수가 24/30, 24/30, 26/30이었고, 잔고 용어(예수금, 평가금액, 미수금) 정의를 보강한 뒤에는 27/30, few-shot 17건을 반영하고 데이터를 다시 적재한 뒤(2026-11-22)에도 27/30이었습니다. 지금 약한 질문은 30분 넘게 미체결인 주문(S3-04, 1/3)으로, 실패 2번은 열 이름의 따옴표가 어긋난 SQL 문법 오류였습니다. 삼성전자 어제 체결(S1-03)은 한 번 열 구성이 달라 불일치로 처리됐습니다. 이전 평가에서 흔들렸던 VIP 예수금 순위(S2-01)와 오늘 강남지점 체결(S1-01)은 이번에는 3/3이었지만, 실행마다 달라질 수 있습니다. 생성기가 용어 정의를 항상 따르지는 않아서, 같은 질문도 정의 문구에 따라 정상 비율이 달라집니다(VIP 예수금 질문 기준 정의 보강 전 6~8/10, 후 19/20).</li>
-          <li><b>few-shot의 효과</b>: 예시 CSV를 올린 뒤 프로젝트의 온보딩 작업(Onboard for generative AI)을 다시 실행해야 예시가 프롬프트에 들어갑니다(2026-11-22 확인). 골든 질문과 문장이 거의 같은 예시를 넣었을 때는 S2-01(2/3에서 3/3), S3-04(1/3에서 3/3)가 올랐지만 예시를 그대로 따라 한 것일 수 있어 효과로 보지 않았습니다. 종목, 숫자, 등급, 매수·매도 값을 바꿔 골든과 겹치지 않게 한 예시로는 총점이 27/30으로 그대로였고 S3-04는 다시 1/3이었습니다. 예시 없이 같은 데이터로 돌린 점수는 없어서, 정확도를 올리는지는 아직 입증하지 못했습니다.</li>
-          <li><b>복잡한 질의</b>: 이전 값과의 비교(LAG), 이동평균, 상위 고객의 주력 종목처럼 CTE와 윈도 함수가 겹치는 질문(S3-01, S3-02, S3-05, S5-03)은 오류가 나거나 질문의 일부만 답합니다. 골든에는 넣지 않았습니다.</li>
+          <li><b>생성기의 비결정성</b>: 같은 질문도 요청마다 SQL이 달라질 수 있습니다. 같은 구성으로 세 번 돌린 점수가 24/30, 24/30, 26/30이었고, 잔고 용어(예수금, 평가금액, 미수금) 정의를 보강한 뒤에는 27/30이었습니다. few-shot 17건을 넣은 구성도 한 번은 27/30(질문당 3번), 다른 한 번은 50/50(질문당 5번)이었습니다. 한 번의 점수 차이는 우연일 수 있습니다. 지금 가장 약한 질문은 30분 넘게 미체결인 주문(S3-04)으로, 예시가 없으면 "30분 안에 체결이 없는 주문"으로 해석해 행이 훨씬 많이 나오고, 예시가 있어도 가끔 열 이름의 따옴표가 어긋난 SQL 문법 오류가 납니다. 생성기가 용어 정의를 항상 따르지는 않아서, 같은 질문도 정의 문구에 따라 정상 비율이 달라집니다(VIP 예수금 질문 기준 정의 보강 전 6~8/10, 후 19/20).</li>
+          <li><b>few-shot의 효과는 방향만 확인</b>: 같은 데이터에서 골든을 질문당 5번씩 돌렸을 때 예시 있음 50/50(100%), 예시 없음 45/50(90%)이었습니다. 차이는 대부분 S3-04(5/5 대 2/5)에서 났고, 같은 구성을 다시 돌리면 점수가 달라질 수 있어(예시 있음도 27/30이 나온 적이 있음) 효과가 있다고 단정하지는 않습니다. 예시 17건 중 10건은 골든과 구조가 비슷합니다(종목, 숫자, 등급 같은 값만 다르게 함). 구조가 다른 새 질문에서도 효과가 있는지는 시험하지 않았습니다. 예시를 고치면 CSV를 다시 올리고 wxdi 프로젝트의 온보딩 작업(Onboard for generative AI)을 다시 실행해야 프롬프트에 반영됩니다.</li>
+          <li><b>복잡한 질의</b>: 이전 값과의 비교(LAG), 이동평균, 상위 고객의 주력 종목처럼 CTE와 윈도 함수가 겹치는 질문은 오류가 나거나 질문의 일부만 답할 수 있습니다. 골든에 넣지 않았고 에이전트로는 다시 시험하지 않았습니다. 5개 테이블 JOIN, 서브쿼리, 비율 조건 질문(S3-01, S3-02, S3-05)은 이번 시험에서 정상이었습니다.</li>
           <li><b>개인정보</b>: 생성기가 고객 목록 질문에 주민번호, 이메일, 전화번호까지 조회할 수 있습니다. Supervisor가 답변에서 빼 주기도 하지만 보장되지 않습니다. "고객 주민번호 전체 보여줘"라고 직접 물으면 주민등록번호 40건이 그대로 표시된 것을 확인했습니다(S7-01). 마스킹은 2단계 항목입니다.</li>
           <li><b>응답 시간</b>: SQL 생성이 질문당 12~40초 걸립니다.</li>
           <li><b>날짜 기준</b>: 데이터가 적재일을 기준으로 만들어져 시연 전 재적재가 필요합니다.</li>
@@ -476,7 +493,7 @@
             <tr><td>가드레일</td><td>입력 검사(주민번호 요청, 삭제 요청, SQL 주입 차단)와 거절 사유 안내</td></tr>
             <tr><td>감사 로그</td><td>누가, 언제, 어떤 질문과 SQL로, 얼마나 걸렸는지 기록</td></tr>
             <tr><td>계보</td><td>get_lineage로 답변에 쓰인 데이터의 출처 경로 표시</td></tr>
-            <tr><td>정확도</td><td>약한 질문 보강(few-shot, 규칙), 골든 질문 확대</td></tr>
+            <tr><td>정확도</td><td>few-shot 17건은 반영 완료. 예시와 구조가 다른 새 질문으로 효과 재확인, 약한 질문(S3-04) 보강, 골든 질문 확대</td></tr>
             <tr><td>성능</td><td>SQL 생성 시간 단축, 동시 사용자 시험</td></tr>
           </tbody>
         </table>
@@ -486,8 +503,8 @@
         <h2>질문별 검증 현황</h2>
         <p class="muted">시나리오 질문 목록(<code>shared/spec/questions.md</code>)과 같은 번호입니다. 현재 구성에서 다시 확인한 결과이며, 안 되는 질문도 함께 표시합니다. 오른쪽 설명은 에이전트가 어떻게 답하는지, 불안정한 질문은 어느 면이 불안정한지입니다.</p>
         <ul class="plain">
-          <li><b>골든 평가</b>: SQL 정답이 있는 10문항(S1-01, S1-02, S1-03, S2-01, S2-02, S2-04, S2-05, S3-03, S3-04, S5-02)을 3번씩 생성해, 생성한 SQL과 정답 SQL을 Db2에서 실행한 <b>결과 값</b>을 비교합니다. SQL 문장이 달라도 값이 같으면 정답입니다. 가장 최근 평가는 27/30 (90%)이고, 질문별 골든 SQL과 생성 SQL, 결과는 <a href="#demo/eval">Text-to-SQL 평가</a> 탭에 있습니다.</li>
-          <li><b>골든 평가 탭과 다른 이유</b>: 골든 평가는 wxdi Text-to-SQL이 만든 SQL을 3번 실행해 결과 값이 정답과 같은지만 봅니다(에이전트를 거치지 않음). 이 표의 상태는 Supervisor 에이전트에 직접 물어 본 결과라, 용어를 잘못 옮기거나 답변을 잘못 정리하는 문제까지 포함합니다. 그래서 골든은 3/3인데 여기서는 "불안정"인 질문(S1-01, S2-02, S3-03, S5-02)이 있습니다. 골든 점수는 위 골든 평가 항목과 "Text-to-SQL 평가" 탭에서 봅니다.</li>
+          <li><b>골든 평가</b>: SQL 정답이 있는 10문항(S1-01, S1-02, S1-03, S2-01, S2-02, S2-04, S2-05, S3-03, S3-04, S5-02)을 5번씩 생성해, 생성한 SQL과 정답 SQL을 Db2에서 실행한 <b>결과 값</b>을 비교합니다. SQL 문장이 달라도 값이 같으면 정답입니다. 가장 최근 평가는 few-shot 있음 50/50 (100%), 예시를 뺀 같은 평가는 45/50 (90%)이고, 질문별 골든 SQL과 생성 SQL, 결과는 <a href="#demo/eval">Text-to-SQL 평가</a> 탭에 있습니다.</li>
+          <li><b>골든 평가 탭과 다른 이유</b>: 골든 평가는 wxdi Text-to-SQL이 만든 SQL을 5번 실행해 결과 값이 정답과 같은지만 봅니다(에이전트를 거치지 않음). 이 표의 상태는 Supervisor 에이전트에 직접 물어 본 결과라, 용어를 잘못 옮기거나 답변을 잘못 정리하는 문제까지 포함합니다. 그래서 골든은 5/5인데 여기서는 "불안정"인 질문(S1-01, S2-02, S3-03, S5-02)이 있습니다. 골든 점수는 위 골든 평가 항목과 "Text-to-SQL 평가" 탭에서 봅니다.</li>
           <li><b>골든이 아닌 질문</b>: 골든 10문항 외에는 SQL 정답을 정하지 않았습니다. 막마다 확인하려는 기능(JOIN, 서브쿼리, 용어사전, 대화 맥락, 차트 등)이 분명하도록 질문을 새로 정리했고(2026-11-21), 에이전트에 직접 한두 번씩 물어 답을 Db2에서 직접 계산한 값과 비교했습니다. 데이터를 2026-11-22에 다시 적재한 뒤 모두 다시 물어 값을 갱신했습니다. "확인 항목" 열은 그 질문으로 어떤 기능을 보는지를 키워드로 적은 것입니다.</li>
           <li><b>표현에 민감한 질문</b>: 같은 뜻이어도 문장이 달라지면 결과가 달라진 경우가 있습니다. S3-03("종목별 거래대금 순위를 섹터 내에서 매겨줘"는 전체 순위), S5-02("한도의 80%를 넘긴 데스크가 있어?"는 "없음"), S4-04("이번엔 지점별로 합계를 보여줘"는 없는 지점과 지어낸 숫자)입니다. 이 표에는 정상 동작한 문구를 적었습니다.</li>
           <li><b>2단계 항목</b>: 보안(S7)과 운영(S8)은 아직 만들지 않은 기능이 많아 현재 동작을 있는 그대로 적었습니다. 주민번호를 직접 요청하면 그대로 보여주는 점(S7-01)은 가장 먼저 고쳐야 할 항목입니다.</li>
@@ -532,7 +549,9 @@ GROUP BY YEAR(EXEC_TS), MONTH(EXEC_TS)</pre>
 <script src="chat-config.js"></script>
 <script src="samples.js"></script>
 <script src="glossary.js"></script>
+<script src="fewshots.js"></script>
 <script src="eval_results.js"></script>
+<script src="eval_ab.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 <script src="app.js"></script>
 </body>
