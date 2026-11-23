@@ -323,7 +323,7 @@
       if (c.pii) m.push('<span class="pii">PII</span>');
       h += "<tr><td><code>" + esc(c.name) + "</code></td><td>" + esc(c.type) + "</td><td>" + esc(c.desc) + "</td><td>" + (m.join(" ") || "") + "</td></tr>";
     });
-    h += "</tbody></table></div><h3>샘플 데이터 (" + t.rows.length + "행, 개인정보는 가림)</h3><div class=\"scroll-x\"><table class=\"tbl\"><thead><tr>";
+    h += "</tbody></table></div><h3>샘플 데이터 (" + t.rows.length + "행, 합성 데이터라 값을 그대로 보여줍니다)</h3><div class=\"scroll-x\"><table class=\"tbl\"><thead><tr>";
     t.columns.forEach(function (c) { h += "<th>" + esc(c.name) + "</th>"; });
     h += "</tr></thead><tbody>";
     t.rows.forEach(function (r) {
@@ -535,17 +535,24 @@
     var h = "<h3>few-shot 있음 / 없음 비교</h3>" +
       '<p class="muted">같은 데이터, 같은 골든 10문항을 ' + A["with"].n + "번씩 생성했습니다(" + esc(A["with"].date) + "). 있음 " + A["with"].ok + "/" + A["with"].total +
       ", 없음 " + A.without.ok + "/" + A.without.total + ". 표본이 작고 실행마다 결과가 달라서 방향만 볼 수 있습니다. 예시 17건 중 10건은 골든과 구조가 비슷해서, 구조가 다른 새 질문에서의 효과는 아직 확인하지 못했습니다.</p>";
-    h += '<div class="scroll-x"><table class="tbl"><thead><tr><th>번호</th><th>질문</th><th>있음</th><th>없음</th><th>없음에서 실패한 이유</th></tr></thead><tbody>';
+    h += '<div class="scroll-x"><table class="tbl"><thead><tr><th>번호</th><th>질문</th><th>있음</th><th>없음</th><th>없음에서 틀린 결과(정답과 비교)</th></tr></thead><tbody>';
     A.items.forEach(function (it) {
       var w = it["with"].filter(function (x) { return x; }).length;
       var wo = it.without.filter(function (x) { return x.pass; }).length;
       var c1 = w === it["with"].length ? "ok" : (w === 0 ? "bad" : "warn");
       var c2 = wo === it.without.length ? "ok" : (wo === 0 ? "bad" : "warn");
-      var why = [];
-      it.without.forEach(function (x) { if (!x.pass && why.indexOf(x.status) < 0) why.push(x.status); });
-      h += "<tr><td>" + esc(it.id) + "</td><td>" + esc(it.question) + '</td><td><span class="tag ' + c1 + '">' + w + " / " + it["with"].length + '</span></td><td><span class="tag ' + c2 + '">' + wo + " / " + it.without.length + "</span></td><td>" + (why.length ? esc(why.join(", ")) : "-") + "</td></tr>";
+      var cnt = {}, order = [];
+      it.without.forEach(function (x) {
+        if (x.pass) return;
+        var m = /불일치\((\d+)행\/정답 (\d+)행\)/.exec(x.status);
+        var t = !m ? x.status : (m[1] === m[2] ? "행 수는 " + m[1] + "행으로 같지만 값이 다름" : m[1] + "행이 나옴(정답 " + m[2] + "행)");
+        if (!(t in cnt)) { cnt[t] = 0; order.push(t); }
+        cnt[t]++;
+      });
+      var why = order.map(function (t) { return t + " " + cnt[t] + "회"; });
+      h += "<tr><td>" + esc(it.id) + "</td><td>" + esc(it.question) + '</td><td><span class="tag ' + c1 + '">' + w + " / " + it["with"].length + '</span></td><td><span class="tag ' + c2 + '">' + wo + " / " + it.without.length + "</span></td><td>" + (why.length ? esc(why.join(" / ")) : "-") + "</td></tr>";
     });
-    return h + "</tbody></table></div>";
+    return h + '</tbody></table></div><p class="muted">틀린 이유(어떤 조건이나 조인을 잘못 썼는지)는 보여주지 못합니다. 없음 쪽에서 생성된 SQL을 저장해 두지 않아 결과의 행 수만 남아 있습니다.</p>';
   }
 
   function initEval() {

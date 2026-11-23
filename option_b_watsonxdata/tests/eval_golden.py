@@ -50,19 +50,11 @@ def same(gold_rows, cand_rows) -> bool:
     return True
 
 
-MASK_COLS = {"CUSTOMER_NAME": lambda v: str(v)[:1] + "**", "SSN": lambda v: str(v)[:6] + "-*******",
-             "PHONE": lambda v: "***", "EMAIL": lambda v: "***"}
-
-
 def preview(cols, rows, limit=5) -> dict:
-    """HTML에 보여줄 결과 요약. 개인정보 컬럼은 가린다."""
+    """HTML에 보여줄 결과 요약(앞 5행). 합성 데이터라서 값은 가리지 않는다."""
     out = []
     for r in rows[:limit]:
-        row = []
-        for c, v in zip(cols, r):
-            f = MASK_COLS.get(str(c).upper())
-            row.append(f(v) if f and v is not None else (v if isinstance(v, (int, float, str, type(None))) else str(v)))
-        out.append(row)
+        out.append([v if isinstance(v, (int, float, str, type(None))) else str(v) for v in r])
     return {"columns": [str(c) for c in cols], "rows": out, "row_count": len(rows)}
 
 

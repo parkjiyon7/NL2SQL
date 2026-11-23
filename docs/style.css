@@ -302,3 +302,10 @@ pre code{background:none;padding:0;color:inherit}
 #dg-arch #TOOLS .cluster-label div{transform:translateX(-455px)}
 #dg-arch #AGENTS .cluster-label .nodeLabel{color:#1b5fc1!important}
 #dg-arch #TOOLS .cluster-label .nodeLabel{color:#334155!important}
+
+/* 개요 구성도: 에이전트 이름은 알약 없이 열 색의 굵은 글씨 */
+.fa-sa-hdr b.fa-ag{font-size:18px;font-weight:800}
+.fa-top b.fa-ag{font-size:22px;font-weight:800;color:#fff}
+.fa-green .fa-ag{color:#1b5e20}
+.fa-orange .fa-ag{color:#bf360c}
+.fa-purple .fa-ag{color:#4a148c}

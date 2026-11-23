@@ -149,7 +149,7 @@
           </div>
           <div class="fa-center">
             <div class="fa-top">
-              <b><em class="pill ag">Supervisor</em></b><code>findemo_supervisor_agent</code>
+              <b class="fa-ag">Supervisor</b><code>findemo_supervisor_agent</code>
               <span class="fa-role">질문 창구, 하위 에이전트 호출</span>
               <ul class="fa-top-ul">
                 <li>질문 유형 분류</li>
@@ -169,7 +169,7 @@
             <div class="fa-col">
               <div class="fa-sa fa-green">
                 <div class="fa-sa-hdr"><span class="fa-badge" style="background:#e8f5e9;color:#2e7d32">용어·구조 안내</span>
-                  <b><em class="pill ag">용어·메타데이터 검색</em></b><code>findemo_context_agent</code>
+                  <b class="fa-ag">용어·메타데이터 검색</b><code>findemo_context_agent</code>
                   <span class="fa-role">용어와 구조를 직접 묻는 질문에 대답</span></div>
                 <div class="fa-sa-body">
                   <div class="fa-node"><b><em class="pill tl">map_terms</em></b><span>업무 용어를 표준 용어와 컬럼에 연결</span></div>
@@ -181,7 +181,7 @@
             <div class="fa-col">
               <div class="fa-sa fa-orange">
                 <div class="fa-sa-hdr"><span class="fa-badge" style="background:#fff3e0;color:#e65100">조회</span>
-                  <b><em class="pill ag">SQL</em></b><code>findemo_sql_agent</code>
+                  <b class="fa-ag">SQL</b><code>findemo_sql_agent</code>
                   <span class="fa-role">값 조회 질문을 SQL로 바꿔 실행, 표로 답변</span></div>
                 <div class="fa-sa-body">
                   <div class="fa-node"><b><em class="pill tl">map_terms</em></b><span>동의어를 표준 용어로 보정하고 용어 정의 반환</span></div>
@@ -203,7 +203,7 @@
             <div class="fa-col">
               <div class="fa-sa fa-purple">
                 <div class="fa-sa-hdr"><span class="fa-badge" style="background:#f3e5f5;color:#6a1b9a">차트와 해석</span>
-                  <b><em class="pill ag">Insight</em></b><code>findemo_insight_agent</code>
+                  <b class="fa-ag">Insight</b><code>findemo_insight_agent</code>
                   <span class="fa-role">차트 작성과 원인 설명</span></div>
                 <div class="fa-sa-body">
                   <div class="fa-node"><b><em class="pill tl">map_terms</em></b><span>동의어를 표준 용어로 보정하고 용어 정의 반환</span></div>
@@ -494,7 +494,7 @@
           <ul class="plain">
             <li><b>형식이 다르면 못 가림</b>: 하이픈 없는 번호, 유선 전화, 다른 숫자 안에 붙은 번호는 가려지지 않거나 일부만 가려집니다(<code>1620109-12345678</code>은 앞뒤가 섞여 바뀜).</li>
             <li><b>답변 문장이 바뀌면 놓침</b>: SQL 에이전트가 주민번호를 금액처럼 <code>620,109‑253,8915원</code>으로 고쳐 써서 정규식을 피한 적이 있었습니다. 지시문(<code>findemo_sql_agent.yaml</code>)에 식별번호와 문자열 값(주민번호, 전화번호, 이메일, 계좌번호)은 쉼표나 '원'을 붙이지 말고 DB 값 그대로 쓰라는 문장을 넣었고, 이후 시험에서는 가려졌습니다.</li>
-            <li><b>이름은 가리지 않음</b>: 요구 범위가 이메일, 전화번호, 주민번호라서 뺐습니다.</li>
+            <li><b>이름은 개인정보로 다루지 않음</b>: 가상으로 만든 이름이고 시연에서 그대로 보여주기로 해서 마스킹 대상에서 뺐습니다.</li>
             <li><b>자체 차단이 아님</b>: <code>block_on_detection</code>을 꺼 두어 요청을 막지는 않고 값만 바꿉니다. "고객 주민번호 전체 보여줘"에서 Supervisor가 거절한 것이 이 컨트롤 때문인지 모델의 판단인지는 구분하지 못했습니다.</li>
             <li><b>컨트롤은 사용자가 관리</b>: 컨트롤은 사용자가 wxO 화면에서 만들고 고쳤습니다. 이 프로젝트의 API 키로는 컨트롤을 만들거나 고칠 수 없었습니다(관리자 권한 필요).</li>
           </ul>
@@ -503,7 +503,7 @@
 
       <section id="sec-data" class="sec">
         <h2>데이터 (ERD, 샘플)</h2>
-        <p class="muted">증권사 업무를 흉내 낸 합성 데이터입니다. 개인정보 컬럼은 모두 가상 값이며, 아래 샘플에서는 한 번 더 가렸습니다. 샘플은 2026-11-22에 다시 적재한 데이터이고, "오늘", "어제" 질문은 적재일 기준이라 시연 전에 재적재가 필요합니다.</p>
+        <p class="muted">증권사 업무를 흉내 낸 합성 데이터입니다. 이름, 주민번호, 전화번호, 이메일도 모두 가상 값이라 아래 샘플에서 가리지 않고 그대로 보여줍니다. 샘플은 2026-11-22에 다시 적재한 데이터이고, "오늘", "어제" 질문은 적재일 기준이라 시연 전에 재적재가 필요합니다.</p>
         <h3>ERD</h3>
         <div class="diagram big" id="dg-erd" data-key="erd"></div>
         <h3>테이블 설명과 샘플</h3>
@@ -523,7 +523,7 @@
           <li><b>평가 경로</b>: 질문 → <code>map_terms</code>(동의어를 표준 용어로 바꾸고 용어 정의 전달) → <code>generate_sql</code>(카탈로그 FK와 용어 정의를 Note로 붙여 wxdi Text-to-SQL 호출) → Db2 실행. 에이전트 LLM(gpt-oss-120b)의 판단은 빠지고 SQL 생성 툴과 같은 코드 경로만 잽니다. 평가 대상은 wxdi 내부 모델(meta-llama/llama-3-3-70b-instruct)이 쓴 SQL입니다.</li>
           <li><b>채점</b>: 골든 SQL과 생성 SQL을 Db2에서 실행해 <b>결과 값</b>을 비교합니다. 행 수가 같고 골든의 각 행 값이 생성 결과에 모두 들어 있으면 통과이며, 컬럼 순서와 이름, 추가 컬럼, SQL 문장 모양은 보지 않습니다. 실행 오류와 불일치는 실패입니다.</li>
           <li><b>반복</b>: 같은 질문을 5번씩 생성합니다. 생성기가 매번 다른 SQL을 낼 수 있어서입니다. few-shot 효과를 보려고 예시가 있을 때와 없을 때를 같은 데이터에서 각각 돌렸습니다(Few-shot 예시 탭 맨 아래 비교표).</li>
-          <li><b>개인정보</b>: 결과의 고객 이름은 가려서 표시합니다.</li>
+          <li><b>값 표시</b>: 데이터가 모두 합성 데이터라서 결과 값을 가리지 않고 그대로 보여줍니다. "어제", "이번 달"처럼 날짜에 따라 달라지는 질문의 결과는 데이터를 적재한 2026-11-22 기준입니다.</li>
         </ul>
         <div id="eval-body"><p class="muted">eval_results.js를 불러오지 못했습니다.</p></div>
       </section>
@@ -535,7 +535,7 @@
           <li><b>생성기의 비결정성</b>: 같은 질문도 요청마다 SQL이 달라질 수 있습니다. 같은 구성으로 세 번 돌린 점수가 24/30, 24/30, 26/30이었고, 잔고 용어(예수금, 평가금액, 미수금) 정의를 보강한 뒤에는 27/30이었습니다. few-shot 17건을 넣은 구성도 한 번은 27/30(질문당 3번), 다른 한 번은 50/50(질문당 5번)이었습니다. 한 번의 점수 차이는 우연일 수 있습니다. 지금 가장 약한 질문은 30분 넘게 미체결인 주문(S3-04)으로, 예시가 없으면 "30분 안에 체결이 없는 주문"으로 해석해 행이 훨씬 많이 나오고, 예시가 있어도 가끔 열 이름의 따옴표가 어긋난 SQL 문법 오류가 납니다. 생성기가 용어 정의를 항상 따르지는 않아서, 같은 질문도 정의 문구에 따라 정상 비율이 달라집니다(VIP 예수금 질문 기준 정의 보강 전 6~8/10, 후 19/20).</li>
           <li><b>few-shot의 효과는 방향만 확인</b>: 같은 데이터에서 골든을 질문당 5번씩 돌렸을 때 예시 있음 50/50(100%), 예시 없음 45/50(90%)이었습니다. 차이는 대부분 S3-04(5/5 대 2/5)에서 났고, 같은 구성을 다시 돌리면 점수가 달라질 수 있어(예시 있음도 27/30이 나온 적이 있음) 효과가 있다고 단정하지는 않습니다. 예시 17건 중 10건은 골든과 구조가 비슷합니다(종목, 숫자, 등급 같은 값만 다르게 함). 구조가 다른 새 질문에서도 효과가 있는지는 시험하지 않았습니다. 예시를 고치면 CSV를 다시 올리고 wxdi 프로젝트의 온보딩 작업(Onboard for generative AI)을 다시 실행해야 프롬프트에 반영됩니다.</li>
           <li><b>복잡한 질의</b>: 이전 값과의 비교(LAG), 이동평균, 상위 고객의 주력 종목처럼 CTE와 윈도 함수가 겹치는 질문은 오류가 나거나 질문의 일부만 답할 수 있습니다. 골든에 넣지 않았고 에이전트로는 다시 시험하지 않았습니다. 5개 테이블 JOIN, 서브쿼리, 비율 조건 질문(S3-01, S3-02, S3-05)은 이번 시험에서 정상이었습니다.</li>
-          <li><b>개인정보</b>: 생성기가 고객 목록 질문에 주민번호, 이메일, 전화번호까지 조회할 수 있어서, wxO의 PII Filter 컨트롤로 답변의 이메일, 전화번호, 주민번호를 <code>**********</code>로 바꿨습니다(툴 섹션의 "PII 마스킹 (wxO)" 탭). 이 컨트롤을 붙이기 전에는 "고객 주민번호 전체 보여줘"에 주민등록번호 40건이 그대로 표시됐습니다(S7-01). 지금도 남은 한계가 있습니다. (1) 같은 SQL 에이전트가 wxO 화면 Draft Preview에서는 가려졌지만 API로 직접 부르면 가려지지 않았고(Insight도 API 직접 호출에서 가려지지 않음), 사이트의 임베디드 챗에서는 아직 시험하지 않았습니다. (2) 하이픈 없는 번호와 유선 전화는 못 가리고, 에이전트가 번호를 다른 모양으로 고쳐 쓰면 놓칠 수 있습니다. (3) 고객 이름은 가리지 않습니다. (4) 요청을 막지 않고 값만 바꿉니다. (5) 질문에 이메일 주소를 적으면 입력에서도 바뀌어, 그 이메일로 고객을 찾는 질문은 0행이 나옵니다.</li>
+          <li><b>개인정보</b>: 생성기가 고객 목록 질문에 주민번호, 이메일, 전화번호까지 조회할 수 있어서, wxO의 PII Filter 컨트롤로 답변의 이메일, 전화번호, 주민번호를 <code>**********</code>로 바꿨습니다(툴 섹션의 "PII 마스킹 (wxO)" 탭). 이 컨트롤을 붙이기 전에는 "고객 주민번호 전체 보여줘"에 주민등록번호 40건이 그대로 표시됐습니다(S7-01). 지금도 남은 한계가 있습니다. (1) 같은 SQL 에이전트가 wxO 화면 Draft Preview에서는 가려졌지만 API로 직접 부르면 가려지지 않았고(Insight도 API 직접 호출에서 가려지지 않음), 사이트의 임베디드 챗에서는 아직 시험하지 않았습니다. (2) 하이픈 없는 번호와 유선 전화는 못 가리고, 에이전트가 번호를 다른 모양으로 고쳐 쓰면 놓칠 수 있습니다. (3) 요청을 막지 않고 값만 바꿉니다. (4) 질문에 이메일 주소를 적으면 입력에서도 바뀌어, 그 이메일로 고객을 찾는 질문은 0행이 나옵니다.</li>
           <li><b>응답 시간</b>: SQL 생성이 질문당 12~40초 걸립니다.</li>
           <li><b>날짜 기준</b>: 데이터가 적재일을 기준으로 만들어져 시연 전 재적재가 필요합니다.</li>
           <li><b>차트 표시 범위와 외부 전송</b>: 차트는 이미지로 나옵니다. Supervisor 챗에서도 Insight 답변의 이미지 줄을 그대로 옮기도록 지시해 원 · 막대 · 선 차트가 나오는 것을 확인했습니다. 다만 LLM이 옮기는 방식이라 주소가 깨질 가능성이 남아 있어, 짧은 주소를 쓰도록 바꿨습니다. 이미지는 외부 서비스(QuickChart)가 그리므로 차트에 쓰이는 값(업종, 금액 등)이 그 서버로 나가고 저장됩니다. 데모의 합성 데이터라서 괜찮지만 실데이터에는 자체 호스팅이 필요합니다. QuickChart의 보관 정책은 확인하지 못했습니다.</li>
