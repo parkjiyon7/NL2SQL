@@ -10,9 +10,6 @@
   }
 
   /* ---------- 다이어그램 원문 ---------- */
-  var PII_IN = '["입력 훅 · PII Filter 컨트롤<br/>질문 속 이메일, 주민번호, 전화번호를 **********로"]:::pii';
-  var PII_OUT = '["출력 훅 · PII Filter 컨트롤<br/>에이전트가 쓴 최종 답변의 이메일, 주민번호, 전화번호를 **********로"]:::pii';
-
   var ARCH = [
     "flowchart TB",
     '  U["사용자 (홈페이지 챗)"]',
@@ -92,7 +89,6 @@
       "  classDef wxdi fill:#dcfce7,stroke:#0f7b3f,stroke-width:2px,color:#064e2b",
       "  classDef db fill:#ffedd5,stroke:#c2410c,stroke-width:2px,color:#7c2d12",
       "  classDef user fill:#f1f5f9,stroke:#64748b,stroke-width:2px,color:#1f2937",
-      "  classDef pii fill:#fee2e2,stroke:#b91c1c,stroke-width:2px,color:#7f1d1d",
       "  classDef ext fill:#fef3c7,stroke:#b45309,stroke-width:2px,color:#78350f",
       "  style WXO fill:#f0f6ff,stroke:#1b5fc1,stroke-width:2px,stroke-dasharray:6 4",
       "  style WXDI fill:#f0fdf4,stroke:#0f7b3f,stroke-width:2px,stroke-dasharray:6 4"
@@ -200,13 +196,9 @@
 
   /* ---------- DB 포함 전체 구조도 (솔루션 매핑) ---------- */
   var FULL = agentDiagram([
-    '  U(["사용자<br/>홈페이지 AI 챗"]):::user',
+    '  U(["사용자<br/>홈페이지 AI 챗"]):::user --> SUP',
     '  subgraph WXO["watsonx Orchestrate (wxO)  ·  에이전트 실행"]',
-    '    PI' + PII_IN,
     '    SUP["Supervisor<br/>질문 분류, 되묻기, 맥락 유지"]:::wxo',
-    '    PO["출력 훅 · PII Filter 컨트롤<br/>최종 답변의 이메일, 주민번호, 전화번호를 **********로<br/>(컨트롤은 4개 에이전트에 연결)"]:::pii',
-    "    PI --> SUP",
-    "    SUP --> PO",
     '    CTX["용어·메타데이터 검색<br/>map_terms, get_catalog"]:::wxo',
     '    SQLA["SQL<br/>map_terms, generate_sql, run_sql"]:::wxo',
     '    INS["Insight<br/>map_terms, generate_sql,<br/>run_sql, make_chart"]:::wxo',
@@ -240,9 +232,7 @@
     '  T4 -->|"SELECT 실행"| DB',
     '  FS -->|"비슷한 예시 3건"| TS',
     '  TS -.->|"스키마 참조"| CAT',
-    '  DB -.->|"메타데이터 가져오기"| CAT',
-    '  U --> PI',
-    '  PO --> R(["마스킹된 최종 답변"]):::user'
+    '  DB -.->|"메타데이터 가져오기"| CAT'
   ]);
 
   /* ---------- 화면 / 서브탭 전환 ---------- */

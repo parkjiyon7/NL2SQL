@@ -118,12 +118,12 @@
       <section id="sec-overview" class="sec active">
         <h2>개요와 현황</h2>
         <div class="grid3">
-          <div class="stat"><b>4</b><span>에이전트<br><em class="pill ag">Supervisor</em> <em class="pill ag">용어·메타데이터 검색</em> <em class="pill ag">SQL</em> <em class="pill ag">Insight</em></span></div>
-          <div class="stat"><b>5</b><span>툴<br><em class="pill tl">generate_sql</em> <em class="pill tl">run_sql</em> <em class="pill tl">map_terms</em> <em class="pill tl">get_catalog</em> <em class="pill tl">make_chart</em></span></div>
-          <div class="stat"><b>9</b><span>테이블<br>모두 300행 이내의 합성 데이터</span></div>
-          <div class="stat"><b>25 + 35</b><span>용어집 용어<br>표준 용어 25개와 동의어 용어 35개, 게시 완료</span></div>
-          <div class="stat"><b>17건</b><span>few-shot 반영<br>wxdi에 올린 SQL 예시 17건이 프롬프트에 들어감(질문마다 비슷한 3건). <a href="#demo/tools" class="lnk">예시 보기</a></span></div>
-          <div class="stat"><b>100%</b><span>골든 질문 정확도(few-shot 있음)<br>10문항 x 5회, 50/50. 예시를 뺀 같은 시험은 45/50 (90%) (<a href="#demo/tools" class="lnk">비교표 보기</a>)</span></div>
+          <div class="stat"><b>4</b><span><strong class="st-t">에이전트</strong><em class="pill ag">Supervisor</em> <em class="pill ag">용어·메타데이터 검색</em> <em class="pill ag">SQL</em> <em class="pill ag">Insight</em></span></div>
+          <div class="stat"><b>5</b><span><strong class="st-t">툴</strong><em class="pill tl">generate_sql</em> <em class="pill tl">run_sql</em> <em class="pill tl">map_terms</em> <em class="pill tl">get_catalog</em> <em class="pill tl">make_chart</em></span></div>
+          <div class="stat"><b>9</b><span><strong class="st-t">테이블</strong>모두 300행 이내의 합성 데이터</span></div>
+          <div class="stat"><b>25 + 35</b><span><strong class="st-t">용어집 용어</strong>표준 용어 25개와 동의어 용어 35개, 게시 완료</span></div>
+          <div class="stat"><b>17건</b><span><strong class="st-t">few-shot 반영</strong>wxdi에 올린 SQL 예시 17건이 프롬프트에 들어감(질문마다 비슷한 3건). <a href="#demo/tools" class="lnk">예시 보기</a></span></div>
+          <div class="stat"><b>100%</b><span><strong class="st-t">골든 질문 정확도(few-shot 있음)</strong>10문항 x 5회, 50/50. 예시를 뺀 같은 시험은 45/50 (90%) (<a href="#demo/tools" class="lnk">비교표 보기</a>)</span></div>
         </div>
 
         <h3>에이전트 전체 구성도</h3>
@@ -132,7 +132,6 @@
           <span><i class="lg-wxdi"></i>watsonx.data intelligence (wxdi)</span>
           <span><i class="lg-db"></i>Db2</span>
           <span><i class="lg-ext"></i>외부 서비스 (QuickChart)</span>
-          <span><i class="lg-pii"></i>PII 마스킹 (wxO 컨트롤)</span>
         </div>
         <div class="fa-box">
           <div class="fa-center"><div class="fa-bubble"><b>사용자 질문</b><span>홈페이지 AI 챗</span></div></div>
@@ -158,7 +157,6 @@
                 <li>후속 질문에 직전 조건 유지</li>
                 <li>답변과 근거 보기 조립</li>
               </ul>
-              <span class="fa-pii">PII Filter 컨트롤: 질문(입력)과 답변(출력)에서 이메일, 주민번호, 전화번호를 **********로 치환 (4개 에이전트에 연결)</span>
               <span>모델: gpt-oss-120b</span>
             </div>
           </div>
@@ -223,7 +221,7 @@
             <div class="c o mid"><i class="stem"></i><span class="lbl">▲ 표 반환</span><i class="ah"></i></div>
             <div class="c p"><i class="stem"></i><span class="lbl">▲ 차트, 설명 반환</span></div>
           </div>
-          <div class="fa-center"><div class="fa-bubble fa-final"><b>최종 답변</b><span>표, 차트, 설명 + 근거 보기(용어 매핑, SQL, 테이블)</span><span>이메일, 주민번호, 전화번호는 PII Filter가 **********로 바꿔 내보냄</span></div></div>
+          <div class="fa-center"><div class="fa-bubble fa-final"><b>최종 답변</b><span>표, 차트, 설명 + 근거 보기(용어 매핑, SQL, 테이블)</span></div></div>
         </div>
 
         <h3>에이전트별 역할</h3>
@@ -243,7 +241,6 @@
           <span><i class="lg-wxdi"></i>watsonx.data intelligence (wxdi)</span>
           <span><i class="lg-db"></i>Db2</span>
           <span><i class="lg-ext"></i>외부 서비스 (QuickChart)</span>
-          <span><i class="lg-pii"></i>PII 마스킹 (wxO 컨트롤)</span>
           <span><i class="lg-user"></i>사용자</span>
         </div>
         <div class="diagram" id="dg-full" data-key="full"></div>
@@ -253,7 +250,6 @@
           <li><b>watsonx Orchestrate(wxO)</b>는 에이전트가 툴을 부르는 곳입니다. LLM은 호출 순서, 재시도, 답변 정리만 맡습니다.</li>
           <li><b>watsonx.data intelligence(wxdi)</b>는 데이터 설명서(카탈로그, 용어집)와 Text-to-SQL REST를 제공합니다. SQL을 만들기만 하고 실행하지는 않습니다. 프로젝트에 올려 둔 SQL 예시(few-shot) 17건 중 질문과 비슷한 3건을 프롬프트에 자동으로 넣습니다. SQL을 쓰는 모델은 wxdi 내부의 <code>meta-llama/llama-3-3-70b-instruct</code>(질문과 스키마를 맞추는 임베딩은 <code>granite-embedding-278m-multilingual</code>)이며, 응답의 <code>resource_usage.model_usages</code>에서 확인했습니다. 에이전트의 <code>gpt-oss-120b</code>는 SQL을 쓰지 않고 툴 호출 순서와 답변 정리만 맡습니다.</li>
           <li><b>Db2</b>는 데이터가 있는 곳입니다. 만들어진 SQL은 Db2로 직접 실행하며, 조회(SELECT)만 허용합니다.</li>
-          <li><b>PII Filter 컨트롤(wxO)</b>은 에이전트가 받는 질문(입력 훅)과 내보내는 답변(출력 훅)에서 이메일, 주민번호, 전화번호를 <code>**********</code>로 바꿉니다. 에이전트가 쓰는 툴이 아니라 wxO의 내장 컨트롤이며, 툴 섹션의 "PII 마스킹 (wxO)" 탭에 설정과 확인 결과를 적었습니다.</li>
           <li><b>QuickChart</b>(외부 서비스)는 차트 이미지를 그려 주는 곳입니다. <em class="pill tl">make_chart</em>가 차트 값(라벨, 숫자)을 보내고 이미지 주소를 받습니다. 값이 이 서비스로 나가므로 실데이터에는 쓰지 않거나 자체 호스팅이 필요합니다.</li>
         </ul>
       </section>

@@ -238,8 +238,6 @@ pre code{background:none;padding:0;color:inherit}
 .lg-db{background:#ffedd5;border-color:#c2410c}
 .lg-user{background:#f1f5f9;border-color:#64748b}
 .lg-ext{background:#fef3c7;border-color:#b45309}
-.lg-pii{background:#fee2e2;border-color:#b91c1c}
-.fa-top span.fa-pii{display:block;margin-top:8px;background:#fee2e2;color:#7f1d1d;border-radius:8px;padding:5px 10px;font-size:11.5px}
 .chip{display:inline-block;padding:1px 8px;border-radius:5px;font-size:11.5px;font-weight:600;border:1px solid;margin:1px 2px 1px 0;white-space:nowrap}
 .chip.wxo{background:#dbeafe;border-color:#1b5fc1;color:#0a2a5e}
 .chip.wxdi{background:#dcfce7;border-color:#0f7b3f;color:#064e2b}
@@ -292,10 +290,11 @@ pre code{background:none;padding:0;color:inherit}
 #gl-body td:last-child{min-width:130px}
 #qtable td:first-child{white-space:nowrap}
 
-.pill{display:inline-block;padding:2px 12px;border-radius:999px;border:1px solid;font-style:normal;font-weight:600;white-space:nowrap;line-height:1.5}
-.pill.ag{background:#fff;border-color:#1b5fc1;color:#0a2a5e}
-.pill.tl{background:#f1f5f9;border-color:#64748b;color:#1f2937;font-family:ui-monospace,Menlo,monospace;font-size:.92em}
-.stat .pill{font-size:12px;margin:2px 2px 2px 0}
+.pill{display:inline-block;padding:2px 12px;border-radius:999px;border:1px solid;font-style:normal;font-weight:700;white-space:nowrap;line-height:1.5;background:#fff;color:#1f2937;font-family:ui-monospace,Menlo,monospace;font-size:.92em}
+.pill.ag{border-color:#1b5fc1}
+.pill.tl{border-color:#64748b}
+.stat .pill{font-size:12.5px;margin:2px 2px 2px 0}
+.stat .st-t{display:block;font-size:17px;font-weight:800;color:var(--navy);margin:2px 0 6px}
 #fs-body pre{max-height:200px;overflow:auto;white-space:pre-wrap;word-break:break-word;margin:6px 0 0}
 #dg-arch .cluster-label foreignObject{overflow:visible}
 #dg-arch .cluster-label .nodeLabel{font-size:30px!important;font-weight:800!important;letter-spacing:1px}
