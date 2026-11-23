@@ -132,6 +132,7 @@
           <span><i class="lg-wxdi"></i>watsonx.data intelligence (wxdi)</span>
           <span><i class="lg-db"></i>Db2</span>
           <span><i class="lg-ext"></i>외부 서비스 (QuickChart)</span>
+          <span><i class="lg-pii"></i>PII 마스킹 (wxO 컨트롤)</span>
         </div>
         <div class="fa-box">
           <div class="fa-center"><div class="fa-bubble"><b>사용자 질문</b><span>홈페이지 AI 챗</span></div></div>
@@ -157,6 +158,7 @@
                 <li>후속 질문에 직전 조건 유지</li>
                 <li>답변과 근거 보기 조립</li>
               </ul>
+              <span class="fa-pii">PII Filter 컨트롤: 질문(입력)과 답변(출력)에서 이메일, 주민번호, 전화번호를 **********로 치환 (4개 에이전트에 연결)</span>
               <span>모델: gpt-oss-120b</span>
             </div>
           </div>
@@ -221,7 +223,7 @@
             <div class="c o mid"><i class="stem"></i><span class="lbl">▲ 표 반환</span><i class="ah"></i></div>
             <div class="c p"><i class="stem"></i><span class="lbl">▲ 차트, 설명 반환</span></div>
           </div>
-          <div class="fa-center"><div class="fa-bubble fa-final"><b>최종 답변</b><span>표, 차트, 설명 + 근거 보기(용어 매핑, SQL, 테이블)</span></div></div>
+          <div class="fa-center"><div class="fa-bubble fa-final"><b>최종 답변</b><span>표, 차트, 설명 + 근거 보기(용어 매핑, SQL, 테이블)</span><span>이메일, 주민번호, 전화번호는 PII Filter가 **********로 바꿔 내보냄</span></div></div>
         </div>
 
         <h3>에이전트별 역할</h3>
@@ -241,6 +243,7 @@
           <span><i class="lg-wxdi"></i>watsonx.data intelligence (wxdi)</span>
           <span><i class="lg-db"></i>Db2</span>
           <span><i class="lg-ext"></i>외부 서비스 (QuickChart)</span>
+          <span><i class="lg-pii"></i>PII 마스킹 (wxO 컨트롤)</span>
           <span><i class="lg-user"></i>사용자</span>
         </div>
         <div class="diagram" id="dg-full" data-key="full"></div>
@@ -250,6 +253,7 @@
           <li><b>watsonx Orchestrate(wxO)</b>는 에이전트가 툴을 부르는 곳입니다. LLM은 호출 순서, 재시도, 답변 정리만 맡습니다.</li>
           <li><b>watsonx.data intelligence(wxdi)</b>는 데이터 설명서(카탈로그, 용어집)와 Text-to-SQL REST를 제공합니다. SQL을 만들기만 하고 실행하지는 않습니다. 프로젝트에 올려 둔 SQL 예시(few-shot) 17건 중 질문과 비슷한 3건을 프롬프트에 자동으로 넣습니다. SQL을 쓰는 모델은 wxdi 내부의 <code>meta-llama/llama-3-3-70b-instruct</code>(질문과 스키마를 맞추는 임베딩은 <code>granite-embedding-278m-multilingual</code>)이며, 응답의 <code>resource_usage.model_usages</code>에서 확인했습니다. 에이전트의 <code>gpt-oss-120b</code>는 SQL을 쓰지 않고 툴 호출 순서와 답변 정리만 맡습니다.</li>
           <li><b>Db2</b>는 데이터가 있는 곳입니다. 만들어진 SQL은 Db2로 직접 실행하며, 조회(SELECT)만 허용합니다.</li>
+          <li><b>PII Filter 컨트롤(wxO)</b>은 에이전트가 받는 질문(입력 훅)과 내보내는 답변(출력 훅)에서 이메일, 주민번호, 전화번호를 <code>**********</code>로 바꿉니다. 에이전트가 쓰는 툴이 아니라 wxO의 내장 컨트롤이며, 툴 섹션의 "PII 마스킹 (wxO)" 탭에 설정과 확인 결과를 적었습니다.</li>
           <li><b>QuickChart</b>(외부 서비스)는 차트 이미지를 그려 주는 곳입니다. <em class="pill tl">make_chart</em>가 차트 값(라벨, 숫자)을 보내고 이미지 주소를 받습니다. 값이 이 서비스로 나가므로 실데이터에는 쓰지 않거나 자체 호스팅이 필요합니다.</li>
         </ul>
       </section>
@@ -297,7 +301,7 @@
             <li>모호한 질문은 기준을 되묻기, 후속 질문은 직전 조건 유지</li>
             <li>결과와 "근거 보기"(용어 매핑, SQL, 테이블) 조립</li>
           </ul>
-          <dl><dt>모델</dt><dd>gpt-oss-120b</dd><dt>호출 대상</dt><dd>용어·메타데이터 검색, SQL, Insight</dd><dt>하지 않는 일</dt><dd>SQL을 직접 만들거나 숫자를 계산하지 않음</dd></dl>
+          <dl><dt>모델</dt><dd>gpt-oss-120b</dd><dt>호출 대상</dt><dd>용어·메타데이터 검색, SQL, Insight</dd><dt>하지 않는 일</dt><dd>SQL을 직접 만들거나 숫자를 계산하지 않음</dd><dt>PII 마스킹</dt><dd>PII Filter 컨트롤(입력, 출력 훅) 연결. API로 호출한 Supervisor의 답변에서 이메일, 전화번호, 주민번호가 <code>**********</code>로 나옴을 확인</dd></dl>
           <div class="diagram" id="dg-ag-sup" data-key="ag-sup"></div>
           <h4>샘플 질문</h4>
           <ol class="samples">
@@ -320,7 +324,7 @@
             <li>업무 용어의 뜻, 대응 컬럼, 조인 경로, 개인정보 컬럼 안내</li>
             <li>값 조회 흐름(SQL, Insight)에는 끼지 않음</li>
           </ul>
-          <dl><dt>모델</dt><dd>gpt-oss-120b</dd><dt>툴</dt><dd>map_terms, get_catalog</dd><dt>하지 않는 일</dt><dd>SQL을 만들거나 실행하지 않음. 값을 조회하지 않음</dd></dl>
+          <dl><dt>모델</dt><dd>gpt-oss-120b</dd><dt>툴</dt><dd>map_terms, get_catalog</dd><dt>하지 않는 일</dt><dd>SQL을 만들거나 실행하지 않음. 값을 조회하지 않음</dd><dt>PII 마스킹</dt><dd>PII Filter 컨트롤(입력, 출력 훅) 연결. 값 대신 컬럼 이름과 개인정보 여부만 답해서 가릴 값이 거의 없음. 출력 마스킹은 따로 확인하지 못함</dd></dl>
           <div class="diagram" id="dg-ag-ctx" data-key="ag-ctx"></div>
           <h4>샘플 질문</h4>
           <ol class="samples">
@@ -344,7 +348,7 @@
             <li>generate_sql이 카탈로그의 FK 조인 조건을 읽어 Text-to-SQL에 전달</li>
             <li>실행 오류가 나면 오류를 넘겨 최대 2번 다시 생성, 결과가 0행이면 조건을 점검해 한 번 더 생성</li>
           </ul>
-          <dl><dt>모델</dt><dd>gpt-oss-120b (SQL은 쓰지 않고 툴 호출 순서와 답변 정리만. SQL 생성은 wxdi 내부 Llama 3.3 70B)</dd><dt>툴</dt><dd>map_terms, generate_sql, run_sql</dd><dt>하지 않는 일</dt><dd>SQL을 직접 쓰지 않음. 조회만 함</dd></dl>
+          <dl><dt>모델</dt><dd>gpt-oss-120b (SQL은 쓰지 않고 툴 호출 순서와 답변 정리만. SQL 생성은 wxdi 내부 Llama 3.3 70B)</dd><dt>툴</dt><dd>map_terms, generate_sql, run_sql</dd><dt>하지 않는 일</dt><dd>SQL을 직접 쓰지 않음. 조회만 함</dd><dt>PII 마스킹</dt><dd>PII Filter 컨트롤(입력, 출력 훅) 연결. wxO 화면의 Draft Preview에서는 이메일, 전화번호, 주민번호가 가려졌지만 API로 직접 호출했을 때는 가려지지 않았음(툴 섹션의 "PII 마스킹 (wxO)" 탭 참고)</dd></dl>
           <div class="diagram" id="dg-ag-sql" data-key="ag-sql"></div>
           <h4>샘플 질문</h4>
           <ol class="samples">
@@ -368,7 +372,7 @@
             <li>"왜 늘었어" 질문은 업종이나 종목으로 한 번 더 쪼개 보기</li>
             <li>확인된 숫자만 근거로 설명</li>
           </ul>
-          <dl><dt>모델</dt><dd>gpt-oss-120b (SQL 생성은 wxdi 내부 Llama 3.3 70B)</dd><dt>툴</dt><dd>map_terms, generate_sql, run_sql, make_chart</dd><dt>하지 않는 일</dt><dd>확인되지 않은 원인을 단정하지 않음</dd></dl>
+          <dl><dt>모델</dt><dd>gpt-oss-120b (SQL 생성은 wxdi 내부 Llama 3.3 70B)</dd><dt>툴</dt><dd>map_terms, generate_sql, run_sql, make_chart</dd><dt>하지 않는 일</dt><dd>확인되지 않은 원인을 단정하지 않음</dd><dt>PII 마스킹</dt><dd>PII Filter 컨트롤(입력, 출력 훅) 연결. API로 직접 호출했을 때는 가려지지 않았고 화면에서는 확인하지 않음</dd></dl>
           <div class="diagram" id="dg-ag-ins" data-key="ag-ins"></div>
           <h4>샘플 질문</h4>
           <ol class="samples">
@@ -391,6 +395,7 @@
           <button data-p="tools" class="active">툴 목록</button>
           <button data-p="gloss">용어집 (wxdi)</button>
           <button data-p="fewshot">Few-shot 예시 (wxdi)</button>
+          <button data-p="pii">PII 마스킹 (wxO)</button>
         </div>
         <div id="tp-tools">
         <p class="muted">모든 툴은 예외 대신 <code>error</code> 필드를 채워 돌려주고, <code>engine</code>과 <code>elapsed_ms</code>를 함께 반환합니다.</p>
@@ -443,6 +448,61 @@
           <p class="muted">이 표는 wxdi에 올린 CSV 원본에서 만들었습니다. wxdi를 실시간으로 읽는 화면은 아닙니다.</p>
           <div id="fs-ab"></div>
         </div>
+        <div id="tp-pii" hidden>
+          <p class="muted">개인정보 마스킹은 에이전트가 쓰는 Python 툴이 아니라 <b>watsonx Orchestrate의 내장 컨트롤 "PII Filter"</b>로 처리합니다. 외부 소스나 별도 코드를 쓰지 않고 wxO 화면(Controls)에서 설정했습니다. 컨트롤 이름은 <code>KR_PII_EMAIL_PN_SSN</code>(내부 이름 <code>test_email_control_6026oB</code>)이고, Supervisor, 용어·메타데이터 검색, SQL, Insight 에이전트 4개에 연결했습니다. 마스킹 대상은 <b>이메일, 휴대폰 번호, 주민등록번호</b> 세 가지이며 고객 이름은 가리지 않습니다.</p>
+          <h3>어디서 가려지나</h3>
+          <ul class="plain">
+            <li><b>입력 훅과 출력 훅 둘 다</b>: 에이전트가 받는 질문(<code>agent_pre_invoke</code>)과 에이전트가 내보내는 최종 답변(<code>agent_post_invoke</code>)에서 값을 찾아 바꿉니다. wxO 화면의 Enforcement type에서 Input과 Output을 모두 켠 설정입니다.</li>
+            <li><b>답변 글자에 대해 동작</b>: DB에서 읽은 값을 에이전트가 답변으로 쓴 뒤, 내보내는 단계에서 바꿉니다. 답변의 표에 나오는 값이 이 규칙으로 가려지는 것을 확인했습니다. 툴 호출과 DB 결과 단계에서 가리는지, 트레이스와 로그에 원본이 남는지는 확인하지 않았습니다.</li>
+            <li><b>입력에서도 가림</b>: 질문에 이메일을 적으면 SQL이 <code>WHERE "EMAIL" = '**********'</code>로 만들어졌습니다. 그래서 이메일 주소로 고객을 찾는 질문은 0행이 나옵니다.</li>
+          </ul>
+          <h3>설정</h3>
+          <table class="tbl">
+            <thead><tr><th>대상</th><th>방식</th><th>설정 값</th></tr></thead>
+            <tbody>
+              <tr><td>이메일</td><td>내장 탐지기</td><td><code>detect_email: true</code></td></tr>
+              <tr><td>주민등록번호</td><td>정규식 (<code>custom_patterns</code>)</td><td><code>\d{6}-[1-4]\d{6}</code></td></tr>
+              <tr><td>휴대폰 번호</td><td>정규식 (<code>custom_patterns</code>)</td><td><code>01[016789]-\d{3,4}-\d{4}</code></td></tr>
+              <tr><td>치환 방식</td><td>값 전체를 한 번 바꿈</td><td><code>default_mask_strategy: redact</code>, <code>redaction_text: **********</code></td></tr>
+              <tr><td>내장 SSN, 전화 탐지</td><td>꺼 둠</td><td><code>detect_ssn: false</code>, <code>detect_phone: false</code></td></tr>
+              <tr><td>차단, 로그</td><td>쓰지 않음</td><td><code>block_on_detection: false</code>, <code>log_detections: false</code></td></tr>
+            </tbody>
+          </table>
+          <p class="muted">내장 SSN과 전화 탐지를 끈 이유: 둘 다 미국식이라 한국 번호(<code>010-1234-5678</code>, <code>620109-1234567</code>)를 가리지 못했고, 반대로 9~11자리 숫자(예: 금액 <code>150000000</code>, <code>15261000000</code>)를 번호로 오인해 가렸습니다. 한국 번호는 정규식으로 따로 넣었습니다. 정규식에 앞뒤 숫자 검사(lookaround)를 넣으면 동작하지 않아 단순한 형태만 썼습니다.</p>
+          <h3>시험한 결과</h3>
+          <div class="scroll-x"><table class="tbl">
+            <thead><tr><th>입력</th><th>결과</th></tr></thead>
+            <tbody>
+              <tr><td>이메일 (<code>a.b@sub.example.org</code>, 대소문자 섞임, <code>+</code> 태그)</td><td><span class="tag ok">가려짐</span></td></tr>
+              <tr><td>휴대폰 <code>010-1234-5678</code>, <code>010-123-4567</code>, <code>011-234-5678</code>, 한글에 붙은 <code>전화010-9999-8888로</code></td><td><span class="tag ok">가려짐</span></td></tr>
+              <tr><td>주민번호 <code>620109-1234567</code>, <code>900101-2345678</code></td><td><span class="tag ok">가려짐</span></td></tr>
+              <tr><td>금액 <code>150000000</code>, <code>1,234,567,890</code>, <code>70,000</code>, 날짜 <code>2026-03-15</code>, 계좌 <code>1000001</code></td><td><span class="tag ok">그대로 둠(정상)</span></td></tr>
+              <tr><td>하이픈 없는 <code>01012345678</code>, <code>6201091234567</code>, 유선 <code>02-1234-5678</code></td><td><span class="tag bad">가려지지 않음</span></td></tr>
+            </tbody>
+          </table></div>
+          <h3>에이전트별 확인</h3>
+          <p class="muted">같은 에이전트도 부르는 경로에 따라 결과가 달랐습니다. 아래는 어느 경로에서 확인했는지를 함께 적은 것입니다.</p>
+          <div class="scroll-x"><table class="tbl">
+            <thead><tr><th>에이전트</th><th>호출 경로</th><th>결과</th></tr></thead>
+            <tbody>
+              <tr><td>Supervisor</td><td>API 호출 (<code>chat_with_agent</code>)</td><td><span class="tag ok">가려짐</span> "고객 3명의 이름, 전화번호, 이메일, 주민번호를 표로 보여줘"에서 전화, 이메일, 주민번호가 모두 <code>**********</code>, 이름은 그대로</td></tr>
+              <tr><td>SQL</td><td>wxO 화면 Draft Preview</td><td><span class="tag ok">가려짐</span> "vip 고객 이름 전화번호 주민번호 이메일 총자산 금액을 줘"에서 전화, 주민번호, 이메일은 <code>**********</code>, 이름과 총자산은 그대로</td></tr>
+              <tr><td>SQL</td><td>API 직접 호출</td><td><span class="tag bad">가려지지 않음</span> 같은 질문에서 전화, 주민번호, 이메일이 그대로 나옴</td></tr>
+              <tr><td>Insight</td><td>API 직접 호출</td><td><span class="tag bad">가려지지 않음</span> 화면에서는 시험하지 않음</td></tr>
+              <tr><td>용어·메타데이터 검색</td><td>API 호출</td><td><span class="tag warn">부분 확인</span> 값 대신 컬럼 이름과 개인정보 여부만 답해서, 출력 마스킹은 직접 확인하지 못함</td></tr>
+              <tr><td>사이트의 임베디드 챗</td><td>이 페이지의 챗</td><td><span class="tag no">미확인</span> 실제 시연 경로인데 아직 시험하지 않음</td></tr>
+            </tbody>
+          </table></div>
+          <p class="muted">SQL 에이전트를 화면에서는 가리고 API로 부를 때는 가리지 않은 이유는 확인하지 못했습니다. 호출 경로의 차이일 가능성이 있다고만 볼 뿐입니다. 그래서 어느 에이전트가 문제라고 단정하지 않습니다. 시연할 때는 실제로 쓸 경로(임베디드 챗)에서 먼저 확인해야 합니다.</p>
+          <h3>한계</h3>
+          <ul class="plain">
+            <li><b>형식이 다르면 못 가림</b>: 하이픈 없는 번호, 유선 전화, 다른 숫자 안에 붙은 번호는 가려지지 않거나 일부만 가려집니다(<code>1620109-12345678</code>은 앞뒤가 섞여 바뀜).</li>
+            <li><b>답변 문장이 바뀌면 놓침</b>: SQL 에이전트가 주민번호를 금액처럼 <code>620,109‑253,8915원</code>으로 고쳐 써서 정규식을 피한 적이 있었습니다. 지시문(<code>findemo_sql_agent.yaml</code>)에 식별번호와 문자열 값(주민번호, 전화번호, 이메일, 계좌번호)은 쉼표나 '원'을 붙이지 말고 DB 값 그대로 쓰라는 문장을 넣었고, 이후 시험에서는 가려졌습니다.</li>
+            <li><b>이름은 가리지 않음</b>: 요구 범위가 이메일, 전화번호, 주민번호라서 뺐습니다.</li>
+            <li><b>자체 차단이 아님</b>: <code>block_on_detection</code>을 꺼 두어 요청을 막지는 않고 값만 바꿉니다. "고객 주민번호 전체 보여줘"에서 Supervisor가 거절한 것이 이 컨트롤 때문인지 모델의 판단인지는 구분하지 못했습니다.</li>
+            <li><b>컨트롤은 사용자가 관리</b>: 컨트롤은 사용자가 wxO 화면에서 만들고 고쳤습니다. 이 프로젝트의 API 키로는 컨트롤을 만들거나 고칠 수 없었습니다(관리자 권한 필요).</li>
+          </ul>
+        </div>
       </section>
 
       <section id="sec-data" class="sec">
@@ -479,7 +539,7 @@
           <li><b>생성기의 비결정성</b>: 같은 질문도 요청마다 SQL이 달라질 수 있습니다. 같은 구성으로 세 번 돌린 점수가 24/30, 24/30, 26/30이었고, 잔고 용어(예수금, 평가금액, 미수금) 정의를 보강한 뒤에는 27/30이었습니다. few-shot 17건을 넣은 구성도 한 번은 27/30(질문당 3번), 다른 한 번은 50/50(질문당 5번)이었습니다. 한 번의 점수 차이는 우연일 수 있습니다. 지금 가장 약한 질문은 30분 넘게 미체결인 주문(S3-04)으로, 예시가 없으면 "30분 안에 체결이 없는 주문"으로 해석해 행이 훨씬 많이 나오고, 예시가 있어도 가끔 열 이름의 따옴표가 어긋난 SQL 문법 오류가 납니다. 생성기가 용어 정의를 항상 따르지는 않아서, 같은 질문도 정의 문구에 따라 정상 비율이 달라집니다(VIP 예수금 질문 기준 정의 보강 전 6~8/10, 후 19/20).</li>
           <li><b>few-shot의 효과는 방향만 확인</b>: 같은 데이터에서 골든을 질문당 5번씩 돌렸을 때 예시 있음 50/50(100%), 예시 없음 45/50(90%)이었습니다. 차이는 대부분 S3-04(5/5 대 2/5)에서 났고, 같은 구성을 다시 돌리면 점수가 달라질 수 있어(예시 있음도 27/30이 나온 적이 있음) 효과가 있다고 단정하지는 않습니다. 예시 17건 중 10건은 골든과 구조가 비슷합니다(종목, 숫자, 등급 같은 값만 다르게 함). 구조가 다른 새 질문에서도 효과가 있는지는 시험하지 않았습니다. 예시를 고치면 CSV를 다시 올리고 wxdi 프로젝트의 온보딩 작업(Onboard for generative AI)을 다시 실행해야 프롬프트에 반영됩니다.</li>
           <li><b>복잡한 질의</b>: 이전 값과의 비교(LAG), 이동평균, 상위 고객의 주력 종목처럼 CTE와 윈도 함수가 겹치는 질문은 오류가 나거나 질문의 일부만 답할 수 있습니다. 골든에 넣지 않았고 에이전트로는 다시 시험하지 않았습니다. 5개 테이블 JOIN, 서브쿼리, 비율 조건 질문(S3-01, S3-02, S3-05)은 이번 시험에서 정상이었습니다.</li>
-          <li><b>개인정보</b>: 생성기가 고객 목록 질문에 주민번호, 이메일, 전화번호까지 조회할 수 있습니다. Supervisor가 답변에서 빼 주기도 하지만 보장되지 않습니다. "고객 주민번호 전체 보여줘"라고 직접 물으면 주민등록번호 40건이 그대로 표시된 것을 확인했습니다(S7-01). 마스킹은 2단계 항목입니다.</li>
+          <li><b>개인정보</b>: 생성기가 고객 목록 질문에 주민번호, 이메일, 전화번호까지 조회할 수 있어서, wxO의 PII Filter 컨트롤로 답변의 이메일, 전화번호, 주민번호를 <code>**********</code>로 바꿨습니다(툴 섹션의 "PII 마스킹 (wxO)" 탭). 이 컨트롤을 붙이기 전에는 "고객 주민번호 전체 보여줘"에 주민등록번호 40건이 그대로 표시됐습니다(S7-01). 지금도 남은 한계가 있습니다. (1) 같은 SQL 에이전트가 wxO 화면 Draft Preview에서는 가려졌지만 API로 직접 부르면 가려지지 않았고(Insight도 API 직접 호출에서 가려지지 않음), 사이트의 임베디드 챗에서는 아직 시험하지 않았습니다. (2) 하이픈 없는 번호와 유선 전화는 못 가리고, 에이전트가 번호를 다른 모양으로 고쳐 쓰면 놓칠 수 있습니다. (3) 고객 이름은 가리지 않습니다. (4) 요청을 막지 않고 값만 바꿉니다. (5) 질문에 이메일 주소를 적으면 입력에서도 바뀌어, 그 이메일로 고객을 찾는 질문은 0행이 나옵니다.</li>
           <li><b>응답 시간</b>: SQL 생성이 질문당 12~40초 걸립니다.</li>
           <li><b>날짜 기준</b>: 데이터가 적재일을 기준으로 만들어져 시연 전 재적재가 필요합니다.</li>
           <li><b>차트 표시 범위와 외부 전송</b>: 차트는 이미지로 나옵니다. Supervisor 챗에서도 Insight 답변의 이미지 줄을 그대로 옮기도록 지시해 원 · 막대 · 선 차트가 나오는 것을 확인했습니다. 다만 LLM이 옮기는 방식이라 주소가 깨질 가능성이 남아 있어, 짧은 주소를 쓰도록 바꿨습니다. 이미지는 외부 서비스(QuickChart)가 그리므로 차트에 쓰이는 값(업종, 금액 등)이 그 서버로 나가고 저장됩니다. 데모의 합성 데이터라서 괜찮지만 실데이터에는 자체 호스팅이 필요합니다. QuickChart의 보관 정책은 확인하지 못했습니다.</li>
@@ -490,8 +550,8 @@
         <table class="tbl">
           <thead><tr><th>항목</th><th>내용</th></tr></thead>
           <tbody>
-            <tr><td>접근 제어</td><td>고객 정보 컬럼 마스킹, 지점별 행 필터(타 지점 고객 조회 거부)</td></tr>
-            <tr><td>가드레일</td><td>입력 검사(주민번호 요청, 삭제 요청, SQL 주입 차단)와 거절 사유 안내</td></tr>
+            <tr><td>접근 제어</td><td>지점별 행 필터(타 지점 고객 조회 거부). 이메일, 전화번호, 주민번호 마스킹은 wxO PII Filter로 적용했고, 남은 일은 임베디드 챗과 에이전트 직접 호출에서 모두 가려지는지 확인하는 것</td></tr>
+            <tr><td>가드레일</td><td>입력 검사(주민번호 요청, 삭제 요청, SQL 주입 차단)와 거절 사유 안내. PII Filter는 값을 바꾸기만 하고 요청을 막지는 않음</td></tr>
             <tr><td>감사 로그</td><td>누가, 언제, 어떤 질문과 SQL로, 얼마나 걸렸는지 기록</td></tr>
             <tr><td>계보</td><td>get_lineage로 답변에 쓰인 데이터의 출처 경로 표시</td></tr>
             <tr><td>정확도</td><td>few-shot 17건은 반영 완료. 예시와 구조가 다른 새 질문으로 효과 재확인, 약한 질문(S3-04) 보강, 골든 질문 확대</td></tr>
@@ -508,7 +568,7 @@
           <li><b>골든 평가 탭과 다른 이유</b>: 골든 평가는 wxdi Text-to-SQL이 만든 SQL을 5번 실행해 결과 값이 정답과 같은지만 봅니다(에이전트를 거치지 않음). 이 표의 상태는 Supervisor 에이전트에 직접 물어 본 결과라, 용어를 잘못 옮기거나 답변을 잘못 정리하는 문제까지 포함합니다. 그래서 골든은 5/5인데 여기서는 "불안정"인 질문(S1-01, S2-02, S3-03, S5-02)이 있습니다. 골든 점수는 위 골든 평가 항목과 "Text-to-SQL 평가" 탭에서 봅니다.</li>
           <li><b>골든이 아닌 질문</b>: 골든 10문항 외에는 SQL 정답을 정하지 않았습니다. 막마다 확인하려는 기능(JOIN, 서브쿼리, 용어사전, 대화 맥락, 차트 등)이 분명하도록 질문을 새로 정리했고(2026-11-21), 에이전트에 직접 한두 번씩 물어 답을 Db2에서 직접 계산한 값과 비교했습니다. 데이터를 2026-11-22에 다시 적재한 뒤 모두 다시 물어 값을 갱신했습니다. "확인 항목" 열은 그 질문으로 어떤 기능을 보는지를 키워드로 적은 것입니다.</li>
           <li><b>표현에 민감한 질문</b>: 같은 뜻이어도 문장이 달라지면 결과가 달라진 경우가 있습니다. S3-03("종목별 거래대금 순위를 섹터 내에서 매겨줘"는 전체 순위), S5-02("한도의 80%를 넘긴 데스크가 있어?"는 "없음"), S4-04("이번엔 지점별로 합계를 보여줘"는 없는 지점과 지어낸 숫자)입니다. 이 표에는 정상 동작한 문구를 적었습니다.</li>
-          <li><b>2단계 항목</b>: 보안(S7)과 운영(S8)은 아직 만들지 않은 기능이 많아 현재 동작을 있는 그대로 적었습니다. 주민번호를 직접 요청하면 그대로 보여주는 점(S7-01)은 가장 먼저 고쳐야 할 항목입니다.</li>
+          <li><b>2단계 항목</b>: 보안(S7)과 운영(S8)은 아직 만들지 않은 기능이 많아 현재 동작을 있는 그대로 적었습니다. 주민번호 질문(S7-01)은 wxO PII Filter 컨트롤로 값을 가리게 했지만, 호출 경로에 따라 가려지지 않은 경우가 있어 "부분 확인"입니다.</li>
         </ul>
         <table class="tbl">
           <thead><tr><th>번호</th><th>구분</th><th>질문</th><th>확인 항목</th><th>상태</th></tr></thead>
