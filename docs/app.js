@@ -100,22 +100,15 @@
   }
 
   var AG_SUP = agentDiagram([
-    '  U(["사용자 질문<br/>홈페이지 AI 챗"]):::user',
+    '  U(["사용자 질문<br/>홈페이지 AI 챗"]):::user --> SUP',
     '  subgraph WXO["watsonx Orchestrate (wxO)"]',
-    '    PI' + PII_IN,
     '    SUP["Supervisor<br/>질문 분류, 되묻기, 맥락 유지, 근거 조립"]:::wxo',
-    '    PO' + PII_OUT,
-    "    PI --> SUP",
-    '    SUP -.->|"최종 답변"| PO',
     '    CTX["용어·메타데이터 검색 에이전트"]:::wxo',
     '    SQLA["SQL 에이전트"]:::wxo',
     '    INS["Insight 에이전트"]:::wxo',
     '    SUP -->|"용어, 구조 질문"| CTX',
     '    SUP -->|"값 조회 질문"| SQLA',
     '    SUP -->|"차트, 원인 질문"| INS',
-    "    CTX ~~~ PO",
-    "    SQLA ~~~ PO",
-    "    INS ~~~ PO",
     "  end",
     '  subgraph WXDI["watsonx.data intelligence (wxdi)"]',
     '    GL[("용어집")]:::wxdi',
@@ -130,18 +123,13 @@
     '  INS -->|"map_terms, generate_sql"| WXDI',
     '  SQLA -->|"run_sql"| DB',
     '  INS -->|"run_sql"| DB',
-    '  U --> PI',
-    '  PO --> R(["표, 차트, 설명<br/>+ 근거 보기"]):::user'
+    '  SUP --> R(["표, 차트, 설명<br/>+ 근거 보기"]):::user'
   ]);
 
   var AG_CTX = agentDiagram([
-    '  U(["용어, 구조 질문<br/>예: 약정이 뭐야?"]):::user',
+    '  U(["용어, 구조 질문<br/>예: 약정이 뭐야?"]):::user --> CTX',
     '  subgraph WXO["watsonx Orchestrate (wxO)"]',
-    '    PI' + PII_IN,
     '    CTX["용어·메타데이터 검색 에이전트<br/>findemo_context_agent"]:::wxo',
-    '    PO' + PII_OUT,
-    "    PI --> CTX",
-    "    CTX --> PO",
     '    M["map_terms<br/>질문 속 용어를 표준 용어와 컬럼에 연결"]:::wxo',
     '    G["get_catalog<br/>테이블 구조, 키, 개인정보 컬럼 조회"]:::wxo',
     "    CTX --> M",
@@ -153,17 +141,13 @@
     "  end",
     '  M -->|"용어, 동의어, 정의 조회"| GL',
     '  G -->|"테이블, 컬럼, 조인 키 조회"| CAT',
-    '  U --> PI',
-    '  PO --> R(["용어 정의 + 대응 컬럼<br/>+ 조인 경로 + 개인정보 여부"]):::user'
+    '  CTX --> R(["용어 정의 + 대응 컬럼<br/>+ 조인 경로 + 개인정보 여부"]):::user'
   ]);
 
   var AG_SQL = agentDiagram([
-    '  U(["값 조회 질문<br/>예: 고객별 총 거래 약정 상위 5명"]):::user',
+    '  U(["값 조회 질문<br/>예: 고객별 총 거래 약정 상위 5명"]):::user --> SQLA',
     '  subgraph WXO["watsonx Orchestrate (wxO)"]',
-    '    PI' + PII_IN,
     '    SQLA["SQL 에이전트<br/>findemo_sql_agent"]:::wxo',
-    '    PO' + PII_OUT,
-    "    PI --> SQLA",
     '    T1["① map_terms<br/>동의어를 표준 용어로 보정"]:::wxo',
     '    T2["② generate_sql<br/>카탈로그에서 조인 조건을 조회해 질문 뒤에 첨부"]:::wxo',
     '    T3["③ run_sql<br/>SELECT만 실행"]:::wxo',
@@ -182,18 +166,13 @@
     '  T2 -->|"조인 조건 조회"| CAT',
     '  T2 -->|"질문 + Note"| TS',
     '  T3 -->|"SQL 실행"| DB',
-    '  U --> PI',
-    '  T3 -->|"결과 행(원본)으로 답변 작성"| PO',
-    '  PO --> R(["표 + SQL + 용어 매핑"]):::user'
+    '  T3 --> R(["표 + SQL + 용어 매핑"]):::user'
   ]);
 
   var AG_INS = agentDiagram([
-    '  U(["차트, 원인 질문<br/>예: 업종별 거래대금 비중을 파이 차트로"]):::user',
+    '  U(["차트, 원인 질문<br/>예: 업종별 거래대금 비중을 파이 차트로"]):::user --> INS',
     '  subgraph WXO["watsonx Orchestrate (wxO)"]',
-    '    PI' + PII_IN,
     '    INS["Insight 에이전트<br/>findemo_insight_agent"]:::wxo',
-    '    PO' + PII_OUT,
-    "    PI --> INS",
     '    T1["① map_terms<br/>동의어를 표준 용어로 보정"]:::wxo',
     '    T2["② generate_sql<br/>카탈로그에서 조인 조건을 조회해 질문 뒤에 첨부"]:::wxo',
     '    T3["③ run_sql<br/>집계 결과 조회"]:::wxo',
@@ -216,9 +195,7 @@
     '  QC["QuickChart (외부 서비스)<br/>차트 이미지(https) 생성"]:::ext',
     '  T4 -->|"차트 값(라벨, 숫자)"| QC',
     '  QC -.->|"이미지 주소"| T4',
-    '  U --> PI',
-    '  T4 -->|"차트 이미지, 표(원본)로 답변 작성"| PO',
-    '  PO --> R(["차트 이미지 + 요약 + 근거 설명"]):::user'
+    '  T4 --> R(["차트 이미지 + 요약 + 근거 설명"]):::user'
   ]);
 
   /* ---------- DB 포함 전체 구조도 (솔루션 매핑) ---------- */
