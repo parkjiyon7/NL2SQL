@@ -169,7 +169,7 @@ pre code{background:none;padding:0;color:inherit}
 .fa-top code{background:rgba(255,255,255,.18);color:#fff;margin:4px 0 6px;display:inline-block}
 .fa-top span{display:block;font-size:12px;color:rgba(255,255,255,.8);line-height:1.6}
 .fa-branch{display:block;width:100%;height:80px}
-.fa-row{display:flex;gap:16px;align-items:flex-start}
+.fa-row{display:flex;gap:16px;align-items:stretch}
 .fa-col{flex:1;min-width:0;display:flex;flex-direction:column}
 .fa-sa{border-radius:12px;border:2px solid transparent;overflow:hidden}
 .fa-green{border-color:#2e7d32;background:#f1faf2}
@@ -184,7 +184,8 @@ pre code{background:none;padding:0;color:inherit}
 .fa-node b{display:block;font-size:12.5px;color:#1f2328;font-family:ui-monospace,Menlo,monospace}
 .fa-node span{display:block;font-size:11.5px;color:var(--muted);line-height:1.45;margin-top:2px}
 .fa-arr{text-align:center;color:#9097aa;font-size:14px;line-height:1}
-.fa-ds{display:flex;flex-direction:column;align-items:center}
+.fa-ds{display:flex;flex-direction:column;align-items:center;flex:1}
+.fa-ds::after{content:"";flex:1;width:2px;background:#aab4cc}
 .fa-vline{width:2px;height:18px;background:#aab4cc}
 .fa-ds-card{width:100%;background:#f7f8fa;border:1px solid #d0d7de;border-radius:8px;padding:9px 12px;text-align:center}
 .fa-ds-card b{display:block;font-size:12px;color:#1f2328}
