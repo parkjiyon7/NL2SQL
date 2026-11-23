@@ -316,13 +316,16 @@
     if (z) z.remove();
   }
   document.addEventListener("click", function (e) {
-    if (e.target.closest("#dg-zoom")) { closeZoom(); return; }
+    if (e.target.closest("#dg-zoom")) {
+      if (e.target.id === "dg-zoom" || e.target.closest(".dg-zoom-x")) closeZoom();
+      return;
+    }
     var d = e.target.closest(".diagram");
     var svg = d && d.querySelector("svg");
     if (!svg) return;
     var z = document.createElement("div");
     z.id = "dg-zoom";
-    z.innerHTML = '<div class="dg-zoom-bar">크게 보기 · 아무 곳이나 누르거나 Esc로 닫기</div><div class="dg-zoom-body">' + svg.outerHTML + "</div>";
+    z.innerHTML = '<div class="dg-zoom-box"><button class="dg-zoom-x" aria-label="닫기">×</button>' + svg.outerHTML + "</div>";
     document.body.appendChild(z);
   });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeZoom(); });
