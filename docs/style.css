@@ -112,6 +112,11 @@ pre code{background:none;padding:0;color:inherit}
 .diagram svg{max-width:100%;height:auto}
 .diagram.big{max-height:640px}
 .diagram .fallback{text-align:left;white-space:pre;font-size:12px;font-family:ui-monospace,Menlo,monospace;color:var(--muted)}
+.diagram:has(svg){cursor:zoom-in}
+#dg-zoom{position:fixed;inset:0;z-index:1000;background:#fff;display:flex;flex-direction:column;cursor:zoom-out}
+#dg-zoom .dg-zoom-bar{padding:8px 16px;font-size:13px;color:var(--muted);border-bottom:1px solid var(--line);flex:none}
+#dg-zoom .dg-zoom-body{flex:1;overflow:auto;padding:16px;text-align:center}
+#dg-zoom svg{width:min(2000px,96vw)!important;max-width:none!important;height:auto!important}
 .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
 .card{border:1px solid var(--line);border-radius:10px;padding:16px 18px;background:#fff}
 .card h3{margin:0 0 8px;font-size:16px;color:var(--navy)}

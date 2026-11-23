@@ -310,6 +310,23 @@
     });
   }
 
+  /* ---------- 다이어그램 크게 보기 ---------- */
+  function closeZoom() {
+    var z = $("#dg-zoom");
+    if (z) z.remove();
+  }
+  document.addEventListener("click", function (e) {
+    if (e.target.closest("#dg-zoom")) { closeZoom(); return; }
+    var d = e.target.closest(".diagram");
+    var svg = d && d.querySelector("svg");
+    if (!svg) return;
+    var z = document.createElement("div");
+    z.id = "dg-zoom";
+    z.innerHTML = '<div class="dg-zoom-bar">크게 보기 · 아무 곳이나 누르거나 Esc로 닫기</div><div class="dg-zoom-body">' + svg.outerHTML + "</div>";
+    document.body.appendChild(z);
+  });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeZoom(); });
+
   /* ---------- 데이터 섹션 ---------- */
   function renderTable(name) {
     var t = window.SAMPLES.tables[name];
