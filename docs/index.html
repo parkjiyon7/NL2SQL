@@ -408,7 +408,7 @@
         </ul>
         </div>
         <div id="tp-gloss" hidden>
-          <p class="muted">업무 용어와 동의어는 코드나 에이전트 지시문에 적지 않고 <b>watsonx.data intelligence(wxdi) 비즈니스 용어집</b>에 등록했습니다. 카테고리 <b id="gl-cat"></b>에 표준 용어 <b id="gl-n"></b>개와 동의어 용어 <b id="gl-syn"></b>개를 가져와 게시했고(wxdi 용어집에서 "약정", "업종 내 순위"를 조회해 게시된 것을 확인했습니다), <code>map_terms</code>가 질문을 받을 때마다 여기서 읽습니다. 용어를 고치거나 늘려도 툴 코드는 바뀌지 않습니다.</p>
+          <p class="muted"><b>watsonx.data intelligence(wxdi) 비즈니스 용어집</b>에 업무 용어와 동의어를 등록했습니다. 카테고리 <b id="gl-cat"></b>에 표준 용어 <b id="gl-n"></b>개와 동의어 용어 <b id="gl-syn"></b>개가 기재되어 있고, <code>map_terms</code> 툴이 이 용어집에 연결되어 있습니다.</p>
           <ul class="plain">
             <li><b>정의에 컬럼명을 적어 둡니다</b>: 정의 속 <code>EXECUTIONS.EXEC_AMOUNT</code> 같은 컬럼명을 map_terms가 읽어 "대응 컬럼"으로 돌려주고, generate_sql이 질문 뒤에 Note로 붙입니다.</li>
             <li><b>동의어도 하나의 용어입니다</b>: "약정"은 별도 용어이며 표준 용어 "거래대금"에 동의어로 연결돼 있습니다. 질문의 "약정"을 찾으면 "거래대금"의 정의를 가져옵니다.</li>
