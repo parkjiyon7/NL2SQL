@@ -204,11 +204,18 @@
               <div class="fa-sa fa-purple">
                 <div class="fa-sa-hdr"><span class="fa-badge" style="background:#f3e5f5;color:#6a1b9a">차트와 해석</span>
                   <b class="fa-ag">Insight</b><code>findemo_insight_agent</code>
-                  <span class="fa-role">차트 작성과 원인 설명</span></div>
+                  <span class="fa-role">SQL문 실행 및 차트 작성</span></div>
                 <div class="fa-sa-body">
                   <div class="fa-node"><b><em class="pill tl">map_terms</em></b><span>동의어를 표준 용어로 보정하고 용어 정의 반환</span></div>
                   <div class="fa-arr">↓</div>
-                  <div class="fa-node"><b><em class="pill tl">generate_sql</em> <em class="pill tl">run_sql</em></b><span>차트용 집계, "왜?" 질문의 쪼개 보기</span></div>
+                  <div class="fa-node"><b><em class="pill tl">generate_sql</em> <em class="pill tl">run_sql</em></b><span>SQL 생성 및 실행</span>
+                    <ul class="fa-ul">
+                      <li>wxdi 카탈로그에서 FK 조인 조건 조회</li>
+                      <li>용어 정의와 함께 질문 뒤에 Note로 첨부</li>
+                      <li>wxdi가 질문과 비슷한 SQL 예시(few-shot) 3건을 프롬프트에 자동 추가</li>
+                      <li>wxdi Text-to-SQL 기능을 통한 SQL문 생성</li>
+                    </ul>
+                  </div>
                   <div class="fa-arr">↓</div>
                   <div class="fa-node"><b><em class="pill tl">make_chart</em></b><span>line, bar, pie 차트와 근거 설명</span></div>
                 </div>
@@ -231,7 +238,7 @@
             <tr><td><b><em class="pill ag">Supervisor</em></b></td><td>질문 창구. 유형을 나눠 하위 에이전트에 연결하고, 모호하면 되묻고, 후속 질문의 맥락을 유지</td><td>하위 에이전트 3종 호출</td><td><span class="chip wxo">wxO</span></td></tr>
             <tr><td><b><em class="pill ag">용어·메타데이터 검색</em></b></td><td>용어와 구조를 직접 묻는 질문에 대답</td><td><em class="pill tl">map_terms</em> <em class="pill tl">get_catalog</em></td><td><span class="chip wxo">wxO</span> <span class="chip wxdi">wxdi 용어집, 카탈로그</span></td></tr>
             <tr><td><b><em class="pill ag">SQL</em></b></td><td>값 조회 질문을 SQL로 바꿔 실행하고 표로 답변</td><td><em class="pill tl">map_terms</em> <em class="pill tl">generate_sql</em> <em class="pill tl">run_sql</em></td><td><span class="chip wxo">wxO</span> <span class="chip wxdi">wxdi 용어집, 카탈로그, SQL 예시, Text-to-SQL</span> <span class="chip db">Db2</span></td></tr>
-            <tr><td><b><em class="pill ag">Insight</em></b></td><td>차트 작성, "왜 늘었어" 같은 원인 설명</td><td><em class="pill tl">map_terms</em> <em class="pill tl">generate_sql</em> <em class="pill tl">run_sql</em> <em class="pill tl">make_chart</em></td><td><span class="chip wxo">wxO</span> <span class="chip wxdi">wxdi 용어집, 카탈로그, SQL 예시, Text-to-SQL</span> <span class="chip db">Db2</span></td></tr>
+            <tr><td><b><em class="pill ag">Insight</em></b></td><td>SQL문 실행 및 차트 작성</td><td><em class="pill tl">map_terms</em> <em class="pill tl">generate_sql</em> <em class="pill tl">run_sql</em> <em class="pill tl">make_chart</em></td><td><span class="chip wxo">wxO</span> <span class="chip wxdi">wxdi 용어집, 카탈로그, SQL 예시, Text-to-SQL</span> <span class="chip db">Db2</span></td></tr>
           </tbody>
         </table>
 
@@ -248,9 +255,9 @@
         <h3>어떻게 동작하나</h3>
         <ul class="plain">
           <li><b>watsonx Orchestrate(wxO)</b>는 에이전트가 툴을 부르는 곳입니다. LLM은 호출 순서, 재시도, 답변 정리만 맡습니다.</li>
-          <li><b>watsonx.data intelligence(wxdi)</b>는 데이터 설명서(카탈로그, 용어집)와 Text-to-SQL REST를 제공합니다. SQL을 만들기만 하고 실행하지는 않습니다. 프로젝트에 올려 둔 SQL 예시(few-shot) 17건 중 질문과 비슷한 3건을 프롬프트에 자동으로 넣습니다. SQL을 쓰는 모델은 wxdi 내부의 <code>meta-llama/llama-3-3-70b-instruct</code>(질문과 스키마를 맞추는 임베딩은 <code>granite-embedding-278m-multilingual</code>)이며, 응답의 <code>resource_usage.model_usages</code>에서 확인했습니다. 에이전트의 <code>gpt-oss-120b</code>는 SQL을 쓰지 않고 툴 호출 순서와 답변 정리만 맡습니다.</li>
+          <li><b>watsonx.data intelligence(wxdi)</b>는 데이터 설명서(카탈로그, 용어집)와 Text-to-SQL REST를 제공합니다. SQL을 만들기만 하고 실행하지는 않습니다. 프로젝트에 올려 둔 SQL 예시(few-shot) 17건을 반영합니다. SQL을 쓰는 모델은 wxdi 내부의 <code>meta-llama/llama-3-3-70b-instruct</code>(질문과 스키마를 맞추는 임베딩은 <code>granite-embedding-278m-multilingual</code>)입니다. 에이전트의 <code>gpt-oss-120b</code>는 SQL을 쓰지 않고 툴 호출 순서와 답변 정리만 맡습니다.</li>
           <li><b>Db2</b>는 데이터가 있는 곳입니다. 만들어진 SQL은 Db2로 직접 실행하며, 조회(SELECT)만 허용합니다.</li>
-          <li><b>QuickChart</b>(외부 서비스)는 차트 이미지를 그려 주는 곳입니다. <em class="pill tl">make_chart</em>가 차트 값(라벨, 숫자)을 보내고 이미지 주소를 받습니다. 값이 이 서비스로 나가므로 실데이터에는 쓰지 않거나 자체 호스팅이 필요합니다.</li>
+          <li><b>QuickChart</b>(외부 서비스)는 차트 이미지를 그려 주는 곳입니다. <em class="pill tl">make_chart</em>가 차트 값(라벨, 숫자)을 보내고 이미지 주소를 받습니다.</li>
         </ul>
       </section>
 
