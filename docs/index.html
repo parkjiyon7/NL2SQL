@@ -319,7 +319,7 @@
             <li>업무 용어의 뜻, 대응 컬럼, 조인 경로, 개인정보 컬럼 안내</li>
             <li>값 조회 흐름(SQL, Insight)에는 끼지 않음</li>
           </ul>
-          <dl><dt>모델</dt><dd>gpt-oss-120b</dd><dt>툴</dt><dd>map_terms, get_catalog</dd><dt>하지 않는 일</dt><dd>SQL을 만들거나 실행하지 않음. 값을 조회하지 않음</dd><dt>PII 마스킹</dt><dd>PII Filter 컨트롤(입력, 출력 훅) 연결. 값 대신 컬럼 이름과 개인정보 여부만 답해서 가릴 값이 거의 없음. 출력 마스킹은 따로 확인하지 못함</dd></dl>
+          <dl><dt>모델</dt><dd>gpt-oss-120b</dd><dt>툴</dt><dd>map_terms, get_catalog</dd><dt>하지 않는 일</dt><dd>SQL을 만들거나 실행하지 않음. 값을 조회하지 않음</dd><dt>PII 마스킹</dt><dd>PII Filter 컨트롤(입력, 출력 훅) 연결. 값 대신 컬럼 이름과 개인정보 여부만 답해서 가릴 값이 거의 없음</dd></dl>
           <div class="diagram" id="dg-ag-ctx" data-key="ag-ctx"></div>
           <h4>샘플 질문</h4>
           <ol class="samples">
@@ -343,7 +343,7 @@
             <li>generate_sql이 카탈로그의 FK 조인 조건을 읽어 Text-to-SQL에 전달</li>
             <li>실행 오류가 나면 오류를 넘겨 최대 2번 다시 생성, 결과가 0행이면 조건을 점검해 한 번 더 생성</li>
           </ul>
-          <dl><dt>모델</dt><dd>gpt-oss-120b (SQL은 쓰지 않고 툴 호출 순서와 답변 정리만. SQL 생성은 wxdi 내부 Llama 3.3 70B)</dd><dt>툴</dt><dd>map_terms, generate_sql, run_sql</dd><dt>하지 않는 일</dt><dd>SQL을 직접 쓰지 않음. 조회만 함</dd><dt>PII 마스킹</dt><dd>PII Filter 컨트롤(입력, 출력 훅) 연결. wxO 화면의 Draft Preview에서는 이메일, 전화번호, 주민번호가 가려졌지만 API로 직접 호출했을 때는 가려지지 않았음(툴 섹션의 "PII 마스킹 (wxO)" 탭 참고)</dd></dl>
+          <dl><dt>모델</dt><dd>gpt-oss-120b (SQL은 쓰지 않고 툴 호출 순서와 답변 정리만. SQL 생성은 wxdi 내부 Llama 3.3 70B)</dd><dt>툴</dt><dd>map_terms, generate_sql, run_sql</dd><dt>하지 않는 일</dt><dd>SQL을 직접 쓰지 않음. 조회만 함</dd><dt>PII 마스킹</dt><dd>PII Filter 컨트롤(입력, 출력 훅) 연결. wxO 화면의 Draft Preview에서 이메일, 전화번호, 주민번호가 가려짐을 확인</dd></dl>
           <div class="diagram" id="dg-ag-sql" data-key="ag-sql"></div>
           <h4>샘플 질문</h4>
           <ol class="samples">
@@ -367,7 +367,7 @@
             <li>"왜 늘었어" 질문은 업종이나 종목으로 한 번 더 쪼개 보기</li>
             <li>확인된 숫자만 근거로 설명</li>
           </ul>
-          <dl><dt>모델</dt><dd>gpt-oss-120b (SQL 생성은 wxdi 내부 Llama 3.3 70B)</dd><dt>툴</dt><dd>map_terms, generate_sql, run_sql, make_chart</dd><dt>하지 않는 일</dt><dd>확인되지 않은 원인을 단정하지 않음</dd><dt>PII 마스킹</dt><dd>PII Filter 컨트롤(입력, 출력 훅) 연결. API로 직접 호출했을 때는 가려지지 않았고 화면에서는 확인하지 않음</dd></dl>
+          <dl><dt>모델</dt><dd>gpt-oss-120b (SQL 생성은 wxdi 내부 Llama 3.3 70B)</dd><dt>툴</dt><dd>map_terms, generate_sql, run_sql, make_chart</dd><dt>하지 않는 일</dt><dd>확인되지 않은 원인을 단정하지 않음</dd><dt>PII 마스킹</dt><dd>PII Filter 컨트롤(입력, 출력 훅) 연결</dd></dl>
           <div class="diagram" id="dg-ag-ins" data-key="ag-ins"></div>
           <h4>샘플 질문</h4>
           <ol class="samples">
@@ -501,7 +501,7 @@
           <li><b>골든 평가 탭과 다른 이유</b>: 골든 평가는 wxdi Text-to-SQL이 만든 SQL을 5번 실행해 결과 값이 정답과 같은지만 봅니다(에이전트를 거치지 않음). 이 표의 상태는 Supervisor 에이전트에 직접 물어 본 결과라, 용어를 잘못 옮기거나 답변을 잘못 정리하는 문제까지 포함합니다. 그래서 골든은 5/5인데 여기서는 "불안정"인 질문(S1-01, S2-02, S3-03, S5-02)이 있습니다. 골든 점수는 위 골든 평가 항목과 "Text-to-SQL 평가" 탭에서 봅니다.</li>
           <li><b>골든이 아닌 질문</b>: 골든 10문항 외에는 SQL 정답을 정하지 않았습니다. 막마다 확인하려는 기능(JOIN, 서브쿼리, 용어사전, 대화 맥락, 차트 등)이 분명하도록 질문을 새로 정리했고(2026-11-21), 에이전트에 직접 한두 번씩 물어 답을 Db2에서 직접 계산한 값과 비교했습니다. 데이터를 2026-11-24에 다시 적재한 뒤 모두 다시 물어 값을 갱신했습니다. "확인 항목" 열은 그 질문으로 어떤 기능을 보는지를 키워드로 적은 것입니다.</li>
           <li><b>표현에 민감한 질문</b>: 같은 뜻이어도 문장이 달라지면 결과가 달라진 경우가 있습니다. S3-03("종목별 거래대금 순위를 섹터 내에서 매겨줘"는 전체 순위), S5-02("한도의 80%를 넘긴 데스크가 있어?"는 "없음" 또는 SQL을 실행하지 않고 지어낸 데스크 2곳), S4-04("이번엔 지점별로 합계를 보여줘"는 없는 지점과 지어낸 숫자)입니다. 이 표에는 정상 동작한 문구를 적었습니다.</li>
-          <li><b>2단계 항목</b>: 보안(S7)과 운영(S8)은 아직 만들지 않은 기능이 많아 현재 동작을 있는 그대로 적었습니다. 주민번호 질문(S7-01)은 wxO PII Filter 컨트롤로 값을 가리게 했지만, 호출 경로에 따라 가려지지 않은 경우가 있어 "부분 확인"입니다.</li>
+          <li><b>2단계 항목</b>: 보안(S7)과 운영(S8)은 아직 만들지 않은 기능이 많아 현재 동작을 있는 그대로 적었습니다. 주민번호 질문(S7-01)은 wxO PII Filter 컨트롤로 값을 가리게 했고, 거절이 컨트롤 때문인지 모델의 판단인지 구분하지 못해 "부분 확인"입니다.</li>
         </ul>
         <table class="tbl">
           <thead><tr><th>번호</th><th>구분</th><th>질문</th><th>확인 항목</th><th>상태</th></tr></thead>
