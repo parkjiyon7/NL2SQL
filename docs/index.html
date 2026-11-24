@@ -466,7 +466,7 @@
 
       <section id="sec-eval" class="sec">
         <h2>Text-to-SQL 평가 (골든)</h2>
-        <p class="muted">SQL 정답이 있는 질문만 모은 골든 세트(<code>shared/spec/golden/golden.json</code>)로 Text-to-SQL이 얼마나 맞게 SQL을 만드는지 잰 결과입니다. 아래 내용은 평가 스크립트(<code>eval_golden.py --export</code>)가 저장한 실제 실행 결과입니다.</p>
+        <p class="muted">SQL 정답이 있는 질문만 모은 골든 세트로 Text-to-SQL이 얼마나 맞게 SQL을 만드는지 시험한 결과입니다. 아래 내용은 평가 스크립트가 저장한 실제 실행 결과입니다.</p>
         <ul class="plain">
           <li><b>평가 경로</b>: 질문 → <code>map_terms</code>(동의어를 표준 용어로 바꾸고 용어 정의 전달) → <code>generate_sql</code>(카탈로그 FK와 용어 정의를 Note로 붙여 wxdi Text-to-SQL 호출) → Db2 실행. 에이전트 LLM(gpt-oss-120b)의 판단은 빠지고 SQL 생성 툴과 같은 코드 경로만 잽니다. 평가 대상은 wxdi 내부 모델(meta-llama/llama-3-3-70b-instruct)이 쓴 SQL입니다.</li>
           <li><b>채점</b>: 골든 SQL과 생성 SQL을 Db2에서 실행해 <b>결과 값</b>을 비교합니다. 행 수가 같고 골든의 각 행 값이 생성 결과에 모두 들어 있으면 통과이며, 컬럼 순서와 이름, 추가 컬럼, SQL 문장 모양은 보지 않습니다. 실행 오류와 불일치는 실패입니다.</li>
