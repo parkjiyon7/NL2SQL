@@ -404,7 +404,7 @@
         <ul class="plain">
           <li><b>용어 정의 → Note</b>: map_terms가 wxdi 용어집에서 읽은 정의(예: 거래대금 = EXECUTIONS.EXEC_AMOUNT)를 질문 뒤에 붙임</li>
           <li><b>FK 조인 조건 → Note</b>: generate_sql이 wxdi 카탈로그의 foreign_keys(join_condition)를 읽어 질문 뒤에 붙임</li>
-          <li><b>few-shot 예시</b>: 질문과 비슷한 SQL 예시(질문, 힌트, SQL) 3건을 wxdi가 프롬프트에 자동으로 넣음. 예시 17건은 wxdi 프로젝트에 올려 둔 CSV이고 툴 코드에는 없습니다(<a href="#demo/tools" class="lnk">Few-shot 예시 (wxdi)</a> 탭)</li>
+          <li><b>few-shot</b>: 질문과 비슷한 SQL 예시(질문, 힌트, SQL) 17건을 wxdi 프로젝트에 CSV로 업로드했다</li>
           <li><b>연결 제한</b>: 카탈로그에서 얻은 FIN_DEMO 연결 ID로 스키마 검색 범위를 제한</li>
           <li><b>고정 규칙 5개(instructions)</b>: 스키마 인용 규칙, 날짜(어제, 월), 대문자 식별자, 컬럼 한정, 숫자 단위(1억 = 100000000). Db2 문법과 한국어 표현만 두었습니다</li>
           <li><b>fix_qualifiers</b>: Db2가 거부하는 컬럼 한정 방식을 "FIN_DEMO"."T"."C" 형태로 자동 교정. 테이블 목록은 카탈로그에서 읽음</li>
