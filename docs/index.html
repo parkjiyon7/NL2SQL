@@ -418,8 +418,7 @@
           </table>
         </div>
         <div id="tp-fewshot" hidden>
-          <p class="muted"><b>어느 기능인가</b>: IBM watsonx.data intelligence(wxdi)의 Text-to-SQL(자연어 질의) 기능에 딸린 SQL 예시(few-shot) 기능입니다(IBM 문서 "Providing additional context for converting natural language queries to SQL"). watsonx Orchestrate나 Db2의 기능이 아니며, Orchestrate의 <code>generate_sql</code> 툴은 wxdi의 Text-to-SQL REST를 호출만 합니다. 별도 입력 화면이 있는지는 확인하지 못했고, 이 데모에서는 API로 올렸습니다.</p>
-          <p class="muted">Text-to-SQL이 SQL을 만들 때 참고하도록 <b>질문, 힌트, 정답 SQL</b> 세트 <b id="fs-n"></b>건을 wxdi 프로젝트에 데이터 자산(<code>text_to_sql_fewshots_0.csv</code>)으로 올려 두었습니다. wxdi는 질문마다 이 중 비슷한 3건을 골라 프롬프트에 넣습니다(모델 입력 원문에서 확인). 에이전트 지시문이나 툴 코드에는 예시가 없습니다.</p>
+          <p class="muted">Text-to-SQL이 SQL을 만들 때 참고하도록 <b>질문, 힌트, 정답 SQL</b> 세트 <b id="fs-n"></b>건을 wxdi 프로젝트에 데이터 자산(<code>text_to_sql_fewshots_0.csv</code>)으로 등록했습니다.</p>
           <ul class="plain">
             <li><b>어떻게 만들었나</b>: 예시마다 SQL을 Db2에서 실제로 실행해 오류가 없는 것만 넣었습니다(<code>option_b_watsonxdata/fewshots/build_fewshots.py</code>). 힌트 열에는 용어 뜻, 조인 순서, 날짜 계산 같은 업무 규칙을 적었습니다.</li>
             <li><b>골든과 겹치지 않게</b>: 골든 질문과 같은 문장을 넣으면 점수가 예시를 베낀 결과일 수 있어, 구조가 비슷한 예시는 값(종목, 지점, 숫자, 등급, 매수·매도)을 바꿨습니다.</li>
