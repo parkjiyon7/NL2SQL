@@ -568,7 +568,7 @@
       var why = order.map(function (t) { return t + " " + cnt[t] + "회"; });
       h += "<tr><td>" + esc(it.id) + "</td><td>" + esc(it.question) + '</td><td><span class="tag ' + c1 + '">' + w + " / " + it["with"].length + '</span></td><td><span class="tag ' + c2 + '">' + wo + " / " + it.without.length + "</span></td><td>" + (why.length ? esc(why.join(" / ")) : "-") + "</td></tr>";
     });
-    return h + '</tbody></table></div><p class="muted">틀린 이유(어떤 조건이나 조인을 잘못 썼는지)는 보여주지 못합니다. 없음 쪽에서 생성된 SQL을 저장해 두지 않아 결과의 행 수만 남아 있습니다.</p>';
+    return h + '</tbody></table></div>';
   }
 
   function initEval() {
