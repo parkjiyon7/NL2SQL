@@ -341,7 +341,7 @@
             <li>generate_sql이 카탈로그의 FK 조인 조건을 읽어 Text-to-SQL에 전달</li>
             <li>실행 오류가 나면 오류를 넘겨 최대 2번 다시 생성, 결과가 0행이면 조건을 점검해 한 번 더 생성</li>
           </ul>
-          <dl><dt>모델</dt><dd>gpt-oss-120b (SQL은 쓰지 않고 툴 호출 순서와 답변 정리만. SQL 생성은 wxdi 내부 Llama 3.3 70B)</dd><dt>툴</dt><dd>map_terms, generate_sql, run_sql</dd><dt>PII 마스킹</dt><dd>PII Filter 컨트롤(입력, 출력 훅) 연결. 이메일, 전화번호, 주민번호가 가려짐을 확인</dd></dl>
+          <dl><dt>모델</dt><dd>gpt-oss-120b (SQL 생성은 wxdi 내부 Llama 3.3 70B)</dd><dt>툴</dt><dd>map_terms, generate_sql, run_sql</dd><dt>PII 마스킹</dt><dd>PII Filter 컨트롤(입력, 출력 훅) 연결. 이메일, 전화번호, 주민번호가 가려짐을 확인</dd></dl>
           <div class="diagram" id="dg-ag-sql" data-key="ag-sql"></div>
           <h4>샘플 질문</h4>
           <ol class="samples">
