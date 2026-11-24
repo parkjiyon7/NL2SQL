@@ -56,7 +56,7 @@ Db2 SaaS(`bludb`, ca-tor)의 `FIN_DEMO` 스키마에 합성 데이터를 적재�
 | `ACCOUNT` | 57 | 계좌. `CREDIT_LOAN_YN`이 신용융자 여부 |
 | `PRODUCT` | 32 | 종목 (KOSPI, KOSDAQ, 채권) |
 | `ORDERS` | 200 | 주문. 체결이 없는 주문이 미체결 |
-| `EXECUTIONS` | 243 | 체결. `EXEC_AMOUNT`가 거래대금(약정), `REALIZED_PNL`은 매도 체결에만 값 |
+| `EXECUTIONS` | 232 | 체결. `EXEC_AMOUNT`가 거래대금(약정), `REALIZED_PNL`은 매도 체결에만 값 |
 | `BALANCE_DAILY` | 285 | 일별 잔고 최근 5일(행 상한 290을 계좌 수로 나눈 일수). `CASH_BALANCE` 예수금, `RECEIVABLE` 미수 |
 | `DESK` | 4 | 데스크와 한도 |
 | `ST_POSITIONS` | 260 | 데스크 포지션 10영업일. `EXPOSURE_AMOUNT`로 한도 소진율 계산 |
