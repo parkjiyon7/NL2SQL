@@ -390,13 +390,13 @@
         </div>
         <div id="tp-tools">
         <table class="tbl">
-          <thead><tr><th>툴</th><th>역할</th><th>연결 대상</th><th>주요 출력</th></tr></thead>
+          <thead><tr><th>툴</th><th>역할</th><th>연결 대상</th></tr></thead>
           <tbody>
-            <tr><td><code>generate_sql</code></td><td>한국어 질문을 Db2 SQL로 바꾸는 역할.</td><td>wxdi 카탈로그 + wxdi Text-to-SQL REST (SQL 생성 LLM: Llama 3.3 70B, wxdi에 올린 few-shot 예시 17건 참조)</td><td>ok, sql, score, error</td></tr>
-            <tr><td><code>run_sql</code></td><td>만들어진 SQL을 Db2에서 실행해 결과 표를 가져오는 역할. 조회(SELECT)만 허용합니다.</td><td>Db2 FIN_DEMO (SSL)</td><td>columns, rows, row_count, executed_sql, error</td></tr>
-            <tr><td><code>map_terms</code></td><td>질문 속 업무 용어(동의어 포함)를 용어집의 표준 용어와 컬럼에 연결하는 역할.</td><td>wxdi 용어집 (표준 용어 25개 + 동의어 35개 게시)</td><td>mappings, ambiguous, unmapped, glossary_hints</td></tr>
-            <tr><td><code>get_catalog</code></td><td>테이블과 컬럼의 설명, 키, 개인정보 여부, 외래키 같은 데이터 구조 정보를 알려주는 역할.</td><td>wxdi 프로젝트 자산</td><td>tables, columns, keys, pii</td></tr>
-            <tr><td><code>make_chart</code></td><td>조회 결과를 라인, 막대, 파이 차트와 답변 본문(요약, 표, 용어 매핑, SQL)으로 만들어 주는 역할.</td><td>QuickChart (외부 서비스, 차트 이미지)</td><td>성공: 차트 이미지가 든 답변 본문. 실패: fallback_table, error</td></tr>
+            <tr><td><code>generate_sql</code></td><td>한국어 질문을 Db2 SQL로 바꾸는 역할.</td><td>wxdi 카탈로그 + wxdi Text-to-SQL REST (SQL 생성 LLM: Llama 3.3 70B, wxdi에 올린 few-shot 예시 17건 참조)</td></tr>
+            <tr><td><code>run_sql</code></td><td>만들어진 SQL을 Db2에서 실행해 결과 표를 가져오는 역할. 조회(SELECT)만 허용합니다.</td><td>Db2 FIN_DEMO (SSL)</td></tr>
+            <tr><td><code>map_terms</code></td><td>질문 속 업무 용어(동의어 포함)를 용어집의 표준 용어와 컬럼에 연결하는 역할.</td><td>wxdi 용어집 (표준 용어 25개 + 동의어 35개 게시)</td></tr>
+            <tr><td><code>get_catalog</code></td><td>테이블과 컬럼의 설명, 키, 개인정보 여부, 외래키 같은 데이터 구조 정보를 알려주는 역할.</td><td>wxdi 프로젝트 자산</td></tr>
+            <tr><td><code>make_chart</code></td><td>조회 결과를 라인, 막대, 파이 차트와 답변 본문(요약, 표, 용어 매핑, SQL)으로 만들어 주는 역할.</td><td>QuickChart (외부 서비스, 차트 이미지)</td></tr>
           </tbody>
         </table>
         <h3>SQL 품질을 지키는 장치</h3>
