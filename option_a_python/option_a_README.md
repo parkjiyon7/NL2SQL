@@ -32,4 +32,4 @@ bash option_a_python/wxo/scripts/option_a_import_all.sh
 ./venv/bin/python option_a_python/tests/option_a_eval_golden.py [-n 3] [ID ...]
 ```
 
-평가는 `shared/spec/golden/golden.json` 10문항을 `option_a_sql_agent`에 보내고, 답변의 SQL을 Db2에서 실행해 골든 결과와 비교한다. 지시문 보정 후 3회 모두 10/10(30/30). 정리 페이지는 `docs/option-a/`이며 `python3 option_a_python/tests/option_a_build_page.py`로 다시 만든다.
+평가는 `shared/spec/golden/golden.json` 10문항을 `option_a_sql_agent`에 보내고, 답변의 SQL을 Db2에서 실행해 골든 결과와 비교한다. 지시문 보정 후 3회 모두 10/10(30/30). 정리 페이지는 `docs/option-a/`(B안 페이지와 같은 구성, 초록 테마)이며, 평가 결과는 `option_a_python/tests/option_a_make_eval_js.py`로 `eval_results.js`에 옮기고, 질문별 시험은 `option_a_run_questions.py`로 돌린다.
