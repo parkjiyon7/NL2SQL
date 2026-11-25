@@ -31,7 +31,7 @@ orchestrate tools import -k python -f "$WXO/tools/option_a_context_tools.py" -r 
 orchestrate tools import -k python -f "$WXO/tools/option_a_chart_tools.py" -r "$REQ"
 
 echo "== agents (하위 에이전트 먼저)"
-for name in option_a_sql_agent option_a_insight_agent option_a_supervisor_agent; do
+for name in option_a_context_agent option_a_sql_agent option_a_insight_agent option_a_supervisor_agent; do
   orchestrate agents import -f "$WXO/agents/$name.yaml"
 done
 echo "완료"

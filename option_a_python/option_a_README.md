@@ -12,13 +12,13 @@ B안과 같은 구성이되, SQL 생성만 바꿨다. B안은 `generate_sql`에�
 
 ## 구성
 
-- 에이전트: `option_a_supervisor_agent`, `option_a_sql_agent`, `option_a_insight_agent`
+- 에이전트(B안과 같은 4개): `option_a_supervisor_agent`, `option_a_context_agent`(용어·메타데이터 검색), `option_a_sql_agent`, `option_a_insight_agent`
 - 툴: `option_a_map_terms`, `option_a_get_catalog`, `option_a_run_sql`, `option_a_make_chart`
 - 연결: `option_a_wxdi`(url, api_key, project_id), `option_a_db2`
 
 ```
 option_a_python/
-├── wxo/agents/       option_a_{supervisor,sql,insight}_agent.yaml
+├── wxo/agents/       option_a_{supervisor,context,sql,insight}_agent.yaml
 ├── wxo/connections/  option_a_{db2,wxdi}.yaml
 ├── wxo/tools/        option_a_{sql,context,chart}_tools.py, option_a_requirements.txt
 ├── wxo/scripts/      option_a_import_all.sh

@@ -16,8 +16,10 @@
     '  subgraph AGENTS["에이전트 (wxO)"]',
     '    direction LR',
     '    SUP["Supervisor<br/>option_a_supervisor_agent"]',
+    '    CTX["용어·메타데이터 검색<br/>용어와 구조 안내"]',
     '    SQLA["SQL 에이전트<br/>모델이 SQL 작성"]',
     '    INS["Insight 에이전트<br/>모델이 SQL 작성"]',
+    '    SUP --> CTX',
     '    SUP --> SQLA',
     '    SUP --> INS',
     "  end",
@@ -29,6 +31,7 @@
     '    T5["make_chart"]',
     "  end",
     '  U --> SUP',
+    '  CTX -->|"map_terms, get_catalog"| TOOLS',
     '  SQLA -->|"map_terms, get_catalog, run_sql"| TOOLS',
     '  INS -->|"map_terms, get_catalog, run_sql, make_chart"| TOOLS',
     '  T1 --> G[("wxdi 용어집")]',
@@ -80,8 +83,10 @@
     '  U(["사용자 질문<br/>홈페이지 AI 챗"]):::user --> SUP',
     '  subgraph WXO["watsonx Orchestrate (wxO)"]',
     '    SUP["Supervisor<br/>질문 분류, 되묻기, 맥락 유지, 근거 조립"]:::wxo',
+    '    CTX["용어·메타데이터 검색<br/>용어와 구조 안내"]:::wxo',
     '    SQLA["SQL 에이전트<br/>모델이 SQL 작성"]:::wxo',
     '    INS["Insight 에이전트<br/>모델이 SQL 작성"]:::wxo',
+    '    SUP -->|"용어, 구조 질문"| CTX',
     '    SUP -->|"값 조회 질문"| SQLA',
     '    SUP -->|"차트, 원인 질문"| INS',
     "  end",
@@ -91,11 +96,30 @@
     '    GL ~~~ CAT',
     "  end",
     '  DB[("Db2 FIN_DEMO")]:::db',
+    '  CTX -->|"map_terms, get_catalog"| WXDI',
     '  SQLA -->|"map_terms, get_catalog"| WXDI',
     '  INS -->|"map_terms, get_catalog"| WXDI',
     '  SQLA -->|"run_sql"| DB',
     '  INS -->|"run_sql"| DB',
     '  SUP --> R(["표, 차트, 설명<br/>+ 근거 보기"]):::user'
+  ]);
+
+  var AG_CTX = agentDiagram([
+    '  U(["용어, 구조 질문<br/>예: 약정이 뭐야?"]):::user --> CTX',
+    '  subgraph WXO["watsonx Orchestrate (wxO)"]',
+    '    CTX["용어·메타데이터 검색 에이전트<br/>option_a_context_agent"]:::wxo',
+    '    M["map_terms<br/>질문 속 용어를 표준 용어와 컬럼에 연결"]:::wxo',
+    '    G["get_catalog<br/>테이블 구조, 키, 개인정보 컬럼 조회"]:::wxo',
+    "    CTX --> M",
+    "    CTX --> G",
+    "  end",
+    '  subgraph WXDI["watsonx.data intelligence (wxdi)"]',
+    '    GL[("용어집<br/>표준 용어 25 + 동의어 35")]:::wxdi',
+    '    CAT[("카탈로그<br/>테이블 9, PK, FK, PII 표시")]:::wxdi',
+    "  end",
+    '  M -->|"용어, 동의어, 정의 조회"| GL',
+    '  G -->|"테이블, 컬럼, 조인 키 조회"| CAT',
+    '  CTX --> R(["용어 정의 + 대응 컬럼<br/>+ 조인 경로 + 개인정보 여부"]):::user'
   ]);
 
   var AG_SQL = agentDiagram([
@@ -151,6 +175,7 @@
     '  U(["사용자<br/>홈페이지 AI 챗"]):::user --> SUP',
     '  subgraph WXO["watsonx Orchestrate (wxO)  ·  에이전트 실행과 SQL 작성 (모델 gpt-oss-120b)"]',
     '    SUP["Supervisor<br/>질문 분류, 되묻기, 맥락 유지"]:::wxo',
+    '    CTX["용어·메타데이터 검색<br/>map_terms, get_catalog"]:::wxo',
     '    SQLA["SQL<br/>map_terms, get_catalog, run_sql"]:::wxo',
     '    INS["Insight<br/>map_terms, get_catalog,<br/>run_sql, make_chart"]:::wxo',
     '    subgraph TOOLS["툴 (Python)"]',
@@ -159,9 +184,11 @@
     '      T4["run_sql"]:::wxo',
     '      T5["make_chart"]:::wxo',
     "    end",
+    "    SUP --> CTX",
     "    SUP --> SQLA",
     "    SUP --> INS",
-    '    SQLA -->|"툴 호출"| TOOLS',
+    '    CTX -->|"툴 호출"| TOOLS',
+    '    SQLA --> TOOLS',
     '    INS --> TOOLS',
     "  end",
     '  subgraph WXDI["watsonx.data intelligence (wxdi)"]',
@@ -221,6 +248,7 @@
     if (key === "seq") return SEQ;
     if (key === "full") return FULL;
     if (key === "ag-sup") return AG_SUP;
+    if (key === "ag-ctx") return AG_CTX;
     if (key === "ag-sql") return AG_SQL;
     if (key === "ag-ins") return AG_INS;
     if (key === "erd") return (window.SAMPLES && window.SAMPLES.erd) || "";
@@ -392,9 +420,18 @@
         result: "어제(2026-11-24) 삼성전자 매수 체결 2건이 나왔습니다(11,377,600원, 37,272,120원). 건수와 합계(48,649,720원)가 Db2에서 직접 계산한 값과 같습니다." }
     ] },
     { cat: "업무 용어", items: [
-      { q: "약정이 뭐야?", bad: true,
-        expect: "'약정'이 어떤 표준 용어와 컬럼에 해당하는지 설명합니다. (B안에는 이 질문을 받는 용어·메타데이터 검색 에이전트가 있습니다.)",
-        result: "이 질문에는 답하지 못했습니다. Supervisor가 \"조회 전용 데모 범위를 벗어나 답변드릴 수 없다\"고 거절했습니다. A안에는 용어와 구조 질문 전용 에이전트가 없고, '약정'은 값 조회 질문 안에서만 거래대금으로 바뀝니다(예: 이번 달 약정 상위 고객 5명)." },
+      { q: "약정이 뭐야?",
+        expect: "'약정'이 어떤 표준 용어와 컬럼에 해당하는지 설명합니다. Supervisor가 용어·메타데이터 검색 에이전트로 보내고 SQL은 쓰지 않습니다.",
+        result: "'약정'은 표준 용어 '거래대금'이고 EXECUTIONS.EXEC_AMOUNT 컬럼에 해당한다고 답했고, 용어 매핑 표와 근거를 붙였습니다. 용어집 정의와 같습니다. 1번 시험했습니다." },
+      { q: "VIP 고객은 어떤 기준이야?",
+        expect: "용어집의 VIP 고객 정의(총자산 기준, CUSTOMER.GRADE)를 설명합니다.",
+        result: "총자산 3억 원 이상이고 CUSTOMER.GRADE 값이 VIP인 고객이라고 답했습니다. 용어집 정의와 같습니다. 1번 시험했습니다." },
+      { q: "체결 테이블에 어떤 컬럼이 있고 고객과는 어떻게 연결돼?",
+        expect: "EXECUTIONS의 컬럼 목록과 ORDERS, ACCOUNT, CUSTOMER로 이어지는 조인 경로를 카탈로그 기준으로 설명합니다.",
+        result: "EXECUTIONS 컬럼 8개(EXEC_ID, ORDER_ID, EXEC_TS, EXEC_QTY, EXEC_PRICE, EXEC_AMOUNT, FEE, REALIZED_PNL)와 EXECUTIONS → ORDERS → ACCOUNT → CUSTOMER 조인 경로를 답했습니다. 컬럼 목록은 Db2 시스템 카탈로그와 같습니다. 1번 시험했습니다." },
+      { q: "고객 테이블에서 개인정보 컬럼이 뭐야?",
+        expect: "CUSTOMER 중 개인정보로 표시된 컬럼의 이름을 알려줍니다. 값은 조회하지 않습니다.",
+        result: "CUSTOMER_NAME, SSN, PHONE, EMAIL 네 컬럼을 개인정보로 답했습니다. 컬럼 이름과 설명만 답하고 값은 조회하지 않았습니다. 1번 시험했습니다." },
       { q: "현금잔고가 가장 많은 고객 3명 보여줘",
         expect: "'현금잔고'를 용어집의 '예수금'으로 바꿔 가장 최근 기준일의 예수금이 많은 고객 3명을 보여줍니다.",
         result: "고민서 466,173,370원, 남유진 124,173,333원, 신예은 103,005,096원이 나왔고 Db2에서 직접 계산한 값과 같습니다. 용어 매핑에 '현금잔고 → 예수금 (BALANCE_DAILY.CASH_BALANCE)'이 표시됐습니다." },

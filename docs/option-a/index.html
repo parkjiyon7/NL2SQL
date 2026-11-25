@@ -119,7 +119,7 @@
       <section id="sec-overview" class="sec active">
         <h2>개요와 현황</h2>
         <div class="grid3">
-          <div class="stat"><b>3</b><span><strong class="st-t">에이전트</strong><em class="pill ag">Supervisor</em> <em class="pill ag">SQL</em> <em class="pill ag">Insight</em></span></div>
+          <div class="stat"><b>4</b><span><strong class="st-t">에이전트</strong><em class="pill ag">Supervisor</em> <em class="pill ag">용어·메타데이터 검색</em> <em class="pill ag">SQL</em> <em class="pill ag">Insight</em></span></div>
           <div class="stat"><b>4</b><span><strong class="st-t">툴</strong><em class="pill tl">map_terms</em> <em class="pill tl">get_catalog</em> <em class="pill tl">run_sql</em> <em class="pill tl">make_chart</em></span></div>
           <div class="stat"><b>9</b><span><strong class="st-t">테이블</strong>모두 300행 이내의 합성 데이터</span></div>
           <div class="stat"><b>25 + 35</b><span><strong class="st-t">용어집 용어</strong>표준 용어 25개와 동의어 용어 35개, wxdi 용어집 그대로 사용</span></div>
@@ -161,11 +161,24 @@
               <span>모델: gpt-oss-120b</span>
             </div>
           </div>
-          <div class="fa-down two">
-            <div class="c o"><i class="stem"></i><span class="lbl">용어, 값 조회 질문</span><i class="ah"></i></div>
+          <div class="fa-down">
+            <div class="c g"><i class="stem"></i><span class="lbl">용어, 구조 질문</span><i class="ah"></i></div>
+            <div class="c o mid"><i class="stem"></i><span class="lbl">값 조회 질문</span><i class="ah"></i></div>
             <div class="c p"><i class="stem"></i><span class="lbl">차트, 원인 질문</span><i class="ah"></i></div>
           </div>
           <div class="fa-row">
+            <div class="fa-col">
+              <div class="fa-sa fa-green">
+                <div class="fa-sa-hdr"><span class="fa-badge" style="background:#e8f5e9;color:#2e7d32">용어·구조 안내</span>
+                  <b class="fa-ag">용어·메타데이터 검색</b><code>option_a_context_agent</code>
+                  <span class="fa-role">용어와 구조를 직접 묻는 질문에 대답</span></div>
+                <div class="fa-sa-body">
+                  <div class="fa-node"><b><em class="pill tl">map_terms</em></b><span>업무 용어를 표준 용어와 컬럼에 연결</span></div>
+                  <div class="fa-node"><b><em class="pill tl">get_catalog</em></b><span>테이블 구조, 키, 개인정보 컬럼 조회</span></div>
+                </div>
+              </div>
+              <div class="fa-ds"><div class="fa-vline"></div><div class="fa-ds-card"><b>wxdi 용어집 + 카탈로그</b><span>표준 용어 25개, 동의어 35개, 테이블 9개</span></div></div>
+            </div>
             <div class="fa-col">
               <div class="fa-sa fa-orange">
                 <div class="fa-sa-hdr"><span class="fa-badge" style="background:#fff3e0;color:#e65100">조회</span>
@@ -206,8 +219,9 @@
               <div class="fa-ds"><div class="fa-vline"></div><div class="fa-ds-card"><b>wxdi 용어집 + 카탈로그 → wxO 모델이 SQL 작성 → Db2</b><span>차트 이미지는 외부 서비스(QuickChart)가 그림</span></div></div>
             </div>
           </div>
-          <div class="fa-ret two">
-            <div class="c o"><i class="stem"></i><span class="lbl">▲ 표, 용어 매핑 반환</span></div>
+          <div class="fa-ret">
+            <div class="c g"><i class="stem"></i><span class="lbl">▲ 용어 매핑 반환</span></div>
+            <div class="c o mid"><i class="stem"></i><span class="lbl">▲ 표 반환</span><i class="ah"></i></div>
             <div class="c p"><i class="stem"></i><span class="lbl">▲ 차트, 설명 반환</span></div>
           </div>
           <div class="fa-center"><div class="fa-bubble fa-final"><b>최종 답변</b><span>표, 차트, 설명 + 근거 보기(용어 매핑, SQL, 테이블)</span></div></div>
@@ -217,7 +231,8 @@
         <table class="tbl">
           <thead><tr><th>에이전트</th><th>역할</th><th>쓰는 툴</th><th>연결 솔루션</th></tr></thead>
           <tbody>
-            <tr><td><b><em class="pill ag">Supervisor</em></b></td><td>질문 창구. 유형을 나눠 하위 에이전트에 연결하고, 모호하면 되묻고, 후속 질문의 맥락을 유지</td><td>하위 에이전트 2종 호출</td><td><span class="chip wxo">wxO</span></td></tr>
+            <tr><td><b><em class="pill ag">Supervisor</em></b></td><td>질문 창구. 유형을 나눠 하위 에이전트에 연결하고, 모호하면 되묻고, 후속 질문의 맥락을 유지</td><td>하위 에이전트 3종 호출</td><td><span class="chip wxo">wxO</span></td></tr>
+            <tr><td><b><em class="pill ag">용어·메타데이터 검색</em></b></td><td>용어와 구조를 직접 묻는 질문에 대답</td><td><em class="pill tl">map_terms</em> <em class="pill tl">get_catalog</em></td><td><span class="chip wxo">wxO 모델 gpt-oss-120b</span> <span class="chip wxdi">wxdi 용어집, 카탈로그</span></td></tr>
             <tr><td><b><em class="pill ag">SQL</em></b></td><td>값 조회 질문을 wxO 모델이 SQL로 직접 써서 실행하고 표로 답변</td><td><em class="pill tl">map_terms</em> <em class="pill tl">get_catalog</em> <em class="pill tl">run_sql</em></td><td><span class="chip wxo">wxO 모델 gpt-oss-120b</span> <span class="chip wxdi">wxdi 용어집, 카탈로그</span> <span class="chip db">Db2</span></td></tr>
             <tr><td><b><em class="pill ag">Insight</em></b></td><td>SQL 작성, 실행 및 차트 작성</td><td><em class="pill tl">map_terms</em> <em class="pill tl">get_catalog</em> <em class="pill tl">run_sql</em> <em class="pill tl">make_chart</em></td><td><span class="chip wxo">wxO 모델 gpt-oss-120b</span> <span class="chip wxdi">wxdi 용어집, 카탈로그</span> <span class="chip db">Db2</span></td></tr>
           </tbody>
@@ -252,11 +267,11 @@
             <tr><td>SQL 생성 방식</td><td><code>generate_sql</code> 툴이 wxdi Text-to-SQL REST를 호출</td><td>툴 없음. 모델이 용어 정의와 카탈로그를 읽고 직접 작성</td></tr>
             <tr><td>wxdi 사용 범위</td><td>용어집, 카탈로그, SQL 예시(few-shot), Text-to-SQL</td><td>용어집, 카탈로그만</td></tr>
             <tr><td>few-shot</td><td>17건을 wxdi에 올려 반영</td><td>없음. 대신 Db2 문법과 업무 규칙을 에이전트 지시문에 문장으로 적음</td></tr>
-            <tr><td>에이전트</td><td>4개: Supervisor, 용어·메타데이터 검색, SQL, Insight</td><td>3개: Supervisor, SQL, Insight (용어·메타데이터 검색 없음)</td></tr>
-            <tr><td>툴</td><td>5개: generate_sql, run_sql, map_terms, get_catalog, make_chart</td><td>4개: map_terms, get_catalog, run_sql, make_chart</td></tr>
+            <tr><td>에이전트</td><td>4개: Supervisor, 용어·메타데이터 검색, SQL, Insight</td><td>같음. 4개(<code>option_a_</code> 접두사)</td></tr>
+            <tr><td>툴</td><td>5개: generate_sql, run_sql, map_terms, get_catalog, make_chart</td><td>4개: map_terms, get_catalog, run_sql, make_chart (generate_sql 없음. get_catalog에 키워드 검색 인자가 없고 전체 구조를 돌려줌)</td></tr>
             <tr><td>JOIN 조건 전달</td><td><code>generate_sql</code>이 카탈로그의 FK를 질문 뒤 Note로 붙임</td><td>모델이 <code>get_catalog</code> 결과를 직접 읽음</td></tr>
             <tr><td>PII 마스킹</td><td>PII Filter 컨트롤을 에이전트 4개에 연결</td><td>연결하지 않음. 주민번호, 전화번호, 이메일이 그대로 나옴</td></tr>
-            <tr><td>용어만 묻는 질문</td><td>용어·메타데이터 검색 에이전트가 답함 ("약정이 뭐야?")</td><td>답하지 못하고 조회 전용 데모라며 거절함</td></tr>
+            <tr><td>용어만 묻는 질문</td><td>용어·메타데이터 검색 에이전트가 답함 ("약정이 뭐야?")</td><td>같음. 용어·메타데이터 검색 에이전트가 답함</td></tr>
             <tr><td>골든 평가</td><td>few-shot 있음 49/50 (98%), 10문항 x 5회, wxdi가 쓴 SQL</td><td>30/30 (100%), 10문항 x 3회, SQL 에이전트가 쓴 SQL</td></tr>
             <tr><td>이름, 위치</td><td><code>findemo_*</code>, <code>option_b_watsonxdata/</code></td><td><code>option_a_*</code>, <code>option_a_python/</code></td></tr>
           </tbody>
@@ -274,14 +289,13 @@
           <li><b>골든 30/30은 규칙을 고친 뒤의 점수입니다</b>: 처음 1번은 9/10이었고, 실패한 문항을 보고 지시문을 고쳐 3번 모두 통과시켰습니다. 문항이 10개, 반복이 3번뿐이라 B안의 49/50(5번 반복)과 같은 기준의 비교는 아닙니다. 새로운 질문에서의 정확도는 따로 확인해야 합니다.</li>
           <li><b>답변 표를 지어내는 경우가 있습니다</b>: Supervisor가 SQL 에이전트의 결과를 답변 표로 옮기면서, SQL은 맞는데 값이나 이름을 지어낸 경우가 있었습니다(지점별 체결 4번 중 2번, 상위 10명 4번 중 1번, 상위 5명 4번 중 1번(SQL 오류가 났는데도 지어냄), 수익률 4번 중 1번). 골든 평가는 이 단계를 거치지 않아 잡지 못합니다. B안에서도 비슷한 사례가 기록되어 있어 A안만의 문제는 아니지만, 이번 시험에서 확인된 빈도입니다. 자세한 내용은 <a href="#demo/qstatus">질문별 검증 현황</a>에 있습니다.</li>
           <li><b>개인정보가 가려지지 않습니다</b>: PII Filter를 붙이지 않았습니다.</li>
-          <li><b>용어 질문에 답하지 못합니다</b>: "약정이 뭐야?" 같은 질문을 처리할 에이전트가 없습니다.</li>
           <li><b>같은 질문도 가끔 다르게 풀립니다</b>: "이번 달 약정 상위 고객 5명"은 4번 중 1번 기준을 되물었습니다.</li>
         </ul>
 
         <h3>같은 것</h3>
         <ul class="plain">
           <li>데이터: Db2 <code>FIN_DEMO</code>의 합성 데이터 9개 테이블, wxdi 용어집(표준 용어 25개 + 동의어 35개)과 카탈로그</li>
-          <li>Supervisor, SQL, Insight의 역할과 "근거 보기"(용어 매핑, 사용한 SQL) 형식, QuickChart 차트</li>
+          <li>Supervisor, 용어·메타데이터 검색, SQL, Insight 4개 에이전트의 역할과 "근거 보기"(용어 매핑, 사용한 SQL) 형식, QuickChart 차트</li>
           <li>화면 구성: 증권사 홈페이지 화면, 임베디드 챗, 데모 설명 탭 구조</li>
         </ul>
       </section>
@@ -297,7 +311,7 @@
         <table class="tbl">
           <thead><tr><th>질문 종류</th><th>예</th><th>호출 경로</th></tr></thead>
           <tbody>
-            <tr><td>용어, 구조</td><td>약정이 뭐야?</td><td>전용 에이전트 없음. Supervisor는 툴이 없어 값 조회가 아닌 질문에는 답하지 못함 (B안의 용어·메타데이터 검색 에이전트에 해당하는 경로가 없음)</td></tr>
+            <tr><td>용어, 구조</td><td>약정이 뭐야?</td><td>Supervisor → 용어·메타데이터 검색 (map_terms, get_catalog만 사용. SQL은 쓰지 않음)</td></tr>
             <tr><td>값 조회</td><td>삼성전자 어제 체결 중 매수만</td><td>Supervisor → SQL (map_terms로 용어 확인 → get_catalog로 구조 확인 → 모델이 SQL 작성 → run_sql)</td></tr>
             <tr><td>차트, 원인</td><td>월별 추이, 3월에 왜 늘었어?</td><td>Supervisor → Insight (map_terms, get_catalog, 모델이 SQL 작성, run_sql, make_chart)</td></tr>
             <tr><td>모호한 질문</td><td>수익 좋은 고객 보여줘</td><td>Supervisor가 기준을 되묻고 하위 에이전트는 부르지 않음</td></tr>
@@ -316,6 +330,7 @@
         </div>
         <div class="tabs-inline" id="agent-tabs">
           <button data-ag="sup" class="active">Supervisor</button>
+          <button data-ag="ctx">용어·메타데이터 검색</button>
           <button data-ag="sql">SQL</button>
           <button data-ag="ins">Insight</button>
         </div>
@@ -324,11 +339,11 @@
           <header><h3>Supervisor</h3><code>option_a_supervisor_agent</code></header>
           <ul class="agent-points">
             <li>사용자와 대화하는 창구</li>
-            <li>질문 유형을 나눠 하위 에이전트 2종(SQL, Insight)에 연결</li>
+            <li>질문 유형을 나눠 하위 에이전트 3종(용어·메타데이터 검색, SQL, Insight)에 연결</li>
             <li>모호한 질문은 기준을 되묻기, 후속 질문은 직전 조건 유지</li>
             <li>결과와 "근거 보기"(용어 매핑, SQL, 테이블) 조립</li>
           </ul>
-          <dl><dt>모델</dt><dd>gpt-oss-120b</dd><dt>호출 대상</dt><dd>SQL, Insight</dd><dt>PII 마스킹</dt><dd>PII Filter 컨트롤을 연결하지 않음. 주민번호, 전화번호, 이메일을 물으면 값이 그대로 나옴을 확인</dd></dl>
+          <dl><dt>모델</dt><dd>gpt-oss-120b</dd><dt>호출 대상</dt><dd>용어·메타데이터 검색, SQL, Insight</dd><dt>PII 마스킹</dt><dd>PII Filter 컨트롤을 연결하지 않음. 주민번호, 전화번호, 이메일을 물으면 값이 그대로 나옴을 확인</dd></dl>
           <div class="diagram" id="dg-ag-sup" data-key="ag-sup"></div>
           <h4>샘플 질문</h4>
           <ol class="samples">
@@ -338,6 +353,28 @@
           </ol>
           <h4>이 에이전트와 직접 대화</h4>
           <div class="agent-chat" data-ag="sup">
+            <p class="muted">위 샘플 질문을 입력해 보세요. 이 에이전트를 직접 호출합니다.</p>
+            <button class="btn-dark ag-chat-btn">대화 시작</button>
+            <div class="ag-chat-host" hidden></div>
+          </div>
+        </article>
+
+        <article class="agent" data-ag="ctx">
+          <header><h3>용어·메타데이터 검색</h3><code>option_a_context_agent</code></header>
+          <ul class="agent-points">
+            <li>용어와 구조를 직접 묻는 질문에 대답</li>
+            <li>업무 용어의 뜻, 대응 컬럼, 조인 경로, 개인정보 컬럼 안내</li>
+          </ul>
+          <dl><dt>모델</dt><dd>gpt-oss-120b</dd><dt>툴</dt><dd>map_terms, get_catalog</dd><dt>PII 마스킹</dt><dd>PII Filter 컨트롤을 연결하지 않음. 이 에이전트는 값을 조회하지 않고 컬럼 이름과 설명만 답함</dd></dl>
+          <div class="diagram" id="dg-ag-ctx" data-key="ag-ctx"></div>
+          <h4>샘플 질문</h4>
+          <ol class="samples">
+            <li><b>약정이 뭐야?</b></li>
+            <li><b>VIP 고객은 어떤 기준이야?</b></li>
+            <li><b>체결 테이블에 어떤 컬럼이 있고 고객과는 어떻게 연결돼?</b></li>
+          </ol>
+          <h4>이 에이전트와 직접 대화</h4>
+          <div class="agent-chat" data-ag="ctx">
             <p class="muted">위 샘플 질문을 입력해 보세요. 이 에이전트를 직접 호출합니다.</p>
             <button class="btn-dark ag-chat-btn">대화 시작</button>
             <div class="ag-chat-host" hidden></div>
@@ -475,7 +512,7 @@
           <li><b>골든 평가 탭과 다른 이유</b>: 골든 평가는 SQL 에이전트를 직접 호출해 그 SQL의 결과 값만 봅니다(Supervisor를 거치지 않음). 이 표의 상태는 Supervisor에 물어 본 결과라, 답변 표를 옮겨 적는 단계의 오류까지 포함합니다. 그래서 골든은 3/3인데 여기서는 "불안정"인 질문(S2-02)이 있고, 골든에 없는 질문(S3-02, S4-02, S4-03, S8-02)에서는 SQL은 맞는데 Supervisor가 답변 표의 값을 지어낸 경우가 있었습니다.</li>
           <li><b>횟수</b>: 대부분의 질문은 1번 시험했습니다. S2-02, S3-01, S3-02, S4-01~04, S8-02는 4번 시험했습니다. 시험 횟수가 적으니 "확인됨"은 "한 번 이상 맞게 나옴"으로 읽어 주세요. 답변 속 값은 Db2에서 직접 계산한 값과 맞춰 봤습니다.</li>
           <li><b>골든이 아닌 질문</b>: 골든 10문항 외에는 SQL 정답을 정하지 않았습니다. 질문 목록은 B안과 같게 맞췄고 "확인 항목" 열은 그 질문으로 어떤 기능을 보는지를 키워드로 적은 것입니다.</li>
-          <li><b>B안과 다른 질문</b>: 개인정보(S7-01)는 PII Filter가 없어 값이 그대로 나옵니다. 용어만 묻는 "약정이 뭐야?"는 전용 에이전트가 없어 답하지 못합니다(<a href="#demo/questions">예상 질문</a> 참고).</li>
+          <li><b>B안과 다른 질문</b>: 개인정보(S7-01)는 PII Filter가 없어 값이 그대로 나옵니다. 용어만 묻는 질문("약정이 뭐야?" 등)은 B안과 같이 용어·메타데이터 검색 에이전트가 답하며, 4개 질문을 1번씩 시험해 용어집, 카탈로그와 맞는 답을 확인했습니다(<a href="#demo/questions">예상 질문</a> 참고).</li>
           <li><b>2단계 항목</b>: 보안(S7)과 운영(S8)은 아직 만들지 않은 기능이 많아 현재 동작을 있는 그대로 적었습니다.</li>
         </ul>
         <table class="tbl">

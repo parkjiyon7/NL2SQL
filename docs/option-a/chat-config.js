@@ -11,6 +11,7 @@ window.CHAT_CONFIG = {
   agentEnvironmentId: "",   // 비워 두면 임베드 스크립트 기본값을 따른다. 필요하면 draft 또는 live 환경 ID를 넣는다
   agents: {
     sup: { id: "723f553c-3608-4a98-8d4f-2fd755284de0", name: "Supervisor" },
+    ctx: { id: "0cd8907e-fe2d-4282-ae08-1e45651d3603", name: "용어·메타데이터 검색" },
     sql: { id: "59600b51-bf62-4b97-8eba-da582f42e492", name: "SQL" },
     ins: { id: "9802bda7-35d9-40e3-a1d5-d1c758a64208", name: "Insight" }
   }

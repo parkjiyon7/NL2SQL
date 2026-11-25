@@ -1,0 +1,193 @@
+{
+ "date": "2026-11-25",
+ "agent": "option_a_supervisor_agent",
+ "items": [
+  {
+   "id": "S1-01",
+   "question": "오늘 강남지점 체결 건수와 거래대금 알려줘",
+   "answer": "오늘 강남지점에서 체결된 건수는 **0건**, 거래대금은 **0원**입니다.\n\n| EXEC_COUNT | TOTAL_AMOUNT |\n|-----------|--------------|\n| 0 | 0원 |\n\n근거 보기  \n**용어 매핑**  \n- 체결 → EXECUTIONS (EXECUTIONS.EXEC_AMOUNT, EXECUTIONS.EXEC_TS)  \n- 거래대금 → EXECUTIONS.EXEC_AMOUNT (체결대금)  \n- 지점 → BRANCH (BRANCH.BRANCH_NAME)  \n\n**사용한 SQL**  \n```sql\nSELECT COUNT(1) AS EXEC_COUNT, SUM(EXECUTIONS.EXEC_AMOUNT) AS TOTAL_AMOUNT\nFROM FIN_DEMO.EXECUTIONS EXECUTIONS\nJOIN FIN_DEMO.ORDERS ORDERS ON EXECUTIONS.ORDER_ID = ORDERS.ORDER_ID\nJOIN FIN_DEMO.ACCOUNT ACCOUNT ON ORDERS.ACCOUNT_ID = ACCOUNT.ACCOUNT_ID\nJOIN FIN_DEMO.CUSTOMER CUSTOMER ON ACCOUNT.CUSTOMER_ID = CUSTOMER.CUSTOMER_ID\nJOIN FIN_DEMO.BRANCH BRANCH ON CUSTOMER.BRANCH_CODE = BRANCH.BRANCH_CODE\nWHERE DATE(EXECUTIONS.EXEC_TS) = CURRENT DATE\n  AND BRANCH.BRANCH_NAME = '강남지점'\n```",
+   "sql": "SELECT COUNT(1) AS EXEC_COUNT, SUM(EXECUTIONS.EXEC_AMOUNT) AS TOTAL_AMOUNT\nFROM FIN_DEMO.EXECUTIONS EXECUTIONS\nJOIN FIN_DEMO.ORDERS ORDERS ON EXECUTIONS.ORDER_ID = ORDERS.ORDER_ID\nJOIN FIN_DEMO.ACCOUNT ACCOUNT ON ORDERS.ACCOUNT_ID = ACCOUNT.ACCOUNT_ID\nJOIN FIN_DEMO.CUSTOMER CUSTOMER ON ACCOUNT.CUSTOMER_ID = CUSTOMER.CUSTOMER_ID\nJOIN FIN_DEMO.BRANCH BRANCH ON CUSTOMER.BRANCH_CODE = BRANCH.BRANCH_CODE\nWHERE DATE(EXECUTIONS.EXEC_TS) = CURRENT DATE\n  AND BRANCH.BRANCH_NAME = '강남지점'",
+   "result": {
+    "columns": [
+     "EXEC_COUNT",
+     "TOTAL_AMOUNT"
+    ],
+    "rows": [
+     [
+      "0",
+      "None"
+     ]
+    ],
+    "row_count": 1
+   }
+  },
+  {
+   "id": "S2-02",
+   "question": "이번 달 약정 상위 고객 5명",
+   "answer": "이번 달(현재 연도와 월) 거래대금(약정) 기준으로 상위 5명의 고객은 아래와 같습니다.\n\n| 고객ID | 고객명 | 총거래대금 |\n|-------|--------|-----------|\n| 18 | 박수빈 | 149,474,210원 |\n| 15 | 심지우 | 138,282,380원 |\n| 20 | 채지호 | 125,028,230원 |\n| 31 | 진건우 | 74,600,150원 |\n| 11 | 서도현 | 70,062,560원 |\n\n근거 보기  \n**용어 매핑**  \n- 약정 → 거래대금 (EXECUTIONS.EXEC_AMOUNT)  \n\n**사용한 SQL**  \n```sql\nSELECT C.CUSTOMER_ID, C.CUSTOMER_NAME, SUM(E.EXEC_AMOUNT) AS TOTAL_EXEC_AMOUNT\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.ACCOUNT A ON O.ACCOUNT_ID = A.ACCOUNT_ID\nJOIN FIN_DEMO.CUSTOMER C ON A.CUSTOMER_ID = C.CUSTOMER_ID\nWHERE YEAR(DATE(E.EXEC_TS)) = YEAR(CURRENT DATE)\n  AND MONTH(DATE(E.EXEC_TS)) = MONTH(CURRENT DATE)\nGROUP BY C.CUSTOMER_ID, C.CUSTOMER_NAME\nORDER BY TOTAL_EXEC_AMOUNT DESC\nFETCH FIRST 5 ROWS ONLY\n```",
+   "sql": "SELECT C.CUSTOMER_ID, C.CUSTOMER_NAME, SUM(E.EXEC_AMOUNT) AS TOTAL_EXEC_AMOUNT\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.ACCOUNT A ON O.ACCOUNT_ID = A.ACCOUNT_ID\nJOIN FIN_DEMO.CUSTOMER C ON A.CUSTOMER_ID = C.CUSTOMER_ID\nWHERE YEAR(DATE(E.EXEC_TS)) = YEAR(CURRENT DATE)\n  AND MONTH(DATE(E.EXEC_TS)) = MONTH(CURRENT DATE)\nGROUP BY C.CUSTOMER_ID, C.CUSTOMER_NAME\nORDER BY TOTAL_EXEC_AMOUNT DESC\nFETCH FIRST 5 ROWS ONLY",
+   "result": {
+    "columns": [
+     "CUSTOMER_ID",
+     "CUSTOMER_NAME",
+     "TOTAL_EXEC_AMOUNT"
+    ],
+    "rows": [
+     [
+      "18",
+      "박수빈",
+      "149474210"
+     ],
+     [
+      "15",
+      "심지우",
+      "138282380"
+     ],
+     [
+      "20",
+      "채지호",
+      "125028230"
+     ],
+     [
+      "31",
+      "진건우",
+      "74600150"
+     ],
+     [
+      "11",
+      "서도현",
+      "70062560"
+     ]
+    ],
+    "row_count": 5
+   }
+  },
+  {
+   "id": "S3-02",
+   "question": "지점별 체결 건수와 거래대금을 거래대금 많은 순으로 보여줘",
+   "answer": "각 지점별 체결 건수와 거래대금을 거래대금이 많은 순으로 정렬한 결과입니다.\n\n| BRANCH_CODE | BRANCH_NAME | EXEC_COUNT | TOTAL_AMOUNT |\n|------------|------------|-----------|--------------|\n| GN01 | 강남지점 | 114 | 1,313,959,560원 |\n| BS01 | 부산지점 | 51 | 853,058,910원 |\n| SC01 | 서초지점 | 34 | 722,041,150원 |\n| YS01 | 여의도지점 | 26 | 230,924,730원 |\n| BD01 | 분당지점 | 7 | 39,305,920원 |\n\n근거 보기  \n**용어 매핑**  \n- 지점 → BRANCH (BRANCH_CODE, BRANCH_NAME)  \n- 체결 건수 → EXECUTIONS 테이블의 행 수 (COUNT)  \n- 거래대금 → EXECUTIONS.EXEC_AMOUNT (SUM)  \n\n**사용한 SQL**  \n```sql\nSELECT B.BRANCH_CODE AS BRANCH_CODE,\n       B.BRANCH_NAME AS BRANCH_NAME,\n       COUNT(E.EXEC_ID) AS EXEC_COUNT,\n       SUM(E.EXEC_AMOUNT) AS TOTAL_AMOUNT\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.ACCOUNT A ON O.ACCOUNT_ID = A.ACCOUNT_ID\nJOIN FIN_DEMO.CUSTOMER C ON A.CUSTOMER_ID = C.CUSTOMER_ID\nJOIN FIN_DEMO.BRANCH B ON C.BRANCH_CODE = B.BRANCH_CODE\nGROUP BY B.BRANCH_CODE, B.BRANCH_NAME\nORDER BY TOTAL_AMOUNT DESC\n```",
+   "sql": "SELECT B.BRANCH_CODE AS BRANCH_CODE,\n       B.BRANCH_NAME AS BRANCH_NAME,\n       COUNT(E.EXEC_ID) AS EXEC_COUNT,\n       SUM(E.EXEC_AMOUNT) AS TOTAL_AMOUNT\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.ACCOUNT A ON O.ACCOUNT_ID = A.ACCOUNT_ID\nJOIN FIN_DEMO.CUSTOMER C ON A.CUSTOMER_ID = C.CUSTOMER_ID\nJOIN FIN_DEMO.BRANCH B ON C.BRANCH_CODE = B.BRANCH_CODE\nGROUP BY B.BRANCH_CODE, B.BRANCH_NAME\nORDER BY TOTAL_AMOUNT DESC",
+   "result": {
+    "columns": [
+     "BRANCH_CODE",
+     "BRANCH_NAME",
+     "EXEC_COUNT",
+     "TOTAL_AMOUNT"
+    ],
+    "rows": [
+     [
+      "GN01",
+      "강남지점",
+      "114",
+      "1313959560"
+     ],
+     [
+      "BS01",
+      "부산지점",
+      "51",
+      "853058910"
+     ],
+     [
+      "SC01",
+      "서초지점",
+      "34",
+      "722041150"
+     ],
+     [
+      "YS01",
+      "여의도지점",
+      "26",
+      "230924730"
+     ],
+     [
+      "BD01",
+      "분당지점",
+      "7",
+      "39305920"
+     ]
+    ],
+    "row_count": 5
+   }
+  },
+  {
+   "id": "S6-01",
+   "question": "월별 거래대금 추이를 라인 차트로 보여줘",
+   "answer": "![월별 거래대금 추이](https://quickchart.io/chart/render/zf-3839b3d8-0050-42d8-b50d-d3e7447cc85b)\n\n2025년 10월부터 2026년 11월까지 월별 거래대금은 최저 **35,628,960원**(2026년 7월)에서 최고 **821,062,840원**(2026년 11월)까지 변동했습니다.\n\n| YEAR,MONTH | TOTAL_TRADE_AMOUNT |\n|---|---|\n| 2025-10 | 31,182,690 |\n| 2025-11 | 364,818,760 |\n| 2025-12 | 291,945,810 |\n| 2026-01 | 289,433,900 |\n| 2026-02 | 175,356,320 |\n| 2026-03 | 399,462,280 |\n| 2026-04 | 100,958,370 |\n| 2026-05 | 96,459,370 |\n| 2026-06 | 114,540,000 |\n| 2026-07 | 35,628,960 |\n| 2026-08 | 232,552,460 |\n| 2026-09 | 68,521,790 |\n| 2026-10 | 137,366,720 |\n| 2026-11 | 821,062,840 |\n\n**근거 보기**  \n**용어 매핑**  \n거래대금 → EXECUTIONS.EXEC_AMOUNT  \n\n**사용한 SQL**  \n```sql\nSELECT YEAR(DATE(EXEC_TS)) AS YEAR, MONTH(DATE(EXEC_TS)) AS MONTH, SUM(EXEC_AMOUNT) AS TOTAL_TRADE_AMOUNT FROM FIN_DEMO.EXECUTIONS GROUP BY YEAR(DATE(EXEC_TS)), MONTH(DATE(EXEC_TS)) ORDER BY YEAR(DATE(EXEC_TS)), MONTH(DATE(EXEC_TS))\n```",
+   "sql": "SELECT YEAR(DATE(EXEC_TS)) AS YEAR, MONTH(DATE(EXEC_TS)) AS MONTH, SUM(EXEC_AMOUNT) AS TOTAL_TRADE_AMOUNT FROM FIN_DEMO.EXECUTIONS GROUP BY YEAR(DATE(EXEC_TS)), MONTH(DATE(EXEC_TS)) ORDER BY YEAR(DATE(EXEC_TS)), MONTH(DATE(EXEC_TS))",
+   "result": {
+    "columns": [
+     "YEAR",
+     "MONTH",
+     "TOTAL_TRADE_AMOUNT"
+    ],
+    "rows": [
+     [
+      "2025",
+      "10",
+      "31182690"
+     ],
+     [
+      "2025",
+      "11",
+      "364818760"
+     ],
+     [
+      "2025",
+      "12",
+      "291945810"
+     ],
+     [
+      "2026",
+      "1",
+      "289433900"
+     ],
+     [
+      "2026",
+      "2",
+      "175356320"
+     ],
+     [
+      "2026",
+      "3",
+      "399462280"
+     ],
+     [
+      "2026",
+      "4",
+      "100958370"
+     ],
+     [
+      "2026",
+      "5",
+      "96459370"
+     ]
+    ],
+    "row_count": 14
+   }
+  },
+  {
+   "id": "X-01",
+   "question": "약정이 뭐야?",
+   "answer": "**결론**  \n“약정”은 체결된 주문의 금액(수량 × 가격) 합계를 의미하며, **거래대금**에 해당합니다. 이는 `EXECUTIONS` 테이블의 `EXEC_AMOUNT` 컬럼에 저장됩니다.\n\n**용어 매핑**  \n| 표현 | 표준 용어 | 정의 (대응 컬럼) |\n|------|----------|-------------------|\n| 약정 | 거래대금 | 체결된 주문의 금액 합계 (`EXECUTIONS.EXEC_AMOUNT`) |\n\n**필요한 테이블·컬럼**  \n- `EXECUTIONS` 테이블 – `EXEC_AMOUNT` (거래대금)\n\n**근거 보기**  \n- 용어 매핑: “약정 → 거래대금” (`EXECUTIONS.EXEC_AMOUNT`)   (제공된 메타데이터)",
+   "sql_note": "답변에 SQL 코드 블록이 없다"
+  },
+  {
+   "id": "X-02",
+   "question": "체결 테이블에 어떤 컬럼이 있고 고객과는 어떻게 연결돼?",
+   "answer": "**결론**  \n`EXECUTIONS`(체결) 테이블에는 체결 ID·주문 ID·시각·수량·가격·대금·수수료·실현손익 등 8개의 컬럼이 있으며, 고객과는 **ORDERS → ACCOUNT → CUSTOMER** 경로를 통해 연결됩니다.\n\n| 표현 | 표준 용어 | 정의 (대응 컬럼) |\n|------|-----------|-------------------|\n| 체결 | EXECUTIONS | 체결 ID(`EXEC_ID`), 주문 ID(`ORDER_ID`), 체결 시각(`EXEC_TS`), 체결 수량(`EXEC_QTY`), 체결 가격(`EXEC_PRICE`), 체결대금(`EXEC_AMOUNT`), 수수료(`FEE`), 실현손익(`REALIZED_PNL`) |\n\n**필요 테이블·컬럼·조인 경로**  \n- `EXECUTIONS` (위 표 참고)  \n- `ORDERS` → `ACCOUNT` → `CUSTOMER`  \n  - `EXECUTIONS.ORDER_ID` → `ORDERS.ORDER_ID` (FK)  \n  - `ORDERS.ACCOUNT_ID` → `ACCOUNT.ACCOUNT_ID` (FK)  \n  - `ACCOUNT.CUSTOMER_ID` → `CUSTOMER.CUSTOMER_ID` (FK)  \n\n**근거 보기**  \n- 용어 매핑: “체결” → `EXECUTIONS`  \n- 사용한 테이블: `EXECUTIONS`, `ORDERS`, `ACCOUNT`, `CUSTOMER`",
+   "sql_note": "답변에 SQL 코드 블록이 없다"
+  },
+  {
+   "id": "X-03",
+   "question": "고객 테이블에서 개인정보 컬럼이 뭐야?",
+   "answer": "**결론**  \nFIN_DEMO .CUSTOMER 테이블에 포함된 개인정보(PII) 컬럼은 CUSTOMER_NAME, SSN, PHONE, EMAIL 입니다.  \n\n| 표현 | 표준 용어 | 정의 (대응 컬럼) |\n|------|----------|-------------------|\n| 고객 | CUSTOMER | 고객 ID와 기본 정보가 저장된 테이블 |\n| 개인정보 컬럼 | PII 컬럼 | CUSTOMER_NAME (고객 이름), SSN (주민등록번호), PHONE (전화번호), EMAIL (이메일) – 모두 “개인정보(PII)”로 표시 |\n\n**근거 보기**  \n- 용어 매핑: 위 표의 내용  \n- 사용한 테이블: CUSTOMER  ",
+   "sql_note": "답변에 SQL 코드 블록이 없다"
+  },
+  {
+   "id": "X-04",
+   "question": "VIP 고객은 어떤 기준이야?",
+   "answer": "**VIP 고객**은 `CUSTOMER` 테이블에서 `GRADE` 컬럼 값이 **VIP**이며, 총자산이 **3억 원** 이상인 고객을 의미합니다.\n\n**용어 매핑**  \n| 표현 → 표준 용어 | 정의 (대응 컬럼) |\n|----------------|-------------------|\n| VIP 고객 → CUSTOMER.GRADE | 총자산 3억 원 이상인 고객. `CUSTOMER.GRADE` 값이 **VIP** |\n\n**근거 보기**  \n- 용어 매핑: “VIP 고객: 총자산 3억원 이상인 고객. CUSTOMER.GRADE 값 VIP.” (wxdi_glossary)",
+   "sql_note": "답변에 SQL 코드 블록이 없다"
+  }
+ ]
+}
