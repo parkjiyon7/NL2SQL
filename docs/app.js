@@ -791,40 +791,41 @@
       var o = Object.keys(kinds[k]).map(function (t) { return t + " " + kinds[k][t] + "회"; });
       return o.length ? o.join(", ") : "없음";
     }
+    var LA = "wxO Agent 활용 (gpt-oss-120b)", LB = "wxdi text-to-sql 활용 (llama-3-3-70b-instruct)";
     var n = C.items.length;
     var pa = Math.round(C.A.ok * 100 / C.A.total), pb = Math.round(C.B.ok * 100 / C.B.total);
     var h = '<div class="grid3">' +
-      '<div class="stat"><b>' + C.A.ok + " / " + C.A.total + '</b><span><strong class="st-t">A안 (' + esc(C.A.agent) + ')</strong>' + pa + "% 통과<br>" + n + "문항 x " + C.n + "회</span></div>" +
-      '<div class="stat"><b>' + C.B.ok + " / " + C.B.total + '</b><span><strong class="st-t">B안 (' + esc(C.B.agent) + ')</strong>' + pb + "% 통과<br>" + n + "문항 x " + C.n + "회</span></div>" +
+      '<div class="stat"><b>' + C.A.ok + " / " + C.A.total + '</b><span><strong class="st-t">' + LA + '</strong>' + pa + "% 통과<br>" + n + "문항 x " + C.n + "회</span></div>" +
+      '<div class="stat"><b>' + C.B.ok + " / " + C.B.total + '</b><span><strong class="st-t">' + LB + '</strong>' + pb + "% 통과<br>" + n + "문항 x " + C.n + "회</span></div>" +
       '<div class="stat"><b>' + esc(C.date) + '</b><span><strong class="st-t">실행일</strong>같은 데이터, 같은 질문, 같은 채점으로 두 에이전트를 비교</span></div></div>';
     h += '<ul class="plain">' +
-      "<li><b>무엇을 비교했나</b>: 두 안의 SQL 에이전트에 같은 질문 " + n + "개를 " + C.n + "번씩 보내고, 답변에 붙은 SQL을 Db2에서 실행해 골든 SQL의 결과 값과 비교했습니다. 두 에이전트 모두 같은 wxO 호출 방식(<code>option_a_eval_golden.py</code>)으로 물었고, 다른 점은 SQL을 쓰는 방식입니다. A안은 wxO 모델이 지시문 규칙과 카탈로그를 보고 직접 쓰고, B안은 wxdi Text-to-SQL이 씁니다.</li>" +
+      "<li><b>무엇을 비교했나</b>: 두 방식의 SQL 에이전트(<code>" + esc(C.A.agent) + "</code>, <code>" + esc(C.B.agent) + "</code>)에 같은 질문 " + n + "개를 " + C.n + "번씩 보내고, 답변에 붙은 SQL을 Db2에서 실행해 골든 SQL의 결과 값과 비교했습니다. 두 에이전트 모두 같은 wxO 호출 방식(<code>option_a_eval_golden.py</code>)으로 물었고, 다른 점은 SQL을 쓰는 방식입니다. wxO Agent 활용은 wxO 에이전트의 모델(gpt-oss-120b)이 지시문 규칙과 카탈로그를 보고 직접 쓰고, wxdi text-to-sql 활용은 wxdi Text-to-SQL의 모델(llama-3-3-70b-instruct)이 씁니다(wxO 에이전트의 gpt-oss-120b는 이 SQL을 실행하고 답변으로 옮기는 역할).</li>" +
       "<li><b>새 질문을 고른 방법</b>: 기존 골든 10문항과 겹치지 않도록 질문 템플릿 25개에 지점, 종목, 고객, 업종, 월, 연도 같은 값을 Db2 실제 데이터에서 난수(시드 " + C.seed + ")로 뽑아 채웠고, 정답이 비었거나 0인 질문과 동점이라 정답이 하나로 정해지지 않는 상위 N 질문은 버렸습니다. 그중 " + n + "개를 난수로 골랐습니다(<code>make_holdout.py</code>). 골든 SQL은 이 템플릿에서만 나왔고 에이전트 출력은 보지 않았습니다.</li>" +
-      "<li><b>튜닝에 쓰지 않은 질문</b>: 이 " + n + "문항은 지시문을 고치는 데 쓴 적이 없어서 기존 골든 점수(A안 30/30)와 달리 새 질문에서의 정확도를 보여줍니다. 지시문을 이 결과에 맞춰 고치면 다시 튜닝용이 되므로 새 세트가 필요합니다.</li>" +
+      "<li><b>튜닝에 쓰지 않은 질문</b>: 이 " + n + "문항은 지시문을 고치는 데 쓴 적이 없어서 기존 골든 점수(wxO Agent 활용 30/30)와 달리 새 질문에서의 정확도를 보여줍니다. 지시문을 이 결과에 맞춰 고치면 다시 튜닝용이 되므로 새 세트가 필요합니다.</li>" +
       "<li><b>해석할 때 주의</b>: 문항이 " + n + "개, 반복이 " + C.n + "번뿐이라 몇 %p 차이까지는 단정하지 못합니다. 질문 대부분이 건수나 합계처럼 한 행으로 답이 나오는 질문입니다. 이번 세트의 \"N년 1월 1일 이후\" 문구는 이전 시험에서 \"N년 이후\"의 해석이 갈려 두 에이전트가 모두 틀렸던 것을 고친 것입니다. 이 표는 SQL 에이전트만 비교하며 Supervisor가 답변을 옮기는 단계는 포함하지 않습니다.</li></ul>";
     h += "<h3>요약</h3>";
-    h += '<table class="tbl"><thead><tr><th></th><th>A안</th><th>B안</th></tr></thead><tbody>' +
+    h += '<table class="tbl"><thead><tr><th></th><th>' + LA + '</th><th>' + LB + '</th></tr></thead><tbody>' +
       "<tr><td>통과한 시도</td><td>" + C.A.ok + " / " + C.A.total + " (" + pa + "%)</td><td>" + C.B.ok + " / " + C.B.total + " (" + pb + "%)</td></tr>" +
       "<tr><td>" + C.n + "번 모두 통과한 문항</td><td>" + aAll + " / " + n + "</td><td>" + bAll + " / " + n + "</td></tr>" +
       "<tr><td>문항별로 더 많이 맞힌 쪽</td><td>" + aw + "문항</td><td>" + bw + "문항 (같은 점수 " + tie + "문항)</td></tr>" +
       "<tr><td>실패 유형</td><td>" + esc(kindText("A")) + "</td><td>" + esc(kindText("B")) + "</td></tr></tbody></table>";
     h += '<p class="muted">실패 유형: "실행 오류"는 Db2가 SQL을 거부한 경우(없는 테이블이나 컬럼, 스키마 누락 등), "값이 다름"은 실행은 됐지만 골든과 값이 다른 경우, "SQL 없음"은 답변에 SQL 코드 블록이 없는 경우입니다.</p>';
     h += "<h3>질문별 점수</h3>";
-    h += '<div class="scroll-x"><table class="tbl"><thead><tr><th>번호</th><th>질문</th><th>A안</th><th>B안</th><th>틀린 경우</th></tr></thead><tbody>';
+    h += '<div class="scroll-x"><table class="tbl"><thead><tr><th>번호</th><th>질문</th><th>' + LA + '</th><th>' + LB + '</th><th>틀린 경우</th></tr></thead><tbody>';
     C.items.forEach(function (it) {
       var ra = cmpReason(it.A), rb = cmpReason(it.B), why = [];
-      if (ra) why.push("A안: " + ra);
-      if (rb) why.push("B안: " + rb);
+      if (ra) why.push("wxO Agent: " + ra);
+      if (rb) why.push("wxdi: " + rb);
       h += "<tr><td>" + esc(it.id) + "</td><td>" + esc(it.question) + "</td><td>" + cmpTag(it.A) + "</td><td>" + cmpTag(it.B) + "</td><td>" + (why.length ? esc(why.join(" / ")) : "-") + "</td></tr>";
     });
     h += "</tbody></table></div>";
-    h += "<h3>질문별 상세 (골든 SQL, 두 에이전트가 만든 SQL)</h3><p class=\"muted\">질문을 눌러 펼치세요. 골든 SQL은 질문 템플릿이 만든 정답이고, 시도마다 에이전트가 답변에 붙인 SQL, 그 SQL을 Db2에서 실행한 결과 미리보기, 판정을 보여줍니다. 결과 미리보기는 " + esc(C.preview_date || C.date) + "에 SQL을 다시 실행한 값이라, \"이번 달\"처럼 날짜에 따라 달라지는 질문은 평가 당시 값과 다를 수 있습니다(통과, 실패 표시는 평가 당시 판정).</p>";
+    h += "<h3>질문별 상세 (골든 SQL, 두 방식이 만든 SQL)</h3><p class=\"muted\">질문을 눌러 펼치세요. 골든 SQL은 질문 템플릿이 만든 정답이고, 시도마다 에이전트가 답변에 붙인 SQL, 그 SQL을 Db2에서 실행한 결과 미리보기, 판정을 보여줍니다. 결과 미리보기는 " + esc(C.preview_date || C.date) + "에 SQL을 다시 실행한 값이라, \"이번 달\"처럼 날짜에 따라 달라지는 질문은 평가 당시 값과 다를 수 있습니다(통과, 실패 표시는 평가 당시 판정).</p>";
     C.items.forEach(function (it) {
-      h += '<details class="eval-item"><summary><b>' + esc(it.id) + "</b> " + esc(it.question) + " A안 " + cmpTag(it.A) + " B안 " + cmpTag(it.B) + "</summary>";
+      h += '<details class="eval-item"><summary><b>' + esc(it.id) + "</b> " + esc(it.question) + " wxO Agent " + cmpTag(it.A) + " wxdi " + cmpTag(it.B) + "</summary>";
       h += "<h4>골든 SQL (정답)</h4><pre>" + esc(it.golden_sql) + "</pre>" + evalTable(it.golden_result);
       ["A", "B"].forEach(function (k) {
         it[k].forEach(function (r, i) {
-          h += '<div class="run ' + (r.pass ? "pass" : "fail") + '"><h4>' + k + "안 시도 " + (i + 1) + ' <span class="tag ' + (r.pass ? "ok" : "bad") + '">' + (r.pass ? "통과" : "실패") + '</span> <span class="muted">' + esc(r.pass ? "골든과 같은 값" : r.status) + "</span></h4>";
+          h += '<div class="run ' + (r.pass ? "pass" : "fail") + '"><h4>' + (k === "A" ? LA : LB) + " 시도 " + (i + 1) + ' <span class="tag ' + (r.pass ? "ok" : "bad") + '">' + (r.pass ? "통과" : "실패") + '</span> <span class="muted">' + esc(r.pass ? "골든과 같은 값" : r.status) + "</span></h4>";
           h += r.sql && r.sql.indexOf("__ERR__") !== 0 ? "<pre>" + esc(r.sql) + "</pre>" : '<p class="muted">SQL을 만들지 못했습니다.</p>';
           if (r.result) h += evalTable(r.result);
           else if (r.error) h += '<p class="muted">실행 오류: ' + esc(r.error) + "</p>";
