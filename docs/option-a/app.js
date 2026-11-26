@@ -766,7 +766,7 @@
       h += "<tr><td>" + esc(it.id) + "</td><td>" + esc(it.question) + "</td><td>" + cmpTag(it.A) + "</td><td>" + cmpTag(it.B) + "</td><td>" + (why.length ? esc(why.join(" / ")) : "-") + "</td></tr>";
     });
     h += "</tbody></table></div>";
-    h += "<h3>질문별 상세 (골든 SQL, 두 에이전트가 만든 SQL)</h3><p class=\"muted\">질문을 눌러 펼치세요. 골든 SQL은 질문 템플릿이 만든 정답이고, 시도마다 에이전트가 답변에 붙인 SQL과 판정입니다.</p>";
+    h += "<h3>질문별 상세 (골든 SQL, 두 에이전트가 만든 SQL)</h3><p class=\"muted\">질문을 눌러 펼치세요. 골든 SQL은 질문 템플릿이 만든 정답이고, 시도마다 에이전트가 답변에 붙인 SQL, 그 SQL을 Db2에서 실행한 결과 미리보기, 판정을 보여줍니다. 결과 미리보기는 " + esc(C.preview_date || C.date) + "에 SQL을 다시 실행한 값이라, \"이번 달\"처럼 날짜에 따라 달라지는 질문은 평가 당시 값과 다를 수 있습니다(통과, 실패 표시는 평가 당시 판정).</p>";
     C.items.forEach(function (it) {
       h += '<details class="eval-item"><summary><b>' + esc(it.id) + "</b> " + esc(it.question) + " A안 " + cmpTag(it.A) + " B안 " + cmpTag(it.B) + "</summary>";
       h += "<h4>골든 SQL (정답)</h4><pre>" + esc(it.golden_sql) + "</pre>" + evalTable(it.golden_result);
@@ -774,6 +774,8 @@
         it[k].forEach(function (r, i) {
           h += '<div class="run ' + (r.pass ? "pass" : "fail") + '"><h4>' + k + "안 시도 " + (i + 1) + ' <span class="tag ' + (r.pass ? "ok" : "bad") + '">' + (r.pass ? "통과" : "실패") + '</span> <span class="muted">' + esc(r.pass ? "골든과 같은 값" : r.status) + "</span></h4>";
           h += r.sql && r.sql.indexOf("__ERR__") !== 0 ? "<pre>" + esc(r.sql) + "</pre>" : '<p class="muted">SQL을 만들지 못했습니다.</p>';
+          if (r.result) h += evalTable(r.result);
+          else if (r.error) h += '<p class="muted">실행 오류: ' + esc(r.error) + "</p>";
           h += "</div>";
         });
       });

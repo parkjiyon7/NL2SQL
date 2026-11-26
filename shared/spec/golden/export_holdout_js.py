@@ -36,10 +36,21 @@ def main() -> int:
         for k in ("A", "B"):
             it = next(x for x in runs[k]["items"] if x["id"] == g["id"])
             assert it["question"] == g["question"], (k, g["id"])
-            item[k] = [{"pass": r["pass"], "status": r["status"], "sql": r.get("sql", "")} for r in it["runs"]]
+            item[k] = []
+            for r in it["runs"]:
+                entry = {"pass": r["pass"], "status": r["status"], "sql": r.get("sql", "")}
+                if entry["sql"] and not entry["sql"].startswith("__ERR__"):
+                    try:  # 에이전트가 만든 SQL을 지금 Db2에서 실행한 결과 미리보기
+                        c2, r2 = fetch(conn, entry["sql"])
+                        entry["result"] = {"columns": c2, "rows": [[cell(v) for v in row] for row in r2[:5]], "row_count": len(r2)}
+                    except Exception as exc:  # noqa: BLE001
+                        entry["error"] = str(exc).splitlines()[0][-150:]
+                item[k].append(entry)
         items.append(item)
     payload = {
-        "date": datetime.date.today().isoformat(),
+        # 평가 실행일은 결과 파일을 만든 날, 결과 미리보기는 이 스크립트를 돌린 날 Db2에서 다시 실행한 값
+        "date": datetime.date.fromtimestamp(min((RES / "holdout_A.json").stat().st_mtime, (RES / "holdout_B.json").stat().st_mtime)).isoformat(),
+        "preview_date": datetime.date.today().isoformat(),
         "n": len(items[0]["A"]), "seed": 20261125,
         "A": {"agent": runs["A"]["agent"], "ok": runs["A"]["ok"], "total": runs["A"]["total"]},
         "B": {"agent": runs["B"]["agent"], "ok": runs["B"]["ok"], "total": runs["B"]["total"]},
