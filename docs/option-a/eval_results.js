@@ -16,15 +16,15 @@ window.EVAL = {
     ],
     "rows": [
      [
-      0,
-      null
+      11,
+      "123581070"
      ]
     ],
     "row_count": 1
    },
    "runs": [
     {
-     "sql": "SELECT COUNT(E.EXEC_ID) AS EXEC_COUNT,\n       SUM(E.EXEC_AMOUNT) AS TOTAL_AMOUNT\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.ACCOUNT A ON O.ACCOUNT_ID = A.ACCOUNT_ID\nJOIN FIN_DEMO.CUSTOMER C ON A.CUSTOMER_ID = C.CUSTOMER_ID\nJOIN FIN_DEMO.BRANCH B ON C.BRANCH_CODE = B.BRANCH_CODE\nWHERE DATE(E.EXEC_TS) = CURRENT DATE\n  AND B.BRANCH_NAME = '강남지점'",
+     "sql": "SELECT COUNT(E.EXEC_ID) AS EXEC_COUNT,\n       SUM(E.EXEC_AMOUNT) AS TOTAL_AMOUNT\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.ACCOUNT A ON O.ACCOUNT_ID = A.ACCOUNT_ID\nJOIN FIN_DEMO.CUSTOMER C ON A.CUSTOMER_ID = C.CUSTOMER_ID\nJOIN FIN_DEMO.BRANCH B ON C.BRANCH_CODE = B.BRANCH_CODE\nWHERE DATE(E.EXEC_TS) = CURRENT DATE\n  AND B.BRANCH_NAME LIKE '%강남%'",
      "pass": true,
      "status": "통과",
      "result": {
@@ -34,15 +34,15 @@ window.EVAL = {
       ],
       "rows": [
        [
-        0,
-        null
+        11,
+        "123581070"
        ]
       ],
       "row_count": 1
      }
     },
     {
-     "sql": "SELECT COUNT(EXECUTIONS.EXEC_ID) AS EXEC_COUNT,\n       SUM(EXECUTIONS.EXEC_AMOUNT) AS TOTAL_AMOUNT\nFROM FIN_DEMO.EXECUTIONS EXECUTIONS\nJOIN FIN_DEMO.ORDERS ORDERS ON EXECUTIONS.ORDER_ID = ORDERS.ORDER_ID\nJOIN FIN_DEMO.ACCOUNT ACCOUNT ON ORDERS.ACCOUNT_ID = ACCOUNT.ACCOUNT_ID\nJOIN FIN_DEMO.CUSTOMER CUSTOMER ON ACCOUNT.CUSTOMER_ID = CUSTOMER.CUSTOMER_ID\nJOIN FIN_DEMO.BRANCH BRANCH ON CUSTOMER.BRANCH_CODE = BRANCH.BRANCH_CODE\nWHERE DATE(EXECUTIONS.EXEC_TS) = CURRENT DATE\n  AND BRANCH.BRANCH_NAME = '강남지점'",
+     "sql": "SELECT COUNT(E.EXEC_ID) AS EXEC_COUNT, SUM(E.EXEC_AMOUNT) AS TOTAL_AMOUNT\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.ACCOUNT A ON O.ACCOUNT_ID = A.ACCOUNT_ID\nJOIN FIN_DEMO.CUSTOMER C ON A.CUSTOMER_ID = C.CUSTOMER_ID\nJOIN FIN_DEMO.BRANCH B ON C.BRANCH_CODE = B.BRANCH_CODE\nWHERE DATE(E.EXEC_TS) = CURRENT DATE\n  AND B.BRANCH_NAME = '강남지점'",
      "pass": true,
      "status": "통과",
      "result": {
@@ -52,15 +52,15 @@ window.EVAL = {
       ],
       "rows": [
        [
-        0,
-        null
+        11,
+        "123581070"
        ]
       ],
       "row_count": 1
      }
     },
     {
-     "sql": "SELECT COUNT(E.EXEC_ID) AS EXEC_COUNT,\n       SUM(E.EXEC_AMOUNT) AS TOTAL_AMOUNT\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.ACCOUNT A ON O.ACCOUNT_ID = A.ACCOUNT_ID\nJOIN FIN_DEMO.CUSTOMER C ON A.CUSTOMER_ID = C.CUSTOMER_ID\nJOIN FIN_DEMO.BRANCH B ON C.BRANCH_CODE = B.BRANCH_CODE\nWHERE DATE(E.EXEC_TS) = CURRENT DATE\n  AND B.BRANCH_NAME = '강남지점'",
+     "sql": "SELECT COUNT(E.EXEC_ID) AS EXEC_COUNT, SUM(E.EXEC_AMOUNT) AS TOTAL_AMOUNT\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.ACCOUNT A ON O.ACCOUNT_ID = A.ACCOUNT_ID\nJOIN FIN_DEMO.CUSTOMER C ON A.CUSTOMER_ID = C.CUSTOMER_ID\nJOIN FIN_DEMO.BRANCH B ON C.BRANCH_CODE = B.BRANCH_CODE\nWHERE DATE(E.EXEC_TS) = CURRENT DATE AND B.BRANCH_NAME = '강남지점'",
      "pass": true,
      "status": "통과",
      "result": {
@@ -70,8 +70,8 @@ window.EVAL = {
       ],
       "rows": [
        [
-        0,
-        null
+        11,
+        "123581070"
        ]
       ],
       "row_count": 1
@@ -114,40 +114,6 @@ window.EVAL = {
    },
    "runs": [
     {
-     "sql": "SELECT C.CUSTOMER_NAME,\n       C.TOTAL_ASSETS\nFROM FIN_DEMO.CUSTOMER C\nWHERE C.TOTAL_ASSETS >= 100000000",
-     "pass": true,
-     "status": "통과",
-     "result": {
-      "columns": [
-       "CUSTOMER_NAME",
-       "TOTAL_ASSETS"
-      ],
-      "rows": [
-       [
-        "박민준",
-        "295980000"
-       ],
-       [
-        "홍도현",
-        "144750000"
-       ],
-       [
-        "우민준",
-        "184080000"
-       ],
-       [
-        "원서현",
-        "124120000"
-       ],
-       [
-        "고민서",
-        "2076190000"
-       ]
-      ],
-      "row_count": 15
-     }
-    },
-    {
      "sql": "SELECT C.CUSTOMER_NAME, C.TOTAL_ASSETS\nFROM FIN_DEMO.CUSTOMER C\nWHERE C.TOTAL_ASSETS >= 100000000",
      "pass": true,
      "status": "통과",
@@ -182,7 +148,41 @@ window.EVAL = {
      }
     },
     {
-     "sql": "SELECT C.CUSTOMER_NAME, C.TOTAL_ASSETS\nFROM FIN_DEMO.CUSTOMER C\nWHERE C.TOTAL_ASSETS >= 100000000",
+     "sql": "SELECT C.CUSTOMER_NAME, C.TOTAL_ASSETS \nFROM FIN_DEMO.CUSTOMER C \nWHERE C.TOTAL_ASSETS >= 100000000",
+     "pass": true,
+     "status": "통과",
+     "result": {
+      "columns": [
+       "CUSTOMER_NAME",
+       "TOTAL_ASSETS"
+      ],
+      "rows": [
+       [
+        "박민준",
+        "295980000"
+       ],
+       [
+        "홍도현",
+        "144750000"
+       ],
+       [
+        "우민준",
+        "184080000"
+       ],
+       [
+        "원서현",
+        "124120000"
+       ],
+       [
+        "고민서",
+        "2076190000"
+       ]
+      ],
+      "row_count": 15
+     }
+    },
+    {
+     "sql": "SELECT C.CUSTOMER_NAME, C.TOTAL_ASSETS AS TOTAL_ASSETS\nFROM FIN_DEMO.CUSTOMER C\nWHERE C.TOTAL_ASSETS >= 100000000",
      "pass": true,
      "status": "통과",
      "result": {
@@ -229,86 +229,100 @@ window.EVAL = {
     ],
     "rows": [
      [
-      9000217,
-      160,
-      "71110.00"
+      9000171,
+      17,
+      "70910.00"
      ],
      [
-      9000224,
-      524,
-      "71130.00"
+      9000174,
+      18,
+      "71310.00"
+     ],
+     [
+      9000175,
+      21,
+      "71090.00"
+     ],
+     [
+      9000178,
+      50,
+      "71070.00"
+     ],
+     [
+      9000179,
+      724,
+      "71120.00"
      ]
     ],
-    "row_count": 2
+    "row_count": 10
    },
    "runs": [
     {
-     "sql": "SELECT E.EXEC_ID, P.PRODUCT_NAME, E.EXEC_QTY, E.EXEC_PRICE, E.EXEC_AMOUNT, E.EXEC_TS\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.PRODUCT P ON O.PRODUCT_CODE = P.PRODUCT_CODE\nWHERE P.PRODUCT_NAME = '삼성전자'\n  AND DATE(E.EXEC_TS) = CURRENT DATE - 1 DAY\n  AND O.SIDE = 'BUY'",
+     "sql": "SELECT E.EXEC_ID, E.EXEC_TS, E.EXEC_QTY, E.EXEC_PRICE, E.EXEC_AMOUNT, P.PRODUCT_NAME, O.SIDE\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.PRODUCT P ON O.PRODUCT_CODE = P.PRODUCT_CODE\nWHERE P.PRODUCT_NAME = '삼성전자'\n  AND DATE(E.EXEC_TS) = CURRENT DATE - 1 DAY\n  AND O.SIDE = 'BUY'",
      "pass": true,
      "status": "통과",
      "result": {
       "columns": [
        "EXEC_ID",
-       "PRODUCT_NAME",
+       "EXEC_TS",
        "EXEC_QTY",
        "EXEC_PRICE",
        "EXEC_AMOUNT",
-       "EXEC_TS"
+       "PRODUCT_NAME",
+       "SIDE"
       ],
       "rows": [
        [
-        9000217,
+        9000171,
+        "2026-11-24 09:28:10",
+        17,
+        "70910.00",
+        "1205470",
         "삼성전자",
-        160,
-        "71110.00",
-        "11377600",
-        "2026-11-24 09:36:21"
+        "BUY"
        ],
        [
-        9000224,
+        9000174,
+        "2026-11-24 10:33:04",
+        18,
+        "71310.00",
+        "1283580",
         "삼성전자",
-        524,
-        "71130.00",
-        "37272120",
-        "2026-11-24 09:46:20"
+        "BUY"
+       ],
+       [
+        9000175,
+        "2026-11-24 10:29:17",
+        21,
+        "71090.00",
+        "1492890",
+        "삼성전자",
+        "BUY"
+       ],
+       [
+        9000178,
+        "2026-11-24 11:38:04",
+        50,
+        "71070.00",
+        "3553500",
+        "삼성전자",
+        "BUY"
+       ],
+       [
+        9000179,
+        "2026-11-24 11:49:17",
+        724,
+        "71120.00",
+        "51490880",
+        "삼성전자",
+        "BUY"
        ]
       ],
-      "row_count": 2
+      "row_count": 10
      }
     },
     {
-     "sql": "SELECT E.EXEC_ID, E.EXEC_TS, E.EXEC_QTY, E.EXEC_PRICE, E.EXEC_AMOUNT\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.PRODUCT P ON O.PRODUCT_CODE = P.PRODUCT_CODE\nWHERE P.PRODUCT_NAME = '삼성전자'\n  AND DATE(E.EXEC_TS) = CURRENT DATE - 1 DAY\n  AND O.SIDE = 'BUY'",
-     "pass": true,
-     "status": "통과",
-     "result": {
-      "columns": [
-       "EXEC_ID",
-       "EXEC_TS",
-       "EXEC_QTY",
-       "EXEC_PRICE",
-       "EXEC_AMOUNT"
-      ],
-      "rows": [
-       [
-        9000217,
-        "2026-11-24 09:36:21",
-        160,
-        "71110.00",
-        "11377600"
-       ],
-       [
-        9000224,
-        "2026-11-24 09:46:20",
-        524,
-        "71130.00",
-        "37272120"
-       ]
-      ],
-      "row_count": 2
-     }
-    },
-    {
-     "sql": "SELECT E.EXEC_ID, P.PRODUCT_NAME, E.EXEC_TS, E.EXEC_QTY, E.EXEC_PRICE, E.EXEC_AMOUNT\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.PRODUCT P ON O.PRODUCT_CODE = P.PRODUCT_CODE\nWHERE DATE(E.EXEC_TS) = CURRENT DATE - 1 DAY\n  AND O.SIDE = 'BUY'\n  AND P.PRODUCT_NAME = '삼성전자'",
+     "sql": "SELECT E.EXEC_ID, P.PRODUCT_NAME, E.EXEC_TS, E.EXEC_QTY, E.EXEC_PRICE, E.EXEC_AMOUNT\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.PRODUCT P ON O.PRODUCT_CODE = P.PRODUCT_CODE\nWHERE P.PRODUCT_NAME = '삼성전자'\n  AND DATE(E.EXEC_TS) = CURRENT DATE - 1 DAY\n  AND O.SIDE = 'BUY'",
      "pass": true,
      "status": "통과",
      "result": {
@@ -322,23 +336,111 @@ window.EVAL = {
       ],
       "rows": [
        [
-        9000217,
+        9000171,
         "삼성전자",
-        "2026-11-24 09:36:21",
-        160,
-        "71110.00",
-        "11377600"
+        "2026-11-24 09:28:10",
+        17,
+        "70910.00",
+        "1205470"
        ],
        [
-        9000224,
+        9000174,
         "삼성전자",
-        "2026-11-24 09:46:20",
-        524,
-        "71130.00",
-        "37272120"
+        "2026-11-24 10:33:04",
+        18,
+        "71310.00",
+        "1283580"
+       ],
+       [
+        9000175,
+        "삼성전자",
+        "2026-11-24 10:29:17",
+        21,
+        "71090.00",
+        "1492890"
+       ],
+       [
+        9000178,
+        "삼성전자",
+        "2026-11-24 11:38:04",
+        50,
+        "71070.00",
+        "3553500"
+       ],
+       [
+        9000179,
+        "삼성전자",
+        "2026-11-24 11:49:17",
+        724,
+        "71120.00",
+        "51490880"
        ]
       ],
-      "row_count": 2
+      "row_count": 10
+     }
+    },
+    {
+     "sql": "SELECT E.EXEC_ID, E.EXEC_TS, E.EXEC_QTY, E.EXEC_PRICE, E.EXEC_AMOUNT,\n       O.SIDE, P.PRODUCT_NAME\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.PRODUCT P ON O.PRODUCT_CODE = P.PRODUCT_CODE\nWHERE P.PRODUCT_NAME = '삼성전자'\n  AND DATE(E.EXEC_TS) = CURRENT DATE - 1 DAY\n  AND O.SIDE = 'BUY'",
+     "pass": true,
+     "status": "통과",
+     "result": {
+      "columns": [
+       "EXEC_ID",
+       "EXEC_TS",
+       "EXEC_QTY",
+       "EXEC_PRICE",
+       "EXEC_AMOUNT",
+       "SIDE",
+       "PRODUCT_NAME"
+      ],
+      "rows": [
+       [
+        9000171,
+        "2026-11-24 09:28:10",
+        17,
+        "70910.00",
+        "1205470",
+        "BUY",
+        "삼성전자"
+       ],
+       [
+        9000174,
+        "2026-11-24 10:33:04",
+        18,
+        "71310.00",
+        "1283580",
+        "BUY",
+        "삼성전자"
+       ],
+       [
+        9000175,
+        "2026-11-24 10:29:17",
+        21,
+        "71090.00",
+        "1492890",
+        "BUY",
+        "삼성전자"
+       ],
+       [
+        9000178,
+        "2026-11-24 11:38:04",
+        50,
+        "71070.00",
+        "3553500",
+        "BUY",
+        "삼성전자"
+       ],
+       [
+        9000179,
+        "2026-11-24 11:49:17",
+        724,
+        "71120.00",
+        "51490880",
+        "BUY",
+        "삼성전자"
+       ]
+      ],
+      "row_count": 10
      }
     }
    ]
@@ -409,7 +511,7 @@ window.EVAL = {
      }
     },
     {
-     "sql": "SELECT C.CUSTOMER_ID, C.CUSTOMER_NAME, SUM(BD.CASH_BALANCE) AS TOTAL_CASH\nFROM FIN_DEMO.CUSTOMER C\nJOIN FIN_DEMO.ACCOUNT A ON C.CUSTOMER_ID = A.CUSTOMER_ID\nJOIN FIN_DEMO.BALANCE_DAILY BD ON A.ACCOUNT_ID = BD.ACCOUNT_ID\nWHERE C.GRADE = 'VIP'\n  AND BD.BASE_DATE = (SELECT MAX(BASE_DATE) FROM FIN_DEMO.BALANCE_DAILY)\nGROUP BY C.CUSTOMER_ID, C.CUSTOMER_NAME\nORDER BY TOTAL_CASH DESC\nFETCH FIRST 10 ROWS ONLY",
+     "sql": "SELECT C.CUSTOMER_ID, C.CUSTOMER_NAME, SUM(B.CASH_BALANCE) AS TOTAL_CASH\nFROM FIN_DEMO.CUSTOMER C\nJOIN FIN_DEMO.ACCOUNT A ON C.CUSTOMER_ID = A.CUSTOMER_ID\nJOIN FIN_DEMO.BALANCE_DAILY B ON A.ACCOUNT_ID = B.ACCOUNT_ID\nWHERE C.GRADE = 'VIP'\n  AND B.BASE_DATE = (SELECT MAX(BASE_DATE) FROM FIN_DEMO.BALANCE_DAILY)\nGROUP BY C.CUSTOMER_ID, C.CUSTOMER_NAME\nORDER BY TOTAL_CASH DESC\nFETCH FIRST 10 ROWS ONLY",
      "pass": true,
      "status": "통과",
      "result": {
@@ -444,14 +546,14 @@ window.EVAL = {
      }
     },
     {
-     "sql": "SELECT C.CUSTOMER_ID,\n       C.CUSTOMER_NAME,\n       SUM(BD.CASH_BALANCE) AS TOTAL_CASH_BALANCE\nFROM FIN_DEMO.CUSTOMER C\nJOIN FIN_DEMO.ACCOUNT A ON C.CUSTOMER_ID = A.CUSTOMER_ID\nJOIN FIN_DEMO.BALANCE_DAILY BD ON A.ACCOUNT_ID = BD.ACCOUNT_ID\nWHERE C.GRADE = 'VIP'\n  AND BD.BASE_DATE = (SELECT MAX(BASE_DATE) FROM FIN_DEMO.BALANCE_DAILY)\nGROUP BY C.CUSTOMER_ID, C.CUSTOMER_NAME\nORDER BY TOTAL_CASH_BALANCE DESC\nFETCH FIRST 10 ROWS ONLY",
+     "sql": "SELECT C.CUSTOMER_ID, C.CUSTOMER_NAME, SUM(B.CASH_BALANCE) AS TOTAL_CASH\nFROM FIN_DEMO.CUSTOMER C\nJOIN FIN_DEMO.ACCOUNT A ON C.CUSTOMER_ID = A.CUSTOMER_ID\nJOIN FIN_DEMO.BALANCE_DAILY B ON A.ACCOUNT_ID = B.ACCOUNT_ID\nWHERE C.GRADE = 'VIP'\n  AND B.BASE_DATE = (SELECT MAX(BASE_DATE) FROM FIN_DEMO.BALANCE_DAILY)\nGROUP BY C.CUSTOMER_ID, C.CUSTOMER_NAME\nORDER BY TOTAL_CASH DESC\nFETCH FIRST 10 ROWS ONLY",
      "pass": true,
      "status": "통과",
      "result": {
       "columns": [
        "CUSTOMER_ID",
        "CUSTOMER_NAME",
-       "TOTAL_CASH_BALANCE"
+       "TOTAL_CASH"
       ],
       "rows": [
        [
@@ -491,71 +593,111 @@ window.EVAL = {
     ],
     "rows": [
      [
-      "박수빈",
-      "149474210"
-     ],
-     [
-      "심지우",
-      "138282380"
-     ],
-     [
-      "채지호",
-      "125028230"
+      "지지후",
+      "175090620"
      ],
      [
       "진건우",
-      "74600150"
+      "101877320"
      ],
      [
-      "서도현",
-      "70062560"
+      "심지우",
+      "92632380"
+     ],
+     [
+      "박수빈",
+      "77406890"
+     ],
+     [
+      "심서준",
+      "56433840"
      ]
     ],
     "row_count": 5
    },
    "runs": [
     {
-     "sql": "SELECT\n    C.CUSTOMER_NAME AS 고객명,\n    C.CUSTOMER_ID AS 고객ID,\n    SUM(E.EXEC_AMOUNT) AS 총약정금액\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O\n  ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.ACCOUNT A\n  ON O.ACCOUNT_ID = A.ACCOUNT_ID\nJOIN FIN_DEMO.CUSTOMER C\n  ON A.CUSTOMER_ID = C.CUSTOMER_ID\nWHERE YEAR(DATE(E.EXEC_TS)) = YEAR(CURRENT DATE)\n  AND MONTH(DATE(E.EXEC_TS)) = MONTH(CURRENT DATE)\nGROUP BY C.CUSTOMER_NAME, C.CUSTOMER_ID\nORDER BY 총약정금액 DESC\nFETCH FIRST 5 ROWS ONLY",
+     "sql": "SELECT C.CUSTOMER_ID, C.CUSTOMER_NAME, SUM(E.EXEC_AMOUNT) AS TOTAL_AMOUNT\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.ACCOUNT A ON O.ACCOUNT_ID = A.ACCOUNT_ID\nJOIN FIN_DEMO.CUSTOMER C ON A.CUSTOMER_ID = C.CUSTOMER_ID\nWHERE YEAR(DATE(E.EXEC_TS)) = YEAR(CURRENT DATE)\n  AND MONTH(DATE(E.EXEC_TS)) = MONTH(CURRENT DATE)\nGROUP BY C.CUSTOMER_ID, C.CUSTOMER_NAME\nORDER BY TOTAL_AMOUNT DESC\nFETCH FIRST 5 ROWS ONLY",
      "pass": true,
      "status": "통과",
      "result": {
       "columns": [
-       "고객명",
-       "고객ID",
-       "총약정금액"
+       "CUSTOMER_ID",
+       "CUSTOMER_NAME",
+       "TOTAL_AMOUNT"
       ],
       "rows": [
        [
-        "박수빈",
-        18,
-        "149474210"
+        23,
+        "지지후",
+        "175090620"
        ],
        [
-        "심지우",
-        15,
-        "138282380"
-       ],
-       [
-        "채지호",
-        20,
-        "125028230"
-       ],
-       [
-        "진건우",
         31,
-        "74600150"
+        "진건우",
+        "101877320"
        ],
        [
-        "서도현",
-        11,
-        "70062560"
+        15,
+        "심지우",
+        "92632380"
+       ],
+       [
+        18,
+        "박수빈",
+        "77406890"
+       ],
+       [
+        35,
+        "심서준",
+        "56433840"
        ]
       ],
       "row_count": 5
      }
     },
     {
-     "sql": "SELECT C.CUSTOMER_ID, C.CUSTOMER_NAME,\n       SUM(E.EXEC_AMOUNT) AS TOTAL_EXEC_AMOUNT\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.ACCOUNT A ON O.ACCOUNT_ID = A.ACCOUNT_ID\nJOIN FIN_DEMO.CUSTOMER C ON A.CUSTOMER_ID = C.CUSTOMER_ID\nWHERE YEAR(DATE(E.EXEC_TS)) = YEAR(CURRENT DATE)\n  AND MONTH(DATE(E.EXEC_TS)) = MONTH(CURRENT DATE)\nGROUP BY C.CUSTOMER_ID, C.CUSTOMER_NAME\nORDER BY TOTAL_EXEC_AMOUNT DESC\nFETCH FIRST 5 ROWS ONLY",
+     "sql": "SELECT C.CUSTOMER_ID, C.CUSTOMER_NAME, SUM(E.EXEC_AMOUNT) AS TOTAL_TRADE_AMOUNT\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.ACCOUNT A ON O.ACCOUNT_ID = A.ACCOUNT_ID\nJOIN FIN_DEMO.CUSTOMER C ON A.CUSTOMER_ID = C.CUSTOMER_ID\nWHERE YEAR(DATE(E.EXEC_TS)) = YEAR(CURRENT DATE)\n  AND MONTH(DATE(E.EXEC_TS)) = MONTH(CURRENT DATE)\nGROUP BY C.CUSTOMER_ID, C.CUSTOMER_NAME\nORDER BY TOTAL_TRADE_AMOUNT DESC\nFETCH FIRST 5 ROWS ONLY",
+     "pass": true,
+     "status": "통과",
+     "result": {
+      "columns": [
+       "CUSTOMER_ID",
+       "CUSTOMER_NAME",
+       "TOTAL_TRADE_AMOUNT"
+      ],
+      "rows": [
+       [
+        23,
+        "지지후",
+        "175090620"
+       ],
+       [
+        31,
+        "진건우",
+        "101877320"
+       ],
+       [
+        15,
+        "심지우",
+        "92632380"
+       ],
+       [
+        18,
+        "박수빈",
+        "77406890"
+       ],
+       [
+        35,
+        "심서준",
+        "56433840"
+       ]
+      ],
+      "row_count": 5
+     }
+    },
+    {
+     "sql": "SELECT C.CUSTOMER_ID, C.CUSTOMER_NAME, SUM(E.EXEC_AMOUNT) AS TOTAL_EXEC_AMOUNT\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.ACCOUNT A ON O.ACCOUNT_ID = A.ACCOUNT_ID\nJOIN FIN_DEMO.CUSTOMER C ON A.CUSTOMER_ID = C.CUSTOMER_ID\nWHERE YEAR(E.EXEC_TS) = YEAR(CURRENT DATE) AND MONTH(E.EXEC_TS) = MONTH(CURRENT DATE)\nGROUP BY C.CUSTOMER_ID, C.CUSTOMER_NAME\nORDER BY TOTAL_EXEC_AMOUNT DESC\nFETCH FIRST 5 ROWS ONLY",
      "pass": true,
      "status": "통과",
      "result": {
@@ -566,69 +708,29 @@ window.EVAL = {
       ],
       "rows": [
        [
-        18,
-        "박수빈",
-        "149474210"
-       ],
-       [
-        15,
-        "심지우",
-        "138282380"
-       ],
-       [
-        20,
-        "채지호",
-        "125028230"
+        23,
+        "지지후",
+        "175090620"
        ],
        [
         31,
         "진건우",
-        "74600150"
-       ],
-       [
-        11,
-        "서도현",
-        "70062560"
-       ]
-      ],
-      "row_count": 5
-     }
-    },
-    {
-     "sql": "SELECT C.CUSTOMER_ID, C.CUSTOMER_NAME, SUM(E.EXEC_AMOUNT) AS TOTAL_EXEC_AMOUNT\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.ACCOUNT A ON O.ACCOUNT_ID = A.ACCOUNT_ID\nJOIN FIN_DEMO.CUSTOMER C ON A.CUSTOMER_ID = C.CUSTOMER_ID\nWHERE YEAR(DATE(E.EXEC_TS)) = YEAR(CURRENT DATE)\n  AND MONTH(DATE(E.EXEC_TS)) = MONTH(CURRENT DATE)\nGROUP BY C.CUSTOMER_ID, C.CUSTOMER_NAME\nORDER BY TOTAL_EXEC_AMOUNT DESC\nFETCH FIRST 5 ROWS ONLY",
-     "pass": true,
-     "status": "통과",
-     "result": {
-      "columns": [
-       "CUSTOMER_ID",
-       "CUSTOMER_NAME",
-       "TOTAL_EXEC_AMOUNT"
-      ],
-      "rows": [
-       [
-        18,
-        "박수빈",
-        "149474210"
+        "101877320"
        ],
        [
         15,
         "심지우",
-        "138282380"
+        "92632380"
        ],
        [
-        20,
-        "채지호",
-        "125028230"
+        18,
+        "박수빈",
+        "77406890"
        ],
        [
-        31,
-        "진건우",
-        "74600150"
-       ],
-       [
-        11,
-        "서도현",
-        "70062560"
+        35,
+        "심서준",
+        "56433840"
        ]
       ],
       "row_count": 5
@@ -665,7 +767,7 @@ window.EVAL = {
    },
    "runs": [
     {
-     "sql": "SELECT A.ACCOUNT_ID, A.CUSTOMER_ID, A.ACCOUNT_TYPE, A.OPEN_DATE \nFROM FIN_DEMO.ACCOUNT A \nWHERE A.CREDIT_LOAN_YN = 'Y'",
+     "sql": "SELECT A.ACCOUNT_ID, A.CUSTOMER_ID, A.ACCOUNT_TYPE, A.OPEN_DATE\nFROM FIN_DEMO.ACCOUNT A\nWHERE A.CREDIT_LOAN_YN = 'Y'",
      "pass": true,
      "status": "통과",
      "result": {
@@ -680,83 +782,31 @@ window.EVAL = {
         1000006,
         5,
         "BROKERAGE",
-        "2023-02-11"
+        "2023-02-12"
        ],
        [
         1000007,
         6,
         "BROKERAGE",
-        "2026-02-15"
+        "2026-02-16"
        ],
        [
         1000021,
         14,
         "BROKERAGE",
-        "2026-04-07"
+        "2026-04-08"
        ],
        [
         1000023,
         16,
         "BROKERAGE",
-        "2025-10-31"
+        "2025-11-01"
        ],
        [
         1000036,
         26,
         "BROKERAGE",
-        "2025-08-10"
-       ]
-      ],
-      "row_count": 8
-     }
-    },
-    {
-     "sql": "SELECT ACCOUNT_ID, CUSTOMER_ID, ACCOUNT_TYPE, OPEN_DATE, CREDIT_LOAN_YN \nFROM FIN_DEMO.ACCOUNT \nWHERE CREDIT_LOAN_YN = 'Y'",
-     "pass": true,
-     "status": "통과",
-     "result": {
-      "columns": [
-       "ACCOUNT_ID",
-       "CUSTOMER_ID",
-       "ACCOUNT_TYPE",
-       "OPEN_DATE",
-       "CREDIT_LOAN_YN"
-      ],
-      "rows": [
-       [
-        1000006,
-        5,
-        "BROKERAGE",
-        "2023-02-11",
-        "Y"
-       ],
-       [
-        1000007,
-        6,
-        "BROKERAGE",
-        "2026-02-15",
-        "Y"
-       ],
-       [
-        1000021,
-        14,
-        "BROKERAGE",
-        "2026-04-07",
-        "Y"
-       ],
-       [
-        1000023,
-        16,
-        "BROKERAGE",
-        "2025-10-31",
-        "Y"
-       ],
-       [
-        1000036,
-        26,
-        "BROKERAGE",
-        "2025-08-10",
-        "Y"
+        "2025-08-11"
        ]
       ],
       "row_count": 8
@@ -776,27 +826,73 @@ window.EVAL = {
        [
         1000006,
         "BROKERAGE",
-        "2023-02-11"
+        "2023-02-12"
        ],
        [
         1000007,
         "BROKERAGE",
-        "2026-02-15"
+        "2026-02-16"
        ],
        [
         1000021,
         "BROKERAGE",
-        "2026-04-07"
+        "2026-04-08"
        ],
        [
         1000023,
         "BROKERAGE",
-        "2025-10-31"
+        "2025-11-01"
        ],
        [
         1000036,
         "BROKERAGE",
-        "2025-08-10"
+        "2025-08-11"
+       ]
+      ],
+      "row_count": 8
+     }
+    },
+    {
+     "sql": "SELECT A.ACCOUNT_ID, A.CUSTOMER_ID, A.ACCOUNT_TYPE, A.OPEN_DATE\nFROM FIN_DEMO.ACCOUNT A\nWHERE A.CREDIT_LOAN_YN = 'Y'",
+     "pass": true,
+     "status": "통과",
+     "result": {
+      "columns": [
+       "ACCOUNT_ID",
+       "CUSTOMER_ID",
+       "ACCOUNT_TYPE",
+       "OPEN_DATE"
+      ],
+      "rows": [
+       [
+        1000006,
+        5,
+        "BROKERAGE",
+        "2023-02-12"
+       ],
+       [
+        1000007,
+        6,
+        "BROKERAGE",
+        "2026-02-16"
+       ],
+       [
+        1000021,
+        14,
+        "BROKERAGE",
+        "2026-04-08"
+       ],
+       [
+        1000023,
+        16,
+        "BROKERAGE",
+        "2025-11-01"
+       ],
+       [
+        1000036,
+        26,
+        "BROKERAGE",
+        "2025-08-11"
        ]
       ],
       "row_count": 8
@@ -815,98 +911,64 @@ window.EVAL = {
     ],
     "rows": [
      [
-      "박수빈",
-      "149474210"
-     ],
-     [
-      "심지우",
-      "138282380"
-     ],
-     [
-      "채지호",
-      "125028230"
+      "지지후",
+      "175090620"
      ],
      [
       "진건우",
-      "74600150"
+      "101877320"
      ],
      [
-      "서도현",
-      "70062560"
+      "심지우",
+      "92632380"
+     ],
+     [
+      "박수빈",
+      "77406890"
+     ],
+     [
+      "심서준",
+      "56433840"
      ]
     ],
     "row_count": 5
    },
    "runs": [
     {
-     "sql": "SELECT C.CUSTOMER_NAME AS CUSTOMER_NAME, SUM(E.EXEC_AMOUNT) AS TOTAL_EXEC_AMOUNT\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.ACCOUNT A ON O.ACCOUNT_ID = A.ACCOUNT_ID\nJOIN FIN_DEMO.CUSTOMER C ON A.CUSTOMER_ID = C.CUSTOMER_ID\nWHERE YEAR(DATE(E.EXEC_TS)) = YEAR(CURRENT DATE)\n  AND MONTH(DATE(E.EXEC_TS)) = MONTH(CURRENT DATE)\nGROUP BY C.CUSTOMER_NAME\nORDER BY TOTAL_EXEC_AMOUNT DESC\nFETCH FIRST 5 ROWS ONLY",
-     "pass": true,
-     "status": "통과",
-     "result": {
-      "columns": [
-       "CUSTOMER_NAME",
-       "TOTAL_EXEC_AMOUNT"
-      ],
-      "rows": [
-       [
-        "박수빈",
-        "149474210"
-       ],
-       [
-        "심지우",
-        "138282380"
-       ],
-       [
-        "채지호",
-        "125028230"
-       ],
-       [
-        "진건우",
-        "74600150"
-       ],
-       [
-        "서도현",
-        "70062560"
-       ]
-      ],
-      "row_count": 5
-     }
-    },
-    {
-     "sql": "SELECT C.CUSTOMER_ID, C.CUSTOMER_NAME, SUM(E.EXEC_AMOUNT) AS TOTAL_TRADE_AMOUNT\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.ACCOUNT A ON O.ACCOUNT_ID = A.ACCOUNT_ID\nJOIN FIN_DEMO.CUSTOMER C ON A.CUSTOMER_ID = C.CUSTOMER_ID\nWHERE YEAR(DATE(E.EXEC_TS)) = YEAR(CURRENT DATE)\n  AND MONTH(DATE(E.EXEC_TS)) = MONTH(CURRENT DATE)\nGROUP BY C.CUSTOMER_ID, C.CUSTOMER_NAME\nORDER BY TOTAL_TRADE_AMOUNT DESC\nFETCH FIRST 5 ROWS ONLY",
+     "sql": "SELECT C.CUSTOMER_ID, C.CUSTOMER_NAME, SUM(E.EXEC_AMOUNT) AS TOTAL_EXEC_AMOUNT\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.ACCOUNT A ON O.ACCOUNT_ID = A.ACCOUNT_ID\nJOIN FIN_DEMO.CUSTOMER C ON A.CUSTOMER_ID = C.CUSTOMER_ID\nWHERE YEAR(DATE(E.EXEC_TS)) = YEAR(CURRENT DATE)\n  AND MONTH(DATE(E.EXEC_TS)) = MONTH(CURRENT DATE)\nGROUP BY C.CUSTOMER_ID, C.CUSTOMER_NAME\nORDER BY TOTAL_EXEC_AMOUNT DESC\nFETCH FIRST 5 ROWS ONLY",
      "pass": true,
      "status": "통과",
      "result": {
       "columns": [
        "CUSTOMER_ID",
        "CUSTOMER_NAME",
-       "TOTAL_TRADE_AMOUNT"
+       "TOTAL_EXEC_AMOUNT"
       ],
       "rows": [
        [
-        18,
-        "박수빈",
-        "149474210"
-       ],
-       [
-        15,
-        "심지우",
-        "138282380"
-       ],
-       [
-        20,
-        "채지호",
-        "125028230"
+        23,
+        "지지후",
+        "175090620"
        ],
        [
         31,
         "진건우",
-        "74600150"
+        "101877320"
        ],
        [
-        11,
-        "서도현",
-        "70062560"
+        15,
+        "심지우",
+        "92632380"
+       ],
+       [
+        18,
+        "박수빈",
+        "77406890"
+       ],
+       [
+        35,
+        "심서준",
+        "56433840"
        ]
       ],
       "row_count": 5
@@ -924,29 +986,69 @@ window.EVAL = {
       ],
       "rows": [
        [
-        18,
-        "박수빈",
-        "149474210"
-       ],
-       [
-        15,
-        "심지우",
-        "138282380"
-       ],
-       [
-        20,
-        "채지호",
-        "125028230"
+        23,
+        "지지후",
+        "175090620"
        ],
        [
         31,
         "진건우",
-        "74600150"
+        "101877320"
        ],
        [
-        11,
-        "서도현",
-        "70062560"
+        15,
+        "심지우",
+        "92632380"
+       ],
+       [
+        18,
+        "박수빈",
+        "77406890"
+       ],
+       [
+        35,
+        "심서준",
+        "56433840"
+       ]
+      ],
+      "row_count": 5
+     }
+    },
+    {
+     "sql": "SELECT C.CUSTOMER_ID,\n       C.CUSTOMER_NAME,\n       SUM(E.EXEC_AMOUNT) AS TOTAL_EXEC_AMOUNT\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.ACCOUNT A ON O.ACCOUNT_ID = A.ACCOUNT_ID\nJOIN FIN_DEMO.CUSTOMER C ON A.CUSTOMER_ID = C.CUSTOMER_ID\nWHERE YEAR(DATE(E.EXEC_TS)) = YEAR(CURRENT DATE)\n  AND MONTH(DATE(E.EXEC_TS)) = MONTH(CURRENT DATE)\nGROUP BY C.CUSTOMER_ID, C.CUSTOMER_NAME\nORDER BY TOTAL_EXEC_AMOUNT DESC\nFETCH FIRST 5 ROWS ONLY",
+     "pass": true,
+     "status": "통과",
+     "result": {
+      "columns": [
+       "CUSTOMER_ID",
+       "CUSTOMER_NAME",
+       "TOTAL_EXEC_AMOUNT"
+      ],
+      "rows": [
+       [
+        23,
+        "지지후",
+        "175090620"
+       ],
+       [
+        31,
+        "진건우",
+        "101877320"
+       ],
+       [
+        15,
+        "심지우",
+        "92632380"
+       ],
+       [
+        18,
+        "박수빈",
+        "77406890"
+       ],
+       [
+        35,
+        "심서준",
+        "56433840"
        ]
       ],
       "row_count": 5
@@ -968,138 +1070,92 @@ window.EVAL = {
     "rows": [
      [
       "2차전지",
-      "에코프로",
-      "151102670",
-      1
-     ],
-     [
-      "2차전지",
       "에코프로비엠",
-      "97297210",
-      2
+      "115288200",
+      1
      ],
      [
       "2차전지",
       "삼성SDI",
-      "60173990",
+      "72153180",
+      2
+     ],
+     [
+      "2차전지",
+      "에코프로",
+      "68089720",
       3
      ],
      [
       "IT서비스",
-      "NAVER",
-      "205479720",
+      "카카오",
+      "176627560",
       1
      ],
      [
       "IT서비스",
-      "카카오",
-      "80895060",
+      "NAVER",
+      "15166320",
       2
      ]
     ],
-    "row_count": 32
+    "row_count": 31
    },
    "runs": [
     {
-     "sql": "SELECT P.PRODUCT_NAME, P.SECTOR,\n       SUM(E.EXEC_AMOUNT) AS TOTAL_AMOUNT,\n       RANK() OVER (PARTITION BY P.SECTOR ORDER BY SUM(E.EXEC_AMOUNT) DESC) AS RN\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.PRODUCT P ON O.PRODUCT_CODE = P.PRODUCT_CODE\nGROUP BY P.PRODUCT_NAME, P.SECTOR",
+     "sql": "SELECT P.PRODUCT_CODE, P.PRODUCT_NAME, P.SECTOR,\n       SUM(E.EXEC_AMOUNT) AS TOTAL_TRADE_AMOUNT,\n       RANK() OVER (PARTITION BY P.SECTOR ORDER BY SUM(E.EXEC_AMOUNT) DESC) AS SECTOR_RANK\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.PRODUCT P ON O.PRODUCT_CODE = P.PRODUCT_CODE\nGROUP BY P.PRODUCT_CODE, P.PRODUCT_NAME, P.SECTOR\nORDER BY P.SECTOR, SECTOR_RANK",
      "pass": true,
      "status": "통과",
      "result": {
       "columns": [
-       "PRODUCT_NAME",
-       "SECTOR",
-       "TOTAL_AMOUNT",
-       "RN"
-      ],
-      "rows": [
-       [
-        "에코프로",
-        "2차전지",
-        "151102670",
-        1
-       ],
-       [
-        "에코프로비엠",
-        "2차전지",
-        "97297210",
-        2
-       ],
-       [
-        "삼성SDI",
-        "2차전지",
-        "60173990",
-        3
-       ],
-       [
-        "NAVER",
-        "IT서비스",
-        "205479720",
-        1
-       ],
-       [
-        "카카오",
-        "IT서비스",
-        "80895060",
-        2
-       ]
-      ],
-      "row_count": 32
-     }
-    },
-    {
-     "sql": "SELECT P.SECTOR,\n       P.PRODUCT_CODE,\n       P.PRODUCT_NAME,\n       SUM(E.EXEC_AMOUNT) AS TOTAL_EXEC_AMOUNT,\n       RANK() OVER (PARTITION BY P.SECTOR ORDER BY SUM(E.EXEC_AMOUNT) DESC) AS SECTOR_RANK\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.PRODUCT P ON O.PRODUCT_CODE = P.PRODUCT_CODE\nGROUP BY P.SECTOR, P.PRODUCT_CODE, P.PRODUCT_NAME",
-     "pass": true,
-     "status": "통과",
-     "result": {
-      "columns": [
-       "SECTOR",
        "PRODUCT_CODE",
        "PRODUCT_NAME",
-       "TOTAL_EXEC_AMOUNT",
+       "SECTOR",
+       "TOTAL_TRADE_AMOUNT",
        "SECTOR_RANK"
       ],
       "rows": [
        [
+        "247540",
+        "에코프로비엠",
         "2차전지",
-        "086520",
-        "에코프로",
-        "151102670",
+        "115288200",
         1
        ],
        [
+        "006400",
+        "삼성SDI",
         "2차전지",
-        "247540",
-        "에코프로비엠",
-        "97297210",
+        "72153180",
         2
        ],
        [
+        "086520",
+        "에코프로",
         "2차전지",
-        "006400",
-        "삼성SDI",
-        "60173990",
+        "68089720",
         3
        ],
        [
+        "035720",
+        "카카오",
         "IT서비스",
-        "035420",
-        "NAVER",
-        "205479720",
+        "176627560",
         1
        ],
        [
+        "035420",
+        "NAVER",
         "IT서비스",
-        "035720",
-        "카카오",
-        "80895060",
+        "15166320",
         2
        ]
       ],
-      "row_count": 32
+      "row_count": 31
      }
     },
     {
-     "sql": "SELECT P.SECTOR, P.PRODUCT_CODE, P.PRODUCT_NAME,\n       SUM(E.EXEC_AMOUNT) AS TOTAL_TRADE_AMOUNT,\n       RANK() OVER (PARTITION BY P.SECTOR ORDER BY SUM(E.EXEC_AMOUNT) DESC) AS SECTOR_RANK\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.PRODUCT P ON O.PRODUCT_CODE = P.PRODUCT_CODE\nGROUP BY P.SECTOR, P.PRODUCT_CODE, P.PRODUCT_NAME\nORDER BY P.SECTOR, SECTOR_RANK",
+     "sql": "SELECT P.SECTOR,\n       P.PRODUCT_CODE,\n       P.PRODUCT_NAME,\n       SUM(E.EXEC_AMOUNT) AS TOTAL_TRADE_AMOUNT,\n       RANK() OVER (PARTITION BY P.SECTOR ORDER BY SUM(E.EXEC_AMOUNT) DESC) AS SECTOR_RANK\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.PRODUCT P ON O.PRODUCT_CODE = P.PRODUCT_CODE\nGROUP BY P.SECTOR, P.PRODUCT_CODE, P.PRODUCT_NAME\nORDER BY P.SECTOR, SECTOR_RANK",
      "pass": true,
      "status": "통과",
      "result": {
@@ -1113,41 +1169,93 @@ window.EVAL = {
       "rows": [
        [
         "2차전지",
-        "086520",
-        "에코프로",
-        "151102670",
-        1
-       ],
-       [
-        "2차전지",
         "247540",
         "에코프로비엠",
-        "97297210",
-        2
+        "115288200",
+        1
        ],
        [
         "2차전지",
         "006400",
         "삼성SDI",
-        "60173990",
-        3
+        "72153180",
+        2
        ],
        [
-        "IT서비스",
-        "035420",
-        "NAVER",
-        "205479720",
-        1
+        "2차전지",
+        "086520",
+        "에코프로",
+        "68089720",
+        3
        ],
        [
         "IT서비스",
         "035720",
         "카카오",
-        "80895060",
+        "176627560",
+        1
+       ],
+       [
+        "IT서비스",
+        "035420",
+        "NAVER",
+        "15166320",
         2
        ]
       ],
-      "row_count": 32
+      "row_count": 31
+     }
+    },
+    {
+     "sql": "SELECT \n    RANK() OVER (PARTITION BY P.SECTOR ORDER BY SUM(E.EXEC_AMOUNT) DESC) AS RANK,\n    P.PRODUCT_CODE,\n    P.PRODUCT_NAME,\n    P.SECTOR,\n    SUM(E.EXEC_AMOUNT) AS TOTAL_TRADE_AMOUNT\nFROM FIN_DEMO.EXECUTIONS E\nJOIN FIN_DEMO.ORDERS O\n    ON E.ORDER_ID = O.ORDER_ID\nJOIN FIN_DEMO.PRODUCT P\n    ON O.PRODUCT_CODE = P.PRODUCT_CODE\nGROUP BY P.PRODUCT_CODE, P.PRODUCT_NAME, P.SECTOR",
+     "pass": true,
+     "status": "통과",
+     "result": {
+      "columns": [
+       "RANK",
+       "PRODUCT_CODE",
+       "PRODUCT_NAME",
+       "SECTOR",
+       "TOTAL_TRADE_AMOUNT"
+      ],
+      "rows": [
+       [
+        1,
+        "247540",
+        "에코프로비엠",
+        "2차전지",
+        "115288200"
+       ],
+       [
+        2,
+        "006400",
+        "삼성SDI",
+        "2차전지",
+        "72153180"
+       ],
+       [
+        3,
+        "086520",
+        "에코프로",
+        "2차전지",
+        "68089720"
+       ],
+       [
+        1,
+        "035720",
+        "카카오",
+        "IT서비스",
+        "176627560"
+       ],
+       [
+        2,
+        "035420",
+        "NAVER",
+        "IT서비스",
+        "15166320"
+       ]
+      ],
+      "row_count": 31
      }
     }
    ]
@@ -1162,26 +1270,26 @@ window.EVAL = {
     ],
     "rows": [
      [
-      5000069
-     ],
-     [
-      5000082
+      5000049
      ],
      [
       5000178
      ],
      [
-      5000005
+      5000097
      ],
      [
-      5000105
+      5000044
+     ],
+     [
+      5000079
      ]
     ],
-    "row_count": 17
+    "row_count": 15
    },
    "runs": [
     {
-     "sql": "SELECT O.ORDER_ID, O.ACCOUNT_ID, O.PRODUCT_CODE, O.SIDE, O.ORDER_QTY, O.ORDER_PRICE, O.ORDER_TS\nFROM FIN_DEMO.ORDERS O\nWHERE O.ORDER_TYPE = 'LIMIT'\n  AND O.ORDER_TS < CURRENT TIMESTAMP - 30 MINUTES\n  AND NOT EXISTS (SELECT 1 FROM FIN_DEMO.EXECUTIONS E WHERE E.ORDER_ID = O.ORDER_ID)",
+     "sql": "SELECT O.ORDER_ID, O.ACCOUNT_ID, O.PRODUCT_CODE, O.SIDE, O.ORDER_QTY, O.ORDER_PRICE, O.ORDER_TS\nFROM FIN_DEMO.ORDERS O\nWHERE O.ORDER_TYPE = 'LIMIT'\n  AND NOT EXISTS (SELECT 1 FROM FIN_DEMO.EXECUTIONS E WHERE E.ORDER_ID = O.ORDER_ID)\n  AND O.ORDER_TS < CURRENT TIMESTAMP - 30 MINUTES",
      "pass": true,
      "status": "통과",
      "result": {
@@ -1196,114 +1304,56 @@ window.EVAL = {
       ],
       "rows": [
        [
-        5000005,
-        1000055,
-        "005930",
+        5000004,
+        1000016,
+        "035900",
         "SELL",
-        583,
-        "66650.00",
-        "2025-11-03 11:05:26"
+        198,
+        "62310.00",
+        "2025-10-31 10:05:05"
        ],
        [
-        5000059,
+        5000017,
         1000032,
-        "000660",
-        "BUY",
-        29,
-        "176230.00",
-        "2026-03-19 10:42:58"
-       ],
-       [
-        5000069,
-        1000022,
-        "005930",
+        "000270",
         "SELL",
-        340,
-        "73380.00",
-        "2026-03-30 12:10:40"
+        90,
+        "107430.00",
+        "2025-12-02 10:46:26"
        ],
        [
-        5000081,
-        1000043,
-        "015760",
+        5000034,
+        1000009,
+        "035900",
         "SELL",
-        1450,
-        "22830.00",
-        "2026-04-22 12:32:18"
+        57,
+        "68800.00",
+        "2026-01-30 15:03:36"
        ],
        [
-        5000082,
-        1000031,
-        "058470",
+        5000044,
+        1000056,
+        "247540",
         "BUY",
-        31,
-        "185860.00",
-        "2026-04-23 11:57:10"
+        43,
+        "213280.00",
+        "2026-02-25 11:04:25"
+       ],
+       [
+        5000049,
+        1000033,
+        "012330",
+        "BUY",
+        49,
+        "231490.00",
+        "2026-03-06 14:05:54"
        ]
       ],
-      "row_count": 17
+      "row_count": 15
      }
     },
     {
-     "sql": "SELECT O.ORDER_ID, O.ACCOUNT_ID, O.PRODUCT_CODE, O.ORDER_TS, O.ORDER_PRICE, O.ORDER_QTY\nFROM FIN_DEMO.ORDERS O\nWHERE O.ORDER_TYPE = 'LIMIT'\n  AND O.ORDER_TS < (CURRENT TIMESTAMP - 30 MINUTES)\n  AND NOT EXISTS (\n    SELECT 1 FROM FIN_DEMO.EXECUTIONS E WHERE E.ORDER_ID = O.ORDER_ID\n  )",
-     "pass": true,
-     "status": "통과",
-     "result": {
-      "columns": [
-       "ORDER_ID",
-       "ACCOUNT_ID",
-       "PRODUCT_CODE",
-       "ORDER_TS",
-       "ORDER_PRICE",
-       "ORDER_QTY"
-      ],
-      "rows": [
-       [
-        5000005,
-        1000055,
-        "005930",
-        "2025-11-03 11:05:26",
-        "66650.00",
-        583
-       ],
-       [
-        5000059,
-        1000032,
-        "000660",
-        "2026-03-19 10:42:58",
-        "176230.00",
-        29
-       ],
-       [
-        5000069,
-        1000022,
-        "005930",
-        "2026-03-30 12:10:40",
-        "73380.00",
-        340
-       ],
-       [
-        5000081,
-        1000043,
-        "015760",
-        "2026-04-22 12:32:18",
-        "22830.00",
-        1450
-       ],
-       [
-        5000082,
-        1000031,
-        "058470",
-        "2026-04-23 11:57:10",
-        "185860.00",
-        31
-       ]
-      ],
-      "row_count": 17
-     }
-    },
-    {
-     "sql": "SELECT O.ORDER_ID, O.ACCOUNT_ID, O.PRODUCT_CODE, O.SIDE, O.ORDER_TS, O.ORDER_QTY, O.ORDER_PRICE\nFROM FIN_DEMO.ORDERS O\nWHERE O.ORDER_TYPE = 'LIMIT'\n  AND NOT EXISTS (SELECT 1 FROM FIN_DEMO.EXECUTIONS E WHERE E.ORDER_ID = O.ORDER_ID)\n  AND O.ORDER_TS < CURRENT TIMESTAMP - 30 MINUTES",
+     "sql": "SELECT O.ORDER_ID, O.ACCOUNT_ID, O.PRODUCT_CODE, O.SIDE, O.ORDER_QTY, O.ORDER_PRICE, O.ORDER_TS\nFROM FIN_DEMO.ORDERS O\nWHERE O.ORDER_TYPE = 'LIMIT'\n  AND O.ORDER_TS <= CURRENT TIMESTAMP - 30 MINUTES\n  AND NOT EXISTS (SELECT 1 FROM FIN_DEMO.EXECUTIONS E WHERE E.ORDER_ID = O.ORDER_ID)",
      "pass": true,
      "status": "통과",
      "result": {
@@ -1312,58 +1362,122 @@ window.EVAL = {
        "ACCOUNT_ID",
        "PRODUCT_CODE",
        "SIDE",
-       "ORDER_TS",
        "ORDER_QTY",
-       "ORDER_PRICE"
+       "ORDER_PRICE",
+       "ORDER_TS"
       ],
       "rows": [
        [
-        5000005,
-        1000055,
-        "005930",
+        5000004,
+        1000016,
+        "035900",
         "SELL",
-        "2025-11-03 11:05:26",
-        583,
-        "66650.00"
+        198,
+        "62310.00",
+        "2025-10-31 10:05:05"
        ],
        [
-        5000059,
+        5000017,
         1000032,
-        "000660",
-        "BUY",
-        "2026-03-19 10:42:58",
-        29,
-        "176230.00"
-       ],
-       [
-        5000069,
-        1000022,
-        "005930",
+        "000270",
         "SELL",
-        "2026-03-30 12:10:40",
-        340,
-        "73380.00"
+        90,
+        "107430.00",
+        "2025-12-02 10:46:26"
        ],
        [
-        5000081,
-        1000043,
-        "015760",
+        5000034,
+        1000009,
+        "035900",
         "SELL",
-        "2026-04-22 12:32:18",
-        1450,
-        "22830.00"
+        57,
+        "68800.00",
+        "2026-01-30 15:03:36"
        ],
        [
-        5000082,
-        1000031,
-        "058470",
+        5000044,
+        1000056,
+        "247540",
         "BUY",
-        "2026-04-23 11:57:10",
-        31,
-        "185860.00"
+        43,
+        "213280.00",
+        "2026-02-25 11:04:25"
+       ],
+       [
+        5000049,
+        1000033,
+        "012330",
+        "BUY",
+        49,
+        "231490.00",
+        "2026-03-06 14:05:54"
        ]
       ],
-      "row_count": 17
+      "row_count": 15
+     }
+    },
+    {
+     "sql": "SELECT O.ORDER_ID, O.ACCOUNT_ID, O.PRODUCT_CODE, O.SIDE, O.ORDER_QTY, O.ORDER_PRICE, O.ORDER_TS\nFROM FIN_DEMO.ORDERS O\nWHERE O.ORDER_TYPE = 'LIMIT'\n  AND NOT EXISTS (SELECT 1 FROM FIN_DEMO.EXECUTIONS E WHERE E.ORDER_ID = O.ORDER_ID)\n  AND O.ORDER_TS < CURRENT TIMESTAMP - 30 MINUTES",
+     "pass": true,
+     "status": "통과",
+     "result": {
+      "columns": [
+       "ORDER_ID",
+       "ACCOUNT_ID",
+       "PRODUCT_CODE",
+       "SIDE",
+       "ORDER_QTY",
+       "ORDER_PRICE",
+       "ORDER_TS"
+      ],
+      "rows": [
+       [
+        5000004,
+        1000016,
+        "035900",
+        "SELL",
+        198,
+        "62310.00",
+        "2025-10-31 10:05:05"
+       ],
+       [
+        5000017,
+        1000032,
+        "000270",
+        "SELL",
+        90,
+        "107430.00",
+        "2025-12-02 10:46:26"
+       ],
+       [
+        5000034,
+        1000009,
+        "035900",
+        "SELL",
+        57,
+        "68800.00",
+        "2026-01-30 15:03:36"
+       ],
+       [
+        5000044,
+        1000056,
+        "247540",
+        "BUY",
+        43,
+        "213280.00",
+        "2026-02-25 11:04:25"
+       ],
+       [
+        5000049,
+        1000033,
+        "012330",
+        "BUY",
+        49,
+        "231490.00",
+        "2026-03-06 14:05:54"
+       ]
+      ],
+      "row_count": 15
      }
     }
    ]
@@ -1385,29 +1499,51 @@ window.EVAL = {
    },
    "runs": [
     {
-     "sql": "SELECT D.DESK_NAME,\n       D.LIMIT_AMOUNT,\n       SUM(P.EXPOSURE_AMOUNT) AS TOTAL_EXPOSURE,\n       (SUM(P.EXPOSURE_AMOUNT) / D.LIMIT_AMOUNT) AS RATIO\nFROM FIN_DEMO.DESK D\nJOIN FIN_DEMO.ST_POSITIONS P ON D.DESK_ID = P.DESK_ID\nWHERE P.BASE_DATE = (SELECT MAX(BASE_DATE) FROM FIN_DEMO.ST_POSITIONS)\nGROUP BY D.DESK_ID, D.DESK_NAME, D.LIMIT_AMOUNT\nHAVING (SUM(P.EXPOSURE_AMOUNT) / D.LIMIT_AMOUNT) > 0.8",
+     "sql": "SELECT D.DESK_NAME,\n       SUM(P.EXPOSURE_AMOUNT) AS TOTAL_EXPOSURE,\n       D.LIMIT_AMOUNT,\n       (SUM(P.EXPOSURE_AMOUNT) / D.LIMIT_AMOUNT) AS UTILIZATION_RATIO\nFROM FIN_DEMO.ST_POSITIONS P\nJOIN FIN_DEMO.DESK D ON D.DESK_ID = P.DESK_ID\nWHERE P.BASE_DATE = (SELECT MAX(BASE_DATE) FROM FIN_DEMO.ST_POSITIONS)\nGROUP BY D.DESK_ID, D.DESK_NAME, D.LIMIT_AMOUNT\nHAVING (SUM(P.EXPOSURE_AMOUNT) / D.LIMIT_AMOUNT) > 0.8",
      "pass": true,
      "status": "통과",
      "result": {
       "columns": [
        "DESK_NAME",
-       "LIMIT_AMOUNT",
        "TOTAL_EXPOSURE",
-       "RATIO"
+       "LIMIT_AMOUNT",
+       "UTILIZATION_RATIO"
       ],
       "rows": [
        [
         "주식2데스크",
-        "11094000000",
-        "9540679018",
-        "0.859985"
+        "8079766770",
+        "9395000000",
+        "0.860007"
        ]
       ],
       "row_count": 1
      }
     },
     {
-     "sql": "WITH latest_date AS (\n    SELECT MAX(BASE_DATE) AS max_date\n    FROM FIN_DEMO.ST_POSITIONS\n),\nexposure_per_desk AS (\n    SELECT \n        sp.DESK_ID,\n        SUM(sp.EXPOSURE_AMOUNT) AS total_exposure\n    FROM FIN_DEMO.ST_POSITIONS sp\n    JOIN latest_date ld ON sp.BASE_DATE = ld.max_date\n    GROUP BY sp.DESK_ID\n)\nSELECT \n    d.DESK_ID,\n    d.DESK_NAME,\n    d.LIMIT_AMOUNT,\n    e.total_exposure,\n    DECIMAL(e.total_exposure / d.LIMIT_AMOUNT * 100, 5, 2) || '%' AS RATIO\nFROM exposure_per_desk e\nJOIN FIN_DEMO.DESK d ON e.DESK_ID = d.DESK_ID\nWHERE e.total_exposure / d.LIMIT_AMOUNT > 0.8",
+     "sql": "SELECT D.DESK_NAME,\n       SUM(S.EXPOSURE_AMOUNT) AS TOTAL_EXPOSURE,\n       D.LIMIT_AMOUNT,\n       (SUM(S.EXPOSURE_AMOUNT) / D.LIMIT_AMOUNT) * 100 AS EXCEED_PCT\nFROM FIN_DEMO.ST_POSITIONS S\nJOIN FIN_DEMO.DESK D ON D.DESK_ID = S.DESK_ID\nWHERE S.BASE_DATE = (SELECT MAX(BASE_DATE) FROM FIN_DEMO.ST_POSITIONS)\nGROUP BY D.DESK_ID, D.DESK_NAME, D.LIMIT_AMOUNT\nHAVING (SUM(S.EXPOSURE_AMOUNT) / D.LIMIT_AMOUNT) > 0.8",
+     "pass": true,
+     "status": "통과",
+     "result": {
+      "columns": [
+       "DESK_NAME",
+       "TOTAL_EXPOSURE",
+       "LIMIT_AMOUNT",
+       "EXCEED_PCT"
+      ],
+      "rows": [
+       [
+        "주식2데스크",
+        "8079766770",
+        "9395000000",
+        "86.000700"
+       ]
+      ],
+      "row_count": 1
+     }
+    },
+    {
+     "sql": "SELECT\n    D.DESK_ID,\n    D.DESK_NAME,\n    D.LIMIT_AMOUNT,\n    SUM(S.EXPOSURE_AMOUNT) AS TOTAL_EXPOSURE,\n    DECIMAL(SUM(S.EXPOSURE_AMOUNT) / D.LIMIT_AMOUNT * 100, 5, 2) AS EXPOSE_RATIO\nFROM\n    FIN_DEMO.DESK D\nJOIN\n    FIN_DEMO.ST_POSITIONS S\n    ON D.DESK_ID = S.DESK_ID\nWHERE\n    S.BASE_DATE = (SELECT MAX(BASE_DATE) FROM FIN_DEMO.ST_POSITIONS)\nGROUP BY\n    D.DESK_ID,\n    D.DESK_NAME,\n    D.LIMIT_AMOUNT\nHAVING\n    SUM(S.EXPOSURE_AMOUNT) / D.LIMIT_AMOUNT > 0.8",
      "pass": true,
      "status": "통과",
      "result": {
@@ -1416,37 +1552,15 @@ window.EVAL = {
        "DESK_NAME",
        "LIMIT_AMOUNT",
        "TOTAL_EXPOSURE",
-       "RATIO"
+       "EXPOSE_RATIO"
       ],
       "rows": [
        [
         2,
         "주식2데스크",
-        "11094000000",
-        "9540679018",
-        "85.99%"
-       ]
-      ],
-      "row_count": 1
-     }
-    },
-    {
-     "sql": "SELECT D.DESK_NAME,\n       SUM(S.EXPOSURE_AMOUNT) AS TOTAL_EXPOSURE,\n       D.LIMIT_AMOUNT,\n       (SUM(S.EXPOSURE_AMOUNT) / D.LIMIT_AMOUNT) AS RATIO\nFROM FIN_DEMO.ST_POSITIONS S\nJOIN FIN_DEMO.DESK D ON D.DESK_ID = S.DESK_ID\nWHERE S.BASE_DATE = (SELECT MAX(BASE_DATE) FROM FIN_DEMO.ST_POSITIONS)\nGROUP BY D.DESK_ID, D.DESK_NAME, D.LIMIT_AMOUNT\nHAVING (SUM(S.EXPOSURE_AMOUNT) / D.LIMIT_AMOUNT) > 0.8",
-     "pass": true,
-     "status": "통과",
-     "result": {
-      "columns": [
-       "DESK_NAME",
-       "TOTAL_EXPOSURE",
-       "LIMIT_AMOUNT",
-       "RATIO"
-      ],
-      "rows": [
-       [
-        "주식2데스크",
-        "9540679018",
-        "11094000000",
-        "0.859985"
+        "9395000000",
+        "8079766770",
+        "86.00"
        ]
       ],
       "row_count": 1

@@ -1,0 +1,142 @@
+[
+ {
+  "question": "국고채 10년의 체결 건수와 체결대금 합계를 알려줘",
+  "sql": "SELECT COUNT(*) AS CNT, SUM(e.EXEC_AMOUNT) AS AMT FROM FIN_DEMO.EXECUTIONS e JOIN FIN_DEMO.ORDERS o ON e.ORDER_ID = o.ORDER_ID JOIN FIN_DEMO.PRODUCT p ON o.PRODUCT_CODE = p.PRODUCT_CODE WHERE p.PRODUCT_NAME = '국고채 10년'",
+  "template": "q_product_exec",
+  "rows": 1,
+  "id": "H-01"
+ },
+ {
+  "question": "5월 체결 건수와 거래대금 합계를 알려줘",
+  "sql": "SELECT COUNT(*) AS CNT, SUM(e.EXEC_AMOUNT) AS AMT FROM FIN_DEMO.EXECUTIONS e WHERE MONTH(e.EXEC_TS) = 5",
+  "template": "q_month_exec",
+  "rows": 1,
+  "id": "H-02"
+ },
+ {
+  "question": "우예은 고객의 계좌는 몇 개야?",
+  "sql": "SELECT COUNT(*) AS CNT FROM FIN_DEMO.ACCOUNT a JOIN FIN_DEMO.CUSTOMER c ON a.CUSTOMER_ID = c.CUSTOMER_ID WHERE c.CUSTOMER_NAME = '우예은'",
+  "template": "q_cust_accounts",
+  "rows": 1,
+  "id": "H-03"
+ },
+ {
+  "question": "분당지점 고객들의 지정가 주문은 몇 건이야?",
+  "sql": "SELECT COUNT(*) AS CNT FROM FIN_DEMO.ORDERS o JOIN FIN_DEMO.ACCOUNT a ON o.ACCOUNT_ID = a.ACCOUNT_ID JOIN FIN_DEMO.CUSTOMER c ON a.CUSTOMER_ID = c.CUSTOMER_ID JOIN FIN_DEMO.BRANCH b ON c.BRANCH_CODE = b.BRANCH_CODE WHERE b.BRANCH_NAME = '분당지점' AND o.ORDER_TYPE = 'LIMIT'",
+  "template": "q_branch_limit_orders",
+  "rows": 1,
+  "id": "H-04"
+ },
+ {
+  "question": "총자산이 2억 원 이상인 고객은 몇 명이야?",
+  "sql": "SELECT COUNT(*) AS CNT FROM FIN_DEMO.CUSTOMER WHERE TOTAL_ASSETS >= 200000000",
+  "template": "q_assets_threshold",
+  "rows": 1,
+  "id": "H-05"
+ },
+ {
+  "question": "코스닥 종목은 몇 개야?",
+  "sql": "SELECT COUNT(*) AS CNT FROM FIN_DEMO.PRODUCT WHERE MARKET = 'KOSDAQ'",
+  "template": "q_market_count",
+  "rows": 1,
+  "id": "H-06"
+ },
+ {
+  "question": "이번 달 분당지점 체결 건수는 몇 건이야?",
+  "sql": "SELECT COUNT(*) AS CNT FROM FIN_DEMO.EXECUTIONS e JOIN FIN_DEMO.ORDERS o ON e.ORDER_ID = o.ORDER_ID JOIN FIN_DEMO.ACCOUNT a ON o.ACCOUNT_ID = a.ACCOUNT_ID JOIN FIN_DEMO.CUSTOMER c ON a.CUSTOMER_ID = c.CUSTOMER_ID JOIN FIN_DEMO.BRANCH b ON c.BRANCH_CODE = b.BRANCH_CODE WHERE b.BRANCH_NAME = '분당지점' AND YEAR(e.EXEC_TS) = YEAR(CURRENT DATE) AND MONTH(e.EXEC_TS) = MONTH(CURRENT DATE)",
+  "template": "q_month_current",
+  "rows": 1,
+  "id": "H-07"
+ },
+ {
+  "question": "신용융자 계좌를 가진 고객은 몇 명이야?",
+  "sql": "SELECT COUNT(DISTINCT CUSTOMER_ID) AS CNT FROM FIN_DEMO.ACCOUNT WHERE CREDIT_LOAN_YN = 'Y'",
+  "template": "q_credit_customers",
+  "rows": 1,
+  "id": "H-08"
+ },
+ {
+  "question": "카카오 매수 체결대금 합계를 알려줘",
+  "sql": "SELECT SUM(e.EXEC_AMOUNT) AS AMT FROM FIN_DEMO.EXECUTIONS e JOIN FIN_DEMO.ORDERS o ON e.ORDER_ID = o.ORDER_ID JOIN FIN_DEMO.PRODUCT p ON o.PRODUCT_CODE = p.PRODUCT_CODE WHERE p.PRODUCT_NAME = '카카오' AND o.SIDE = 'BUY'",
+  "template": "q_buy_amount",
+  "rows": 1,
+  "id": "H-09"
+ },
+ {
+  "question": "분당지점 고객들의 총자산 합계는 얼마야?",
+  "sql": "SELECT SUM(c.TOTAL_ASSETS) AS TA FROM FIN_DEMO.CUSTOMER c JOIN FIN_DEMO.BRANCH b ON c.BRANCH_CODE = b.BRANCH_CODE WHERE b.BRANCH_NAME = '분당지점'",
+  "template": "q_branch_assets",
+  "rows": 1,
+  "id": "H-10"
+ },
+ {
+  "question": "2025년 1월 1일 이후에 개설된 계좌는 몇 개야?",
+  "sql": "SELECT COUNT(*) AS CNT FROM FIN_DEMO.ACCOUNT WHERE OPEN_DATE >= DATE('2025-01-01')",
+  "template": "q_open_year",
+  "rows": 1,
+  "id": "H-11"
+ },
+ {
+  "question": "채권데스크의 한도와 담당 트레이더가 누구야?",
+  "sql": "SELECT LIMIT_AMOUNT, TRADER_NAME FROM FIN_DEMO.DESK WHERE DESK_NAME = '채권데스크'",
+  "template": "q_desk_limit",
+  "rows": 1,
+  "id": "H-12"
+ },
+ {
+  "question": "HLB 매도 주문은 총 몇 건이야?",
+  "sql": "SELECT COUNT(*) AS CNT FROM FIN_DEMO.ORDERS o JOIN FIN_DEMO.PRODUCT p ON o.PRODUCT_CODE = p.PRODUCT_CODE WHERE p.PRODUCT_NAME = 'HLB' AND o.SIDE = 'SELL'",
+  "template": "q_product_sell_orders",
+  "rows": 1,
+  "id": "H-13"
+ },
+ {
+  "question": "신예은 고객의 가장 최근 기준일 예수금 합계는 얼마야?",
+  "sql": "SELECT SUM(bd.CASH_BALANCE) AS CASH FROM FIN_DEMO.BALANCE_DAILY bd JOIN FIN_DEMO.ACCOUNT a ON bd.ACCOUNT_ID = a.ACCOUNT_ID JOIN FIN_DEMO.CUSTOMER c ON a.CUSTOMER_ID = c.CUSTOMER_ID WHERE c.CUSTOMER_NAME = '신예은' AND bd.BASE_DATE = (SELECT MAX(BASE_DATE) FROM FIN_DEMO.BALANCE_DAILY)",
+  "template": "q_cust_cash",
+  "rows": 1,
+  "id": "H-14"
+ },
+ {
+  "question": "부산지점 고객의 체결되지 않은 주문은 몇 건이야?",
+  "sql": "SELECT COUNT(*) AS CNT FROM FIN_DEMO.ORDERS o JOIN FIN_DEMO.ACCOUNT a ON o.ACCOUNT_ID = a.ACCOUNT_ID JOIN FIN_DEMO.CUSTOMER c ON a.CUSTOMER_ID = c.CUSTOMER_ID JOIN FIN_DEMO.BRANCH b ON c.BRANCH_CODE = b.BRANCH_CODE WHERE b.BRANCH_NAME = '부산지점' AND NOT EXISTS (SELECT 1 FROM FIN_DEMO.EXECUTIONS e WHERE e.ORDER_ID = o.ORDER_ID)",
+  "template": "q_unexecuted_branch",
+  "rows": 1,
+  "id": "H-15"
+ },
+ {
+  "question": "카카오게임즈 체결 수수료 합계는 얼마야?",
+  "sql": "SELECT SUM(e.FEE) AS FEE_SUM FROM FIN_DEMO.EXECUTIONS e JOIN FIN_DEMO.ORDERS o ON e.ORDER_ID = o.ORDER_ID JOIN FIN_DEMO.PRODUCT p ON o.PRODUCT_CODE = p.PRODUCT_CODE WHERE p.PRODUCT_NAME = '카카오게임즈'",
+  "template": "q_fee",
+  "rows": 1,
+  "id": "H-16"
+ },
+ {
+  "question": "연금 계좌는 몇 개야?",
+  "sql": "SELECT COUNT(*) AS CNT FROM FIN_DEMO.ACCOUNT WHERE ACCOUNT_TYPE = 'PENSION'",
+  "template": "q_acct_type",
+  "rows": 1,
+  "id": "H-17"
+ },
+ {
+  "question": "미수금이 있는 계좌와 미수금액을 보여줘",
+  "sql": "SELECT ACCOUNT_ID, RECEIVABLE FROM FIN_DEMO.BALANCE_DAILY WHERE RECEIVABLE > 0 AND BASE_DATE = (SELECT MAX(BASE_DATE) FROM FIN_DEMO.BALANCE_DAILY)",
+  "template": "q_receivable",
+  "rows": 6,
+  "id": "H-18"
+ },
+ {
+  "question": "실현손익 합계가 가장 큰 종목 4개를 보여줘",
+  "sql": "SELECT p.PRODUCT_NAME, SUM(e.REALIZED_PNL) AS PNL FROM FIN_DEMO.EXECUTIONS e JOIN FIN_DEMO.ORDERS o ON e.ORDER_ID = o.ORDER_ID JOIN FIN_DEMO.PRODUCT p ON o.PRODUCT_CODE = p.PRODUCT_CODE GROUP BY p.PRODUCT_CODE, p.PRODUCT_NAME ORDER BY PNL DESC FETCH FIRST 4 ROWS ONLY",
+  "template": "q_top_pnl_products",
+  "rows": 4,
+  "id": "H-19"
+ },
+ {
+  "question": "GOLD 등급 고객의 이름과 총자산을 보여줘",
+  "sql": "SELECT CUSTOMER_NAME, TOTAL_ASSETS FROM FIN_DEMO.CUSTOMER WHERE GRADE = 'GOLD'",
+  "template": "q_grade_assets",
+  "rows": 11,
+  "id": "H-20"
+ }
+]

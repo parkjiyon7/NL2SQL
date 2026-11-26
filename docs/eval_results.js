@@ -1,5 +1,5 @@
 window.EVAL = {
- "date": "2026-11-24",
+ "date": "2026-11-25",
  "n": 5,
  "ok": 49,
  "total": 50,
@@ -17,18 +17,29 @@ window.EVAL = {
     "rows": [
      [
       11,
-      "101068930"
+      "123581070"
      ]
     ],
     "row_count": 1
    },
    "runs": [
     {
-     "sql": "",
-     "result": null,
-     "error": "HTTP 429: {\"trace\":\"1verephhk4joazmtkmja6bsn2\",\"errors\":[{\"code\":\"too_many_requests\",\"message\":\"SAL0148E: Too many requests. Please wait and retry later.\"}]}",
-     "pass": false,
-     "status": "생성실패"
+     "sql": "SELECT COUNT(*) AS \"EXEC_COUNT\", COALESCE(SUM(\"e\".\"EXEC_AMOUNT\"), 0) AS \"TOTAL_AMOUNT\" FROM \"FIN_DEMO\".\"EXECUTIONS\" \"e\" JOIN \"FIN_DEMO\".\"ORDERS\" \"o\" ON \"e\".\"ORDER_ID\" = \"o\".\"ORDER_ID\" JOIN \"FIN_DEMO\".\"ACCOUNT\" \"a\" ON \"o\".\"ACCOUNT_ID\" = \"a\".\"ACCOUNT_ID\" JOIN \"FIN_DEMO\".\"CUSTOMER\" \"c\" ON \"a\".\"CUSTOMER_ID\" = \"c\".\"CUSTOMER_ID\" JOIN \"FIN_DEMO\".\"BRANCH\" \"b\" ON \"c\".\"BRANCH_CODE\" = \"b\".\"BRANCH_CODE\" WHERE \"b\".\"BRANCH_NAME\" = '강남지점' AND DATE(\"e\".\"EXEC_TS\") = CURRENT DATE",
+     "result": {
+      "columns": [
+       "EXEC_COUNT",
+       "TOTAL_AMOUNT"
+      ],
+      "rows": [
+       [
+        11,
+        "123581070"
+       ]
+      ],
+      "row_count": 1
+     },
+     "pass": true,
+     "status": "OK"
     },
     {
      "sql": "SELECT COUNT(\"e\".\"EXEC_ID\") AS \"EXEC_COUNT\", COALESCE(SUM(\"e\".\"EXEC_AMOUNT\"), 0) AS \"TOTAL_AMOUNT\" FROM \"FIN_DEMO\".\"EXECUTIONS\" \"e\" JOIN \"FIN_DEMO\".\"ORDERS\" \"o\" ON \"e\".\"ORDER_ID\" = \"o\".\"ORDER_ID\" JOIN \"FIN_DEMO\".\"ACCOUNT\" \"a\" ON \"o\".\"ACCOUNT_ID\" = \"a\".\"ACCOUNT_ID\" JOIN \"FIN_DEMO\".\"CUSTOMER\" \"c\" ON \"a\".\"CUSTOMER_ID\" = \"c\".\"CUSTOMER_ID\" JOIN \"FIN_DEMO\".\"BRANCH\" \"b\" ON \"c\".\"BRANCH_CODE\" = \"b\".\"BRANCH_CODE\" WHERE \"b\".\"BRANCH_NAME\" = '강남지점' AND DATE(\"e\".\"EXEC_TS\") = CURRENT DATE",
@@ -40,25 +51,7 @@ window.EVAL = {
       "rows": [
        [
         11,
-        "101068930"
-       ]
-      ],
-      "row_count": 1
-     },
-     "pass": true,
-     "status": "OK"
-    },
-    {
-     "sql": "SELECT COUNT(\"e\".\"EXEC_ID\") AS \"execution_count\", COALESCE(SUM(\"e\".\"EXEC_AMOUNT\"), 0) AS \"total_transaction_amount\" FROM \"FIN_DEMO\".\"EXECUTIONS\" \"e\" JOIN \"FIN_DEMO\".\"ORDERS\" \"o\" ON \"e\".\"ORDER_ID\" = \"o\".\"ORDER_ID\" JOIN \"FIN_DEMO\".\"ACCOUNT\" \"a\" ON \"o\".\"ACCOUNT_ID\" = \"a\".\"ACCOUNT_ID\" JOIN \"FIN_DEMO\".\"CUSTOMER\" \"c\" ON \"a\".\"CUSTOMER_ID\" = \"c\".\"CUSTOMER_ID\" JOIN \"FIN_DEMO\".\"BRANCH\" \"b\" ON \"c\".\"BRANCH_CODE\" = \"b\".\"BRANCH_CODE\" WHERE \"b\".\"BRANCH_NAME\" = '강남지점' AND DATE(\"e\".\"EXEC_TS\") = CURRENT DATE",
-     "result": {
-      "columns": [
-       "execution_count",
-       "total_transaction_amount"
-      ],
-      "rows": [
-       [
-        11,
-        "101068930"
+        "123581070"
        ]
       ],
       "row_count": 1
@@ -76,7 +69,7 @@ window.EVAL = {
       "rows": [
        [
         11,
-        "101068930"
+        "123581070"
        ]
       ],
       "row_count": 1
@@ -94,7 +87,25 @@ window.EVAL = {
       "rows": [
        [
         11,
-        "101068930"
+        "123581070"
+       ]
+      ],
+      "row_count": 1
+     },
+     "pass": true,
+     "status": "OK"
+    },
+    {
+     "sql": "SELECT COUNT(\"e\".\"EXEC_ID\") AS \"EXEC_COUNT\", COALESCE(SUM(\"e\".\"EXEC_AMOUNT\"), 0) AS \"TOTAL_AMOUNT\" FROM \"FIN_DEMO\".\"EXECUTIONS\" \"e\" JOIN \"FIN_DEMO\".\"ORDERS\" \"o\" ON \"e\".\"ORDER_ID\" = \"o\".\"ORDER_ID\" JOIN \"FIN_DEMO\".\"ACCOUNT\" \"a\" ON \"o\".\"ACCOUNT_ID\" = \"a\".\"ACCOUNT_ID\" JOIN \"FIN_DEMO\".\"CUSTOMER\" \"c\" ON \"a\".\"CUSTOMER_ID\" = \"c\".\"CUSTOMER_ID\" JOIN \"FIN_DEMO\".\"BRANCH\" \"b\" ON \"c\".\"BRANCH_CODE\" = \"b\".\"BRANCH_CODE\" WHERE \"b\".\"BRANCH_NAME\" = '강남지점' AND DATE(\"e\".\"EXEC_TS\") = CURRENT DATE",
+     "result": {
+      "columns": [
+       "EXEC_COUNT",
+       "TOTAL_AMOUNT"
+      ],
+      "rows": [
+       [
+        11,
+        "123581070"
        ]
       ],
       "row_count": 1
@@ -173,11 +184,11 @@ window.EVAL = {
      "status": "OK"
     },
     {
-     "sql": "SELECT \"CUSTOMER_NAME\", \"TOTAL_ASSETS\" FROM \"FIN_DEMO\".\"CUSTOMER\" WHERE \"TOTAL_ASSETS\" >= 100000000",
+     "sql": "SELECT \"CUSTOMER_NAME\" AS \"Customer Name\", \"TOTAL_ASSETS\" AS \"Total Assets\" FROM \"FIN_DEMO\".\"CUSTOMER\" WHERE \"TOTAL_ASSETS\" >= 100000000",
      "result": {
       "columns": [
-       "CUSTOMER_NAME",
-       "TOTAL_ASSETS"
+       "Customer Name",
+       "Total Assets"
       ],
       "rows": [
        [
@@ -275,7 +286,7 @@ window.EVAL = {
      "status": "OK"
     },
     {
-     "sql": "SELECT \"CUSTOMER_NAME\", \"TOTAL_ASSETS\" FROM \"FIN_DEMO\".\"CUSTOMER\" WHERE \"TOTAL_ASSETS\" >= 100000000",
+     "sql": "SELECT \"CUSTOMER_NAME\", \"TOTAL_ASSETS\" FROM \"FIN_DEMO\".\"CUSTOMER\" WHERE \"TOTAL_ASSETS\" > 100000000",
      "result": {
       "columns": [
        "CUSTOMER_NAME",
@@ -322,97 +333,79 @@ window.EVAL = {
     ],
     "rows": [
      [
-      9000183,
-      30,
-      "71290.00"
+      9000171,
+      17,
+      "70910.00"
      ],
      [
-      9000187,
-      39,
-      "71380.00"
+      9000174,
+      18,
+      "71310.00"
      ],
      [
-      9000188,
-      57,
-      "71280.00"
+      9000175,
+      21,
+      "71090.00"
      ],
      [
-      9000190,
-      461,
-      "71130.00"
-     ],
-     [
-      9000192,
+      9000178,
       50,
-      "71290.00"
+      "71070.00"
+     ],
+     [
+      9000179,
+      724,
+      "71120.00"
      ]
     ],
     "row_count": 10
    },
    "runs": [
     {
-     "sql": "SELECT \"e\".\"EXEC_ID\", \"e\".\"ORDER_ID\", \"e\".\"EXEC_AMOUNT\", \"e\".\"EXEC_PRICE\", \"e\".\"EXEC_TS\", \"e\".\"EXEC_QTY\", \"e\".\"REALIZED_PNL\", \"e\".\"FEE\" FROM \"FIN_DEMO\".\"EXECUTIONS\" \"e\" JOIN \"FIN_DEMO\".\"ORDERS\" \"o\" ON \"e\".\"ORDER_ID\" = \"o\".\"ORDER_ID\" JOIN \"FIN_DEMO\".\"PRODUCT\" \"p\" ON \"o\".\"PRODUCT_CODE\" = \"p\".\"PRODUCT_CODE\" WHERE \"o\".\"SIDE\" = 'BUY' AND \"p\".\"PRODUCT_NAME\" = '삼성전자' AND DATE(\"e\".\"EXEC_TS\") = CURRENT DATE - 1 DAY",
+     "sql": "SELECT \"FIN_DEMO\".\"EXECUTIONS\".\"EXEC_ID\", \"FIN_DEMO\".\"EXECUTIONS\".\"EXEC_TS\", \"FIN_DEMO\".\"EXECUTIONS\".\"EXEC_QTY\", \"FIN_DEMO\".\"EXECUTIONS\".\"EXEC_PRICE\", \"FIN_DEMO\".\"EXECUTIONS\".\"EXEC_AMOUNT\" FROM \"FIN_DEMO\".\"EXECUTIONS\" JOIN \"FIN_DEMO\".\"ORDERS\" ON \"FIN_DEMO\".\"EXECUTIONS\".\"ORDER_ID\" = \"FIN_DEMO\".\"ORDERS\".\"ORDER_ID\" JOIN \"FIN_DEMO\".\"PRODUCT\" ON \"FIN_DEMO\".\"ORDERS\".\"PRODUCT_CODE\" = \"FIN_DEMO\".\"PRODUCT\".\"PRODUCT_CODE\" WHERE \"FIN_DEMO\".\"PRODUCT\".\"PRODUCT_NAME\" = '삼성전자' AND \"FIN_DEMO\".\"ORDERS\".\"SIDE\" = 'BUY' AND DATE(\"FIN_DEMO\".\"EXECUTIONS\".\"EXEC_TS\") = CURRENT DATE - 1 DAY ORDER BY \"FIN_DEMO\".\"EXECUTIONS\".\"EXEC_TS\"",
      "result": {
       "columns": [
        "EXEC_ID",
-       "ORDER_ID",
-       "EXEC_AMOUNT",
-       "EXEC_PRICE",
        "EXEC_TS",
        "EXEC_QTY",
-       "REALIZED_PNL",
-       "FEE"
+       "EXEC_PRICE",
+       "EXEC_AMOUNT"
       ],
       "rows": [
        [
-        9000183,
-        5000151,
-        "2138700",
-        "71290.00",
-        "2026-11-23 09:28:12",
-        30,
-        "0",
-        "320.80"
+        9000171,
+        "2026-11-24 09:28:10",
+        17,
+        "70910.00",
+        "1205470"
        ],
        [
-        9000187,
-        5000154,
-        "2783820",
-        "71380.00",
-        "2026-11-23 10:33:48",
-        39,
-        "0",
-        "417.57"
+        9000175,
+        "2026-11-24 10:29:17",
+        21,
+        "71090.00",
+        "1492890"
        ],
        [
-        9000188,
-        5000155,
-        "4062960",
-        "71280.00",
-        "2026-11-23 10:29:09",
-        57,
-        "0",
-        "609.44"
+        9000174,
+        "2026-11-24 10:33:04",
+        18,
+        "71310.00",
+        "1283580"
        ],
        [
-        9000190,
-        5000157,
-        "32790930",
-        "71130.00",
-        "2026-11-23 12:39:25",
-        461,
-        "0",
-        "4918.64"
-       ],
-       [
-        9000192,
-        5000159,
-        "3564500",
-        "71290.00",
-        "2026-11-23 11:37:47",
+        9000178,
+        "2026-11-24 11:38:04",
         50,
-        "0",
-        "534.67"
+        "71070.00",
+        "3553500"
+       ],
+       [
+        9000179,
+        "2026-11-24 11:49:17",
+        724,
+        "71120.00",
+        "51490880"
        ]
       ],
       "row_count": 10
@@ -435,54 +428,124 @@ window.EVAL = {
       ],
       "rows": [
        [
-        9000183,
+        9000171,
         5000151,
-        "2138700",
-        "71290.00",
-        30,
-        "2026-11-23 09:28:12",
+        "1205470",
+        "70910.00",
+        17,
+        "2026-11-24 09:28:10",
         "0",
-        "320.80"
+        "180.82"
        ],
        [
-        9000187,
+        9000174,
         5000154,
-        "2783820",
-        "71380.00",
-        39,
-        "2026-11-23 10:33:48",
+        "1283580",
+        "71310.00",
+        18,
+        "2026-11-24 10:33:04",
         "0",
-        "417.57"
+        "192.54"
        ],
        [
-        9000188,
+        9000175,
         5000155,
-        "4062960",
-        "71280.00",
-        57,
-        "2026-11-23 10:29:09",
+        "1492890",
+        "71090.00",
+        21,
+        "2026-11-24 10:29:17",
         "0",
-        "609.44"
+        "223.93"
        ],
        [
-        9000190,
-        5000157,
-        "32790930",
-        "71130.00",
-        461,
-        "2026-11-23 12:39:25",
-        "0",
-        "4918.64"
-       ],
-       [
-        9000192,
+        9000178,
         5000159,
-        "3564500",
-        "71290.00",
+        "3553500",
+        "71070.00",
         50,
-        "2026-11-23 11:37:47",
+        "2026-11-24 11:38:04",
         "0",
-        "534.67"
+        "533.02"
+       ],
+       [
+        9000179,
+        5000160,
+        "51490880",
+        "71120.00",
+        724,
+        "2026-11-24 11:49:17",
+        "0",
+        "7723.63"
+       ]
+      ],
+      "row_count": 10
+     },
+     "pass": true,
+     "status": "OK"
+    },
+    {
+     "sql": "SELECT \"e\".\"EXEC_ID\", \"e\".\"ORDER_ID\", \"e\".\"EXEC_AMOUNT\", \"e\".\"EXEC_PRICE\", \"e\".\"EXEC_QTY\", \"e\".\"EXEC_TS\", \"e\".\"REALIZED_PNL\", \"e\".\"FEE\" FROM \"FIN_DEMO\".\"EXECUTIONS\" \"e\" JOIN \"FIN_DEMO\".\"ORDERS\" \"o\" ON \"e\".\"ORDER_ID\" = \"o\".\"ORDER_ID\" JOIN \"FIN_DEMO\".\"PRODUCT\" \"p\" ON \"o\".\"PRODUCT_CODE\" = \"p\".\"PRODUCT_CODE\" WHERE \"p\".\"PRODUCT_NAME\" = '삼성전자' AND \"o\".\"SIDE\" = 'BUY' AND DATE(\"e\".\"EXEC_TS\") = CURRENT DATE - 1 DAY",
+     "result": {
+      "columns": [
+       "EXEC_ID",
+       "ORDER_ID",
+       "EXEC_AMOUNT",
+       "EXEC_PRICE",
+       "EXEC_QTY",
+       "EXEC_TS",
+       "REALIZED_PNL",
+       "FEE"
+      ],
+      "rows": [
+       [
+        9000171,
+        5000151,
+        "1205470",
+        "70910.00",
+        17,
+        "2026-11-24 09:28:10",
+        "0",
+        "180.82"
+       ],
+       [
+        9000174,
+        5000154,
+        "1283580",
+        "71310.00",
+        18,
+        "2026-11-24 10:33:04",
+        "0",
+        "192.54"
+       ],
+       [
+        9000175,
+        5000155,
+        "1492890",
+        "71090.00",
+        21,
+        "2026-11-24 10:29:17",
+        "0",
+        "223.93"
+       ],
+       [
+        9000178,
+        5000159,
+        "3553500",
+        "71070.00",
+        50,
+        "2026-11-24 11:38:04",
+        "0",
+        "533.02"
+       ],
+       [
+        9000179,
+        5000160,
+        "51490880",
+        "71120.00",
+        724,
+        "2026-11-24 11:49:17",
+        "0",
+        "7723.63"
        ]
       ],
       "row_count": 10
@@ -502,39 +565,39 @@ window.EVAL = {
       ],
       "rows": [
        [
-        9000183,
-        "2026-11-23 09:28:12",
-        30,
-        "71290.00",
-        "2138700"
+        9000171,
+        "2026-11-24 09:28:10",
+        17,
+        "70910.00",
+        "1205470"
        ],
        [
-        9000188,
-        "2026-11-23 10:29:09",
-        57,
-        "71280.00",
-        "4062960"
+        9000175,
+        "2026-11-24 10:29:17",
+        21,
+        "71090.00",
+        "1492890"
        ],
        [
-        9000187,
-        "2026-11-23 10:33:48",
-        39,
-        "71380.00",
-        "2783820"
+        9000174,
+        "2026-11-24 10:33:04",
+        18,
+        "71310.00",
+        "1283580"
        ],
        [
-        9000192,
-        "2026-11-23 11:37:47",
+        9000178,
+        "2026-11-24 11:38:04",
         50,
-        "71290.00",
-        "3564500"
+        "71070.00",
+        "3553500"
        ],
        [
-        9000193,
-        "2026-11-23 11:49:12",
-        92,
-        "71190.00",
-        "6549480"
+        9000179,
+        "2026-11-24 11:49:17",
+        724,
+        "71120.00",
+        "51490880"
        ]
       ],
       "row_count": 10
@@ -557,124 +620,54 @@ window.EVAL = {
       ],
       "rows": [
        [
-        9000183,
+        9000171,
         5000151,
-        "2138700",
-        "71290.00",
-        30,
-        "2026-11-23 09:28:12",
+        "1205470",
+        "70910.00",
+        17,
+        "2026-11-24 09:28:10",
         "0",
-        "320.80"
+        "180.82"
        ],
        [
-        9000187,
+        9000174,
         5000154,
-        "2783820",
-        "71380.00",
-        39,
-        "2026-11-23 10:33:48",
+        "1283580",
+        "71310.00",
+        18,
+        "2026-11-24 10:33:04",
         "0",
-        "417.57"
+        "192.54"
        ],
        [
-        9000188,
+        9000175,
         5000155,
-        "4062960",
-        "71280.00",
-        57,
-        "2026-11-23 10:29:09",
+        "1492890",
+        "71090.00",
+        21,
+        "2026-11-24 10:29:17",
         "0",
-        "609.44"
+        "223.93"
        ],
        [
-        9000190,
-        5000157,
-        "32790930",
-        "71130.00",
-        461,
-        "2026-11-23 12:39:25",
-        "0",
-        "4918.64"
-       ],
-       [
-        9000192,
+        9000178,
         5000159,
-        "3564500",
-        "71290.00",
+        "3553500",
+        "71070.00",
         50,
-        "2026-11-23 11:37:47",
+        "2026-11-24 11:38:04",
         "0",
-        "534.67"
-       ]
-      ],
-      "row_count": 10
-     },
-     "pass": true,
-     "status": "OK"
-    },
-    {
-     "sql": "SELECT \"FIN_DEMO\".\"EXECUTIONS\".\"EXEC_ID\", \"FIN_DEMO\".\"EXECUTIONS\".\"ORDER_ID\", \"FIN_DEMO\".\"EXECUTIONS\".\"EXEC_AMOUNT\", \"FIN_DEMO\".\"EXECUTIONS\".\"EXEC_PRICE\", \"FIN_DEMO\".\"EXECUTIONS\".\"EXEC_TS\", \"FIN_DEMO\".\"EXECUTIONS\".\"EXEC_QTY\", \"FIN_DEMO\".\"EXECUTIONS\".\"REALIZED_PNL\", \"FIN_DEMO\".\"EXECUTIONS\".\"FEE\" FROM \"FIN_DEMO\".\"EXECUTIONS\" JOIN \"FIN_DEMO\".\"ORDERS\" ON \"FIN_DEMO\".\"EXECUTIONS\".\"ORDER_ID\" = \"FIN_DEMO\".\"ORDERS\".\"ORDER_ID\" JOIN \"FIN_DEMO\".\"PRODUCT\" ON \"FIN_DEMO\".\"ORDERS\".\"PRODUCT_CODE\" = \"FIN_DEMO\".\"PRODUCT\".\"PRODUCT_CODE\" WHERE \"FIN_DEMO\".\"PRODUCT\".\"PRODUCT_NAME\" = '삼성전자' AND \"FIN_DEMO\".\"ORDERS\".\"SIDE\" = 'BUY' AND DATE(\"FIN_DEMO\".\"EXECUTIONS\".\"EXEC_TS\") = CURRENT DATE - 1 DAY",
-     "result": {
-      "columns": [
-       "EXEC_ID",
-       "ORDER_ID",
-       "EXEC_AMOUNT",
-       "EXEC_PRICE",
-       "EXEC_TS",
-       "EXEC_QTY",
-       "REALIZED_PNL",
-       "FEE"
-      ],
-      "rows": [
-       [
-        9000183,
-        5000151,
-        "2138700",
-        "71290.00",
-        "2026-11-23 09:28:12",
-        30,
-        "0",
-        "320.80"
+        "533.02"
        ],
        [
-        9000187,
-        5000154,
-        "2783820",
-        "71380.00",
-        "2026-11-23 10:33:48",
-        39,
+        9000179,
+        5000160,
+        "51490880",
+        "71120.00",
+        724,
+        "2026-11-24 11:49:17",
         "0",
-        "417.57"
-       ],
-       [
-        9000188,
-        5000155,
-        "4062960",
-        "71280.00",
-        "2026-11-23 10:29:09",
-        57,
-        "0",
-        "609.44"
-       ],
-       [
-        9000190,
-        5000157,
-        "32790930",
-        "71130.00",
-        "2026-11-23 12:39:25",
-        461,
-        "0",
-        "4918.64"
-       ],
-       [
-        9000192,
-        5000159,
-        "3564500",
-        "71290.00",
-        "2026-11-23 11:37:47",
-        50,
-        "0",
-        "534.67"
+        "7723.63"
        ]
       ],
       "row_count": 10
@@ -902,24 +895,24 @@ window.EVAL = {
     ],
     "rows": [
      [
-      "박수빈",
-      "149474210"
-     ],
-     [
-      "심지우",
-      "138282380"
-     ],
-     [
-      "채지호",
-      "125028230"
+      "지지후",
+      "175090620"
      ],
      [
       "진건우",
-      "74600150"
+      "101877320"
      ],
      [
-      "서도현",
-      "70062560"
+      "심지우",
+      "92632380"
+     ],
+     [
+      "박수빈",
+      "77406890"
+     ],
+     [
+      "심서준",
+      "56433840"
      ]
     ],
     "row_count": 5
@@ -935,29 +928,29 @@ window.EVAL = {
       ],
       "rows": [
        [
-        18,
-        "박수빈",
-        "149474210"
-       ],
-       [
-        15,
-        "심지우",
-        "138282380"
-       ],
-       [
-        20,
-        "채지호",
-        "125028230"
+        23,
+        "지지후",
+        "175090620"
        ],
        [
         31,
         "진건우",
-        "74600150"
+        "101877320"
        ],
        [
-        11,
-        "서도현",
-        "70062560"
+        15,
+        "심지우",
+        "92632380"
+       ],
+       [
+        18,
+        "박수빈",
+        "77406890"
+       ],
+       [
+        35,
+        "심서준",
+        "56433840"
        ]
       ],
       "row_count": 5
@@ -975,29 +968,29 @@ window.EVAL = {
       ],
       "rows": [
        [
-        18,
-        "박수빈",
-        "149474210"
-       ],
-       [
-        15,
-        "심지우",
-        "138282380"
-       ],
-       [
-        20,
-        "채지호",
-        "125028230"
+        23,
+        "지지후",
+        "175090620"
        ],
        [
         31,
         "진건우",
-        "74600150"
+        "101877320"
        ],
        [
-        11,
-        "서도현",
-        "70062560"
+        15,
+        "심지우",
+        "92632380"
+       ],
+       [
+        18,
+        "박수빈",
+        "77406890"
+       ],
+       [
+        35,
+        "심서준",
+        "56433840"
        ]
       ],
       "row_count": 5
@@ -1015,29 +1008,29 @@ window.EVAL = {
       ],
       "rows": [
        [
-        18,
-        "박수빈",
-        "149474210"
-       ],
-       [
-        15,
-        "심지우",
-        "138282380"
-       ],
-       [
-        20,
-        "채지호",
-        "125028230"
+        23,
+        "지지후",
+        "175090620"
        ],
        [
         31,
         "진건우",
-        "74600150"
+        "101877320"
        ],
        [
-        11,
-        "서도현",
-        "70062560"
+        15,
+        "심지우",
+        "92632380"
+       ],
+       [
+        18,
+        "박수빈",
+        "77406890"
+       ],
+       [
+        35,
+        "심서준",
+        "56433840"
        ]
       ],
       "row_count": 5
@@ -1055,29 +1048,29 @@ window.EVAL = {
       ],
       "rows": [
        [
-        18,
-        "박수빈",
-        "149474210"
-       ],
-       [
-        15,
-        "심지우",
-        "138282380"
-       ],
-       [
-        20,
-        "채지호",
-        "125028230"
+        23,
+        "지지후",
+        "175090620"
        ],
        [
         31,
         "진건우",
-        "74600150"
+        "101877320"
        ],
        [
-        11,
-        "서도현",
-        "70062560"
+        15,
+        "심지우",
+        "92632380"
+       ],
+       [
+        18,
+        "박수빈",
+        "77406890"
+       ],
+       [
+        35,
+        "심서준",
+        "56433840"
        ]
       ],
       "row_count": 5
@@ -1086,7 +1079,7 @@ window.EVAL = {
      "status": "OK"
     },
     {
-     "sql": "SELECT \"c\".\"CUSTOMER_ID\", \"c\".\"CUSTOMER_NAME\", SUM(\"e\".\"EXEC_AMOUNT\") AS \"TOTAL_AMOUNT\" FROM \"FIN_DEMO\".\"EXECUTIONS\" \"e\" JOIN \"FIN_DEMO\".\"ORDERS\" \"o\" ON \"e\".\"ORDER_ID\" = \"o\".\"ORDER_ID\" JOIN \"FIN_DEMO\".\"ACCOUNT\" \"a\" ON \"o\".\"ACCOUNT_ID\" = \"a\".\"ACCOUNT_ID\" JOIN \"FIN_DEMO\".\"CUSTOMER\" \"c\" ON \"a\".\"CUSTOMER_ID\" = \"c\".\"CUSTOMER_ID\" WHERE YEAR(\"e\".\"EXEC_TS\") = YEAR(CURRENT DATE) AND MONTH(\"e\".\"EXEC_TS\") = MONTH(CURRENT DATE) GROUP BY \"c\".\"CUSTOMER_ID\", \"c\".\"CUSTOMER_NAME\" ORDER BY \"TOTAL_AMOUNT\" DESC FETCH FIRST 5 ROWS ONLY",
+     "sql": "SELECT \"C\".\"CUSTOMER_ID\", \"C\".\"CUSTOMER_NAME\", SUM(\"E\".\"EXEC_AMOUNT\") AS \"TOTAL_AMOUNT\" FROM \"FIN_DEMO\".\"EXECUTIONS\" \"E\" JOIN \"FIN_DEMO\".\"ORDERS\" \"O\" ON \"E\".\"ORDER_ID\" = \"O\".\"ORDER_ID\" JOIN \"FIN_DEMO\".\"ACCOUNT\" \"A\" ON \"O\".\"ACCOUNT_ID\" = \"A\".\"ACCOUNT_ID\" JOIN \"FIN_DEMO\".\"CUSTOMER\" \"C\" ON \"A\".\"CUSTOMER_ID\" = \"C\".\"CUSTOMER_ID\" WHERE YEAR(\"E\".\"EXEC_TS\") = YEAR(CURRENT DATE) AND MONTH(\"E\".\"EXEC_TS\") = MONTH(CURRENT DATE) GROUP BY \"C\".\"CUSTOMER_ID\", \"C\".\"CUSTOMER_NAME\" ORDER BY \"TOTAL_AMOUNT\" DESC FETCH FIRST 5 ROWS ONLY",
      "result": {
       "columns": [
        "CUSTOMER_ID",
@@ -1095,29 +1088,29 @@ window.EVAL = {
       ],
       "rows": [
        [
-        18,
-        "박수빈",
-        "149474210"
-       ],
-       [
-        15,
-        "심지우",
-        "138282380"
-       ],
-       [
-        20,
-        "채지호",
-        "125028230"
+        23,
+        "지지후",
+        "175090620"
        ],
        [
         31,
         "진건우",
-        "74600150"
+        "101877320"
        ],
        [
-        11,
-        "서도현",
-        "70062560"
+        15,
+        "심지우",
+        "92632380"
+       ],
+       [
+        18,
+        "박수빈",
+        "77406890"
+       ],
+       [
+        35,
+        "심서준",
+        "56433840"
        ]
       ],
       "row_count": 5
@@ -1168,35 +1161,81 @@ window.EVAL = {
       "rows": [
        [
         1000006,
-        "2023-02-11",
+        "2023-02-12",
         5,
         "Y",
         "BROKERAGE"
        ],
        [
         1000007,
-        "2026-02-15",
+        "2026-02-16",
         6,
         "Y",
         "BROKERAGE"
        ],
        [
         1000021,
-        "2026-04-07",
+        "2026-04-08",
         14,
         "Y",
         "BROKERAGE"
        ],
        [
         1000023,
-        "2025-10-31",
+        "2025-11-01",
         16,
         "Y",
         "BROKERAGE"
        ],
        [
         1000036,
-        "2025-08-10",
+        "2025-08-11",
+        26,
+        "Y",
+        "BROKERAGE"
+       ]
+      ],
+      "row_count": 8
+     },
+     "pass": true,
+     "status": "OK"
+    },
+    {
+     "sql": "SELECT \"ACCOUNT_ID\", \"CUSTOMER_ID\", \"CREDIT_LOAN_YN\", \"ACCOUNT_TYPE\" FROM \"FIN_DEMO\".\"ACCOUNT\" WHERE \"CREDIT_LOAN_YN\" = 'Y'",
+     "result": {
+      "columns": [
+       "ACCOUNT_ID",
+       "CUSTOMER_ID",
+       "CREDIT_LOAN_YN",
+       "ACCOUNT_TYPE"
+      ],
+      "rows": [
+       [
+        1000006,
+        5,
+        "Y",
+        "BROKERAGE"
+       ],
+       [
+        1000007,
+        6,
+        "Y",
+        "BROKERAGE"
+       ],
+       [
+        1000021,
+        14,
+        "Y",
+        "BROKERAGE"
+       ],
+       [
+        1000023,
+        16,
+        "Y",
+        "BROKERAGE"
+       ],
+       [
+        1000036,
         26,
         "Y",
         "BROKERAGE"
@@ -1220,35 +1259,35 @@ window.EVAL = {
       "rows": [
        [
         1000006,
-        "2023-02-11",
+        "2023-02-12",
         5,
         "Y",
         "BROKERAGE"
        ],
        [
         1000007,
-        "2026-02-15",
+        "2026-02-16",
         6,
         "Y",
         "BROKERAGE"
        ],
        [
         1000021,
-        "2026-04-07",
+        "2026-04-08",
         14,
         "Y",
         "BROKERAGE"
        ],
        [
         1000023,
-        "2025-10-31",
+        "2025-11-01",
         16,
         "Y",
         "BROKERAGE"
        ],
        [
         1000036,
-        "2025-08-10",
+        "2025-08-11",
         26,
         "Y",
         "BROKERAGE"
@@ -1272,35 +1311,35 @@ window.EVAL = {
       "rows": [
        [
         1000006,
-        "2023-02-11",
+        "2023-02-12",
         5,
         "Y",
         "BROKERAGE"
        ],
        [
         1000007,
-        "2026-02-15",
+        "2026-02-16",
         6,
         "Y",
         "BROKERAGE"
        ],
        [
         1000021,
-        "2026-04-07",
+        "2026-04-08",
         14,
         "Y",
         "BROKERAGE"
        ],
        [
         1000023,
-        "2025-10-31",
+        "2025-11-01",
         16,
         "Y",
         "BROKERAGE"
        ],
        [
         1000036,
-        "2025-08-10",
+        "2025-08-11",
         26,
         "Y",
         "BROKERAGE"
@@ -1324,87 +1363,35 @@ window.EVAL = {
       "rows": [
        [
         1000006,
-        "2023-02-11",
+        "2023-02-12",
         5,
         "Y",
         "BROKERAGE"
        ],
        [
         1000007,
-        "2026-02-15",
+        "2026-02-16",
         6,
         "Y",
         "BROKERAGE"
        ],
        [
         1000021,
-        "2026-04-07",
+        "2026-04-08",
         14,
         "Y",
         "BROKERAGE"
        ],
        [
         1000023,
-        "2025-10-31",
+        "2025-11-01",
         16,
         "Y",
         "BROKERAGE"
        ],
        [
         1000036,
-        "2025-08-10",
-        26,
-        "Y",
-        "BROKERAGE"
-       ]
-      ],
-      "row_count": 8
-     },
-     "pass": true,
-     "status": "OK"
-    },
-    {
-     "sql": "SELECT \"ACCOUNT_ID\", \"OPEN_DATE\", \"CUSTOMER_ID\", \"CREDIT_LOAN_YN\", \"ACCOUNT_TYPE\" FROM \"FIN_DEMO\".\"ACCOUNT\" WHERE \"CREDIT_LOAN_YN\" = 'Y'",
-     "result": {
-      "columns": [
-       "ACCOUNT_ID",
-       "OPEN_DATE",
-       "CUSTOMER_ID",
-       "CREDIT_LOAN_YN",
-       "ACCOUNT_TYPE"
-      ],
-      "rows": [
-       [
-        1000006,
-        "2023-02-11",
-        5,
-        "Y",
-        "BROKERAGE"
-       ],
-       [
-        1000007,
-        "2026-02-15",
-        6,
-        "Y",
-        "BROKERAGE"
-       ],
-       [
-        1000021,
-        "2026-04-07",
-        14,
-        "Y",
-        "BROKERAGE"
-       ],
-       [
-        1000023,
-        "2025-10-31",
-        16,
-        "Y",
-        "BROKERAGE"
-       ],
-       [
-        1000036,
-        "2025-08-10",
+        "2025-08-11",
         26,
         "Y",
         "BROKERAGE"
@@ -1428,24 +1415,24 @@ window.EVAL = {
     ],
     "rows": [
      [
-      "박수빈",
-      "149474210"
-     ],
-     [
-      "심지우",
-      "138282380"
-     ],
-     [
-      "채지호",
-      "125028230"
+      "지지후",
+      "175090620"
      ],
      [
       "진건우",
-      "74600150"
+      "101877320"
      ],
      [
-      "서도현",
-      "70062560"
+      "심지우",
+      "92632380"
+     ],
+     [
+      "박수빈",
+      "77406890"
+     ],
+     [
+      "심서준",
+      "56433840"
      ]
     ],
     "row_count": 5
@@ -1461,69 +1448,29 @@ window.EVAL = {
       ],
       "rows": [
        [
-        18,
-        "박수빈",
-        "149474210"
-       ],
-       [
-        15,
-        "심지우",
-        "138282380"
-       ],
-       [
-        20,
-        "채지호",
-        "125028230"
+        23,
+        "지지후",
+        "175090620"
        ],
        [
         31,
         "진건우",
-        "74600150"
-       ],
-       [
-        11,
-        "서도현",
-        "70062560"
-       ]
-      ],
-      "row_count": 5
-     },
-     "pass": true,
-     "status": "OK"
-    },
-    {
-     "sql": "SELECT \"FIN_DEMO\".\"CUSTOMER\".\"CUSTOMER_ID\", \"FIN_DEMO\".\"CUSTOMER\".\"CUSTOMER_NAME\", SUM(\"FIN_DEMO\".\"EXECUTIONS\".\"EXEC_AMOUNT\") AS \"TOTAL_AMOUNT\" FROM \"FIN_DEMO\".\"EXECUTIONS\" JOIN \"FIN_DEMO\".\"ORDERS\" ON \"FIN_DEMO\".\"EXECUTIONS\".\"ORDER_ID\" = \"FIN_DEMO\".\"ORDERS\".\"ORDER_ID\" JOIN \"FIN_DEMO\".\"ACCOUNT\" ON \"FIN_DEMO\".\"ORDERS\".\"ACCOUNT_ID\" = \"FIN_DEMO\".\"ACCOUNT\".\"ACCOUNT_ID\" JOIN \"FIN_DEMO\".\"CUSTOMER\" ON \"FIN_DEMO\".\"ACCOUNT\".\"CUSTOMER_ID\" = \"FIN_DEMO\".\"CUSTOMER\".\"CUSTOMER_ID\" WHERE YEAR(\"FIN_DEMO\".\"EXECUTIONS\".\"EXEC_TS\") = YEAR(CURRENT DATE) AND MONTH(\"FIN_DEMO\".\"EXECUTIONS\".\"EXEC_TS\") = MONTH(CURRENT DATE) GROUP BY \"FIN_DEMO\".\"CUSTOMER\".\"CUSTOMER_ID\", \"FIN_DEMO\".\"CUSTOMER\".\"CUSTOMER_NAME\" ORDER BY \"TOTAL_AMOUNT\" DESC FETCH FIRST 5 ROWS ONLY",
-     "result": {
-      "columns": [
-       "CUSTOMER_ID",
-       "CUSTOMER_NAME",
-       "TOTAL_AMOUNT"
-      ],
-      "rows": [
-       [
-        18,
-        "박수빈",
-        "149474210"
+        "101877320"
        ],
        [
         15,
         "심지우",
-        "138282380"
+        "92632380"
        ],
        [
-        20,
-        "채지호",
-        "125028230"
+        18,
+        "박수빈",
+        "77406890"
        ],
        [
-        31,
-        "진건우",
-        "74600150"
-       ],
-       [
-        11,
-        "서도현",
-        "70062560"
+        35,
+        "심서준",
+        "56433840"
        ]
       ],
       "row_count": 5
@@ -1541,29 +1488,29 @@ window.EVAL = {
       ],
       "rows": [
        [
-        18,
-        "박수빈",
-        "149474210"
-       ],
-       [
-        15,
-        "심지우",
-        "138282380"
-       ],
-       [
-        20,
-        "채지호",
-        "125028230"
+        23,
+        "지지후",
+        "175090620"
        ],
        [
         31,
         "진건우",
-        "74600150"
+        "101877320"
        ],
        [
-        11,
-        "서도현",
-        "70062560"
+        15,
+        "심지우",
+        "92632380"
+       ],
+       [
+        18,
+        "박수빈",
+        "77406890"
+       ],
+       [
+        35,
+        "심서준",
+        "56433840"
        ]
       ],
       "row_count": 5
@@ -1581,29 +1528,29 @@ window.EVAL = {
       ],
       "rows": [
        [
-        18,
-        "박수빈",
-        "149474210"
-       ],
-       [
-        15,
-        "심지우",
-        "138282380"
-       ],
-       [
-        20,
-        "채지호",
-        "125028230"
+        23,
+        "지지후",
+        "175090620"
        ],
        [
         31,
         "진건우",
-        "74600150"
+        "101877320"
        ],
        [
-        11,
-        "서도현",
-        "70062560"
+        15,
+        "심지우",
+        "92632380"
+       ],
+       [
+        18,
+        "박수빈",
+        "77406890"
+       ],
+       [
+        35,
+        "심서준",
+        "56433840"
        ]
       ],
       "row_count": 5
@@ -1621,29 +1568,69 @@ window.EVAL = {
       ],
       "rows": [
        [
-        18,
-        "박수빈",
-        "149474210"
-       ],
-       [
-        15,
-        "심지우",
-        "138282380"
-       ],
-       [
-        20,
-        "채지호",
-        "125028230"
+        23,
+        "지지후",
+        "175090620"
        ],
        [
         31,
         "진건우",
-        "74600150"
+        "101877320"
        ],
        [
-        11,
-        "서도현",
-        "70062560"
+        15,
+        "심지우",
+        "92632380"
+       ],
+       [
+        18,
+        "박수빈",
+        "77406890"
+       ],
+       [
+        35,
+        "심서준",
+        "56433840"
+       ]
+      ],
+      "row_count": 5
+     },
+     "pass": true,
+     "status": "OK"
+    },
+    {
+     "sql": "SELECT \"c\".\"CUSTOMER_ID\", \"c\".\"CUSTOMER_NAME\", SUM(\"e\".\"EXEC_AMOUNT\") AS \"TOTAL_TRANSACTION_AMOUNT\" FROM \"FIN_DEMO\".\"EXECUTIONS\" \"e\" JOIN \"FIN_DEMO\".\"ORDERS\" \"o\" ON \"e\".\"ORDER_ID\" = \"o\".\"ORDER_ID\" JOIN \"FIN_DEMO\".\"ACCOUNT\" \"a\" ON \"o\".\"ACCOUNT_ID\" = \"a\".\"ACCOUNT_ID\" JOIN \"FIN_DEMO\".\"CUSTOMER\" \"c\" ON \"a\".\"CUSTOMER_ID\" = \"c\".\"CUSTOMER_ID\" WHERE YEAR(\"e\".\"EXEC_TS\") = YEAR(CURRENT DATE) AND MONTH(\"e\".\"EXEC_TS\") = MONTH(CURRENT DATE) GROUP BY \"c\".\"CUSTOMER_ID\", \"c\".\"CUSTOMER_NAME\" ORDER BY \"TOTAL_TRANSACTION_AMOUNT\" DESC FETCH FIRST 5 ROWS ONLY",
+     "result": {
+      "columns": [
+       "CUSTOMER_ID",
+       "CUSTOMER_NAME",
+       "TOTAL_TRANSACTION_AMOUNT"
+      ],
+      "rows": [
+       [
+        23,
+        "지지후",
+        "175090620"
+       ],
+       [
+        31,
+        "진건우",
+        "101877320"
+       ],
+       [
+        15,
+        "심지우",
+        "92632380"
+       ],
+       [
+        18,
+        "박수빈",
+        "77406890"
+       ],
+       [
+        35,
+        "심서준",
+        "56433840"
        ]
       ],
       "row_count": 5
@@ -1667,224 +1654,80 @@ window.EVAL = {
     "rows": [
      [
       "2차전지",
-      "에코프로",
-      "151102670",
-      1
-     ],
-     [
-      "2차전지",
       "에코프로비엠",
-      "97297210",
-      2
+      "115288200",
+      1
      ],
      [
       "2차전지",
       "삼성SDI",
-      "60173990",
+      "72153180",
+      2
+     ],
+     [
+      "2차전지",
+      "에코프로",
+      "68089720",
       3
      ],
      [
       "IT서비스",
-      "NAVER",
-      "205479720",
+      "카카오",
+      "176627560",
       1
      ],
      [
       "IT서비스",
-      "카카오",
-      "80895060",
+      "NAVER",
+      "15166320",
       2
      ]
     ],
-    "row_count": 32
+    "row_count": 31
    },
    "runs": [
     {
-     "sql": "SELECT \"p\".\"SECTOR\", \"p\".\"PRODUCT_NAME\", SUM(\"e\".\"EXEC_AMOUNT\") AS \"TOTAL_AMOUNT\", RANK() OVER (PARTITION BY \"p\".\"SECTOR\" ORDER BY SUM(\"e\".\"EXEC_AMOUNT\") DESC) AS \"RANK_IN_SECTOR\" FROM \"FIN_DEMO\".\"EXECUTIONS\" \"e\" JOIN \"FIN_DEMO\".\"ORDERS\" \"o\" ON \"e\".\"ORDER_ID\" = \"o\".\"ORDER_ID\" JOIN \"FIN_DEMO\".\"PRODUCT\" \"p\" ON \"o\".\"PRODUCT_CODE\" = \"p\".\"PRODUCT_CODE\" GROUP BY \"p\".\"SECTOR\", \"p\".\"PRODUCT_NAME\" ORDER BY \"p\".\"SECTOR\", \"RANK_IN_SECTOR\"",
+     "sql": "SELECT \"p\".\"SECTOR\", \"p\".\"PRODUCT_NAME\", SUM(\"e\".\"EXEC_AMOUNT\") AS \"TOTAL_TRANSACTION_AMOUNT\", RANK() OVER (PARTITION BY \"p\".\"SECTOR\" ORDER BY SUM(\"e\".\"EXEC_AMOUNT\") DESC) AS \"RANK_WITHIN_SECTOR\" FROM \"FIN_DEMO\".\"EXECUTIONS\" \"e\" JOIN \"FIN_DEMO\".\"ORDERS\" \"o\" ON \"e\".\"ORDER_ID\" = \"o\".\"ORDER_ID\" JOIN \"FIN_DEMO\".\"PRODUCT\" \"p\" ON \"o\".\"PRODUCT_CODE\" = \"p\".\"PRODUCT_CODE\" GROUP BY \"p\".\"SECTOR\", \"p\".\"PRODUCT_NAME\" ORDER BY \"p\".\"SECTOR\", \"RANK_WITHIN_SECTOR\"",
      "result": {
       "columns": [
        "SECTOR",
        "PRODUCT_NAME",
-       "TOTAL_AMOUNT",
-       "RANK_IN_SECTOR"
+       "TOTAL_TRANSACTION_AMOUNT",
+       "RANK_WITHIN_SECTOR"
       ],
       "rows": [
        [
         "2차전지",
-        "에코프로",
-        "151102670",
-        1
-       ],
-       [
-        "2차전지",
         "에코프로비엠",
-        "97297210",
-        2
+        "115288200",
+        1
        ],
        [
         "2차전지",
         "삼성SDI",
-        "60173990",
-        3
-       ],
-       [
-        "IT서비스",
-        "NAVER",
-        "205479720",
-        1
-       ],
-       [
-        "IT서비스",
-        "카카오",
-        "80895060",
+        "72153180",
         2
-       ]
-      ],
-      "row_count": 32
-     },
-     "pass": true,
-     "status": "OK"
-    },
-    {
-     "sql": "SELECT \"p\".\"SECTOR\" AS \"industry\", \"p\".\"PRODUCT_NAME\" AS \"item_name\", SUM(\"e\".\"EXEC_AMOUNT\") AS \"total_transaction_amount\", RANK() OVER (PARTITION BY \"p\".\"SECTOR\" ORDER BY SUM(\"e\".\"EXEC_AMOUNT\") DESC) AS \"rank_within_industry\" FROM \"FIN_DEMO\".\"EXECUTIONS\" \"e\" JOIN \"FIN_DEMO\".\"ORDERS\" \"o\" ON \"e\".\"ORDER_ID\" = \"o\".\"ORDER_ID\" JOIN \"FIN_DEMO\".\"PRODUCT\" \"p\" ON \"o\".\"PRODUCT_CODE\" = \"p\".\"PRODUCT_CODE\" GROUP BY \"p\".\"SECTOR\", \"p\".\"PRODUCT_NAME\" ORDER BY \"p\".\"SECTOR\", \"rank_within_industry\"",
-     "result": {
-      "columns": [
-       "industry",
-       "item_name",
-       "total_transaction_amount",
-       "rank_within_industry"
-      ],
-      "rows": [
+       ],
        [
         "2차전지",
         "에코프로",
-        "151102670",
-        1
-       ],
-       [
-        "2차전지",
-        "에코프로비엠",
-        "97297210",
-        2
-       ],
-       [
-        "2차전지",
-        "삼성SDI",
-        "60173990",
+        "68089720",
         3
        ],
        [
         "IT서비스",
-        "NAVER",
-        "205479720",
-        1
-       ],
-       [
-        "IT서비스",
         "카카오",
-        "80895060",
-        2
-       ]
-      ],
-      "row_count": 32
-     },
-     "pass": true,
-     "status": "OK"
-    },
-    {
-     "sql": "SELECT \"p\".\"PRODUCT_CODE\", \"p\".\"PRODUCT_NAME\", \"p\".\"SECTOR\", SUM(\"e\".\"EXEC_AMOUNT\") AS \"TOTAL_AMOUNT\", RANK() OVER (PARTITION BY \"p\".\"SECTOR\" ORDER BY SUM(\"e\".\"EXEC_AMOUNT\") DESC) AS \"RANK_IN_SECTOR\" FROM \"FIN_DEMO\".\"EXECUTIONS\" \"e\" JOIN \"FIN_DEMO\".\"ORDERS\" \"o\" ON \"e\".\"ORDER_ID\" = \"o\".\"ORDER_ID\" JOIN \"FIN_DEMO\".\"PRODUCT\" \"p\" ON \"o\".\"PRODUCT_CODE\" = \"p\".\"PRODUCT_CODE\" GROUP BY \"p\".\"SECTOR\", \"p\".\"PRODUCT_CODE\", \"p\".\"PRODUCT_NAME\" ORDER BY \"p\".\"SECTOR\", \"RANK_IN_SECTOR\"",
-     "result": {
-      "columns": [
-       "PRODUCT_CODE",
-       "PRODUCT_NAME",
-       "SECTOR",
-       "TOTAL_AMOUNT",
-       "RANK_IN_SECTOR"
-      ],
-      "rows": [
-       [
-        "086520",
-        "에코프로",
-        "2차전지",
-        "151102670",
+        "176627560",
         1
-       ],
-       [
-        "247540",
-        "에코프로비엠",
-        "2차전지",
-        "97297210",
-        2
-       ],
-       [
-        "006400",
-        "삼성SDI",
-        "2차전지",
-        "60173990",
-        3
-       ],
-       [
-        "035420",
-        "NAVER",
-        "IT서비스",
-        "205479720",
-        1
-       ],
-       [
-        "035720",
-        "카카오",
-        "IT서비스",
-        "80895060",
-        2
-       ]
-      ],
-      "row_count": 32
-     },
-     "pass": true,
-     "status": "OK"
-    },
-    {
-     "sql": "SELECT \"p\".\"SECTOR\" AS \"industry\", \"p\".\"PRODUCT_NAME\" AS \"item_name\", SUM(\"e\".\"EXEC_AMOUNT\") AS \"total_transaction_amount\", RANK() OVER (PARTITION BY \"p\".\"SECTOR\" ORDER BY SUM(\"e\".\"EXEC_AMOUNT\") DESC) AS \"rank_within_industry\" FROM \"FIN_DEMO\".\"EXECUTIONS\" \"e\" JOIN \"FIN_DEMO\".\"ORDERS\" \"o\" ON \"e\".\"ORDER_ID\" = \"o\".\"ORDER_ID\" JOIN \"FIN_DEMO\".\"PRODUCT\" \"p\" ON \"o\".\"PRODUCT_CODE\" = \"p\".\"PRODUCT_CODE\" GROUP BY \"p\".\"SECTOR\", \"p\".\"PRODUCT_NAME\" ORDER BY \"p\".\"SECTOR\", \"rank_within_industry\"",
-     "result": {
-      "columns": [
-       "industry",
-       "item_name",
-       "total_transaction_amount",
-       "rank_within_industry"
-      ],
-      "rows": [
-       [
-        "2차전지",
-        "에코프로",
-        "151102670",
-        1
-       ],
-       [
-        "2차전지",
-        "에코프로비엠",
-        "97297210",
-        2
-       ],
-       [
-        "2차전지",
-        "삼성SDI",
-        "60173990",
-        3
        ],
        [
         "IT서비스",
         "NAVER",
-        "205479720",
-        1
-       ],
-       [
-        "IT서비스",
-        "카카오",
-        "80895060",
+        "15166320",
         2
        ]
       ],
-      "row_count": 32
+      "row_count": 31
      },
      "pass": true,
      "status": "OK"
@@ -1901,36 +1744,174 @@ window.EVAL = {
       "rows": [
        [
         "2차전지",
-        "에코프로",
-        "151102670",
-        1
-       ],
-       [
-        "2차전지",
         "에코프로비엠",
-        "97297210",
-        2
+        "115288200",
+        1
        ],
        [
         "2차전지",
         "삼성SDI",
-        "60173990",
+        "72153180",
+        2
+       ],
+       [
+        "2차전지",
+        "에코프로",
+        "68089720",
         3
        ],
        [
         "IT서비스",
-        "NAVER",
-        "205479720",
+        "카카오",
+        "176627560",
         1
        ],
        [
         "IT서비스",
-        "카카오",
-        "80895060",
+        "NAVER",
+        "15166320",
         2
        ]
       ],
-      "row_count": 32
+      "row_count": 31
+     },
+     "pass": true,
+     "status": "OK"
+    },
+    {
+     "sql": "SELECT \"p\".\"SECTOR\", \"p\".\"PRODUCT_NAME\", SUM(\"e\".\"EXEC_AMOUNT\") AS \"TOTAL_AMOUNT\", RANK() OVER (PARTITION BY \"p\".\"SECTOR\" ORDER BY SUM(\"e\".\"EXEC_AMOUNT\") DESC) AS \"RANK_IN_SECTOR\" FROM \"FIN_DEMO\".\"EXECUTIONS\" \"e\" JOIN \"FIN_DEMO\".\"ORDERS\" \"o\" ON \"e\".\"ORDER_ID\" = \"o\".\"ORDER_ID\" JOIN \"FIN_DEMO\".\"PRODUCT\" \"p\" ON \"o\".\"PRODUCT_CODE\" = \"p\".\"PRODUCT_CODE\" GROUP BY \"p\".\"SECTOR\", \"p\".\"PRODUCT_NAME\" ORDER BY \"p\".\"SECTOR\", \"RANK_IN_SECTOR\"",
+     "result": {
+      "columns": [
+       "SECTOR",
+       "PRODUCT_NAME",
+       "TOTAL_AMOUNT",
+       "RANK_IN_SECTOR"
+      ],
+      "rows": [
+       [
+        "2차전지",
+        "에코프로비엠",
+        "115288200",
+        1
+       ],
+       [
+        "2차전지",
+        "삼성SDI",
+        "72153180",
+        2
+       ],
+       [
+        "2차전지",
+        "에코프로",
+        "68089720",
+        3
+       ],
+       [
+        "IT서비스",
+        "카카오",
+        "176627560",
+        1
+       ],
+       [
+        "IT서비스",
+        "NAVER",
+        "15166320",
+        2
+       ]
+      ],
+      "row_count": 31
+     },
+     "pass": true,
+     "status": "OK"
+    },
+    {
+     "sql": "SELECT \"p\".\"SECTOR\", \"p\".\"PRODUCT_NAME\", SUM(\"e\".\"EXEC_AMOUNT\") AS \"TOTAL_AMOUNT\", RANK() OVER (PARTITION BY \"p\".\"SECTOR\" ORDER BY SUM(\"e\".\"EXEC_AMOUNT\") DESC) AS \"RANK_IN_SECTOR\" FROM \"FIN_DEMO\".\"EXECUTIONS\" \"e\" JOIN \"FIN_DEMO\".\"ORDERS\" \"o\" ON \"e\".\"ORDER_ID\" = \"o\".\"ORDER_ID\" JOIN \"FIN_DEMO\".\"PRODUCT\" \"p\" ON \"o\".\"PRODUCT_CODE\" = \"p\".\"PRODUCT_CODE\" GROUP BY \"p\".\"SECTOR\", \"p\".\"PRODUCT_NAME\" ORDER BY \"p\".\"SECTOR\", \"RANK_IN_SECTOR\"",
+     "result": {
+      "columns": [
+       "SECTOR",
+       "PRODUCT_NAME",
+       "TOTAL_AMOUNT",
+       "RANK_IN_SECTOR"
+      ],
+      "rows": [
+       [
+        "2차전지",
+        "에코프로비엠",
+        "115288200",
+        1
+       ],
+       [
+        "2차전지",
+        "삼성SDI",
+        "72153180",
+        2
+       ],
+       [
+        "2차전지",
+        "에코프로",
+        "68089720",
+        3
+       ],
+       [
+        "IT서비스",
+        "카카오",
+        "176627560",
+        1
+       ],
+       [
+        "IT서비스",
+        "NAVER",
+        "15166320",
+        2
+       ]
+      ],
+      "row_count": 31
+     },
+     "pass": true,
+     "status": "OK"
+    },
+    {
+     "sql": "SELECT \"p\".\"SECTOR\", \"p\".\"PRODUCT_NAME\", SUM(\"e\".\"EXEC_AMOUNT\") AS \"TOTAL_AMOUNT\", RANK() OVER (PARTITION BY \"p\".\"SECTOR\" ORDER BY SUM(\"e\".\"EXEC_AMOUNT\") DESC) AS \"RANK_IN_SECTOR\" FROM \"FIN_DEMO\".\"EXECUTIONS\" \"e\" JOIN \"FIN_DEMO\".\"ORDERS\" \"o\" ON \"e\".\"ORDER_ID\" = \"o\".\"ORDER_ID\" JOIN \"FIN_DEMO\".\"PRODUCT\" \"p\" ON \"o\".\"PRODUCT_CODE\" = \"p\".\"PRODUCT_CODE\" GROUP BY \"p\".\"SECTOR\", \"p\".\"PRODUCT_NAME\" ORDER BY \"p\".\"SECTOR\", \"RANK_IN_SECTOR\"",
+     "result": {
+      "columns": [
+       "SECTOR",
+       "PRODUCT_NAME",
+       "TOTAL_AMOUNT",
+       "RANK_IN_SECTOR"
+      ],
+      "rows": [
+       [
+        "2차전지",
+        "에코프로비엠",
+        "115288200",
+        1
+       ],
+       [
+        "2차전지",
+        "삼성SDI",
+        "72153180",
+        2
+       ],
+       [
+        "2차전지",
+        "에코프로",
+        "68089720",
+        3
+       ],
+       [
+        "IT서비스",
+        "카카오",
+        "176627560",
+        1
+       ],
+       [
+        "IT서비스",
+        "NAVER",
+        "15166320",
+        2
+       ]
+      ],
+      "row_count": 31
      },
      "pass": true,
      "status": "OK"
@@ -1947,22 +1928,22 @@ window.EVAL = {
     ],
     "rows": [
      [
-      5000069
+      5000049
      ],
      [
-      5000082
+      5000178
      ],
      [
-      5000005
+      5000097
      ],
      [
-      5000105
+      5000044
      ],
      [
-      5000059
+      5000079
      ]
     ],
-    "row_count": 10
+    "row_count": 15
    },
    "runs": [
     {
@@ -1975,38 +1956,38 @@ window.EVAL = {
       ],
       "rows": [
        [
-        5000069,
-        1000022,
-        "2026-03-30 12:10:40"
+        5000049,
+        1000033,
+        "2026-03-06 14:05:54"
        ],
        [
-        5000082,
-        1000031,
-        "2026-04-23 11:57:10"
+        5000178,
+        1000003,
+        "2026-11-25 09:26:05"
        ],
        [
-        5000005,
-        1000055,
-        "2025-11-03 11:05:26"
+        5000097,
+        1000017,
+        "2026-06-03 14:47:57"
        ],
        [
-        5000105,
-        1000044,
-        "2026-07-03 15:11:48"
+        5000044,
+        1000056,
+        "2026-02-25 11:04:25"
        ],
        [
-        5000059,
-        1000032,
-        "2026-03-19 10:42:58"
+        5000079,
+        1000030,
+        "2026-04-09 13:28:35"
        ]
       ],
-      "row_count": 10
+      "row_count": 15
      },
      "pass": true,
      "status": "OK"
     },
     {
-     "sql": "SELECT \"o\".\"ORDER_ID\", \"o\".\"ACCOUNT_ID\", \"o\".\"ORDER_TS\" FROM \"FIN_DEMO\".\"ORDERS\" \"o\" LEFT JOIN \"FIN_DEMO\".\"EXECUTIONS\" \"e\" ON \"e\".\"ORDER_ID\" = \"o\".\"ORDER_ID\" WHERE \"e\".\"ORDER_ID\" IS NULL AND \"o\".\"ORDER_TYPE\" = 'LIMIT' AND \"o\".\"ORDER_PRICE\" IS NOT NULL AND TIMESTAMPDIFF(4, CHAR(CURRENT TIMESTAMP - \"o\".\"ORDER_TS\")) > 30",
+     "sql": "SELECT \"FIN_DEMO\".\"ORDERS\".\"ORDER_ID\", \"FIN_DEMO\".\"ORDERS\".\"ACCOUNT_ID\", \"FIN_DEMO\".\"ORDERS\".\"ORDER_TS\" FROM \"FIN_DEMO\".\"ORDERS\" LEFT JOIN \"FIN_DEMO\".\"EXECUTIONS\" ON \"FIN_DEMO\".\"EXECUTIONS\".\"ORDER_ID\" = \"FIN_DEMO\".\"ORDERS\".\"ORDER_ID\" WHERE \"FIN_DEMO\".\"EXECUTIONS\".\"ORDER_ID\" IS NULL AND \"FIN_DEMO\".\"ORDERS\".\"ORDER_TYPE\" = 'LIMIT' AND TIMESTAMPDIFF(4, CHAR(CURRENT TIMESTAMP - \"FIN_DEMO\".\"ORDERS\".\"ORDER_TS\")) > 30",
      "result": {
       "columns": [
        "ORDER_ID",
@@ -2015,176 +1996,119 @@ window.EVAL = {
       ],
       "rows": [
        [
-        5000069,
-        1000022,
-        "2026-03-30 12:10:40"
+        5000049,
+        1000033,
+        "2026-03-06 14:05:54"
        ],
        [
-        5000082,
-        1000031,
-        "2026-04-23 11:57:10"
+        5000178,
+        1000003,
+        "2026-11-25 09:26:05"
        ],
        [
-        5000005,
-        1000055,
-        "2025-11-03 11:05:26"
+        5000097,
+        1000017,
+        "2026-06-03 14:47:57"
        ],
        [
-        5000105,
-        1000044,
-        "2026-07-03 15:11:48"
+        5000044,
+        1000056,
+        "2026-02-25 11:04:25"
        ],
        [
-        5000059,
-        1000032,
-        "2026-03-19 10:42:58"
+        5000079,
+        1000030,
+        "2026-04-09 13:28:35"
        ]
       ],
-      "row_count": 10
+      "row_count": 15
      },
      "pass": true,
      "status": "OK"
     },
     {
-     "sql": "SELECT \"o\".\"ORDER_ID\", \"o\".\"ACCOUNT_ID\", \"o\".\"ORDER_TS\", \"o\".\"ORDER_TYPE\", \"o\".\"ORDER_PRICE\" FROM \"FIN_DEMO\".\"ORDERS\" \"o\" WHERE \"o\".\"ORDER_TYPE\" = 'LIMIT' AND NOT EXISTS ( SELECT 1 FROM \"FIN_DEMO\".\"EXECUTIONS\" \"e\" WHERE \"e\".\"ORDER_ID\" = \"o\".\"ORDER_ID\" ) AND TIMESTAMPDIFF(4, CHAR(CURRENT TIMESTAMP - \"o\".\"ORDER_TS\")) > 30",
+     "sql": "SELECT \"o\".\"ORDER_ID\", \"o\".\"ACCOUNT_ID\", \"o\".\"ORDER_TS\" FROM \"FIN_DEMO\".\"ORDERS\" \"o\" LEFT JOIN \"FIN_DEMO\".\"EXECUTIONS\" \"e\" ON \"o\".\"ORDER_ID\" = \"e\".\"ORDER_ID\" WHERE \"o\".\"ORDER_TYPE\" = 'LIMIT' AND \"o\".\"ORDER_PRICE\" IS NOT NULL AND \"e\".\"ORDER_ID\" IS NULL AND TIMESTAMPDIFF(4, CHAR(CURRENT TIMESTAMP - \"o\".\"ORDER_TS\")) > 30",
      "result": {
       "columns": [
        "ORDER_ID",
        "ACCOUNT_ID",
-       "ORDER_TS",
-       "ORDER_TYPE",
-       "ORDER_PRICE"
+       "ORDER_TS"
       ],
       "rows": [
        [
-        5000069,
-        1000022,
-        "2026-03-30 12:10:40",
-        "LIMIT",
-        "73380.00"
+        5000049,
+        1000033,
+        "2026-03-06 14:05:54"
        ],
        [
-        5000082,
-        1000031,
-        "2026-04-23 11:57:10",
-        "LIMIT",
-        "185860.00"
+        5000178,
+        1000003,
+        "2026-11-25 09:26:05"
        ],
        [
-        5000005,
-        1000055,
-        "2025-11-03 11:05:26",
-        "LIMIT",
-        "66650.00"
+        5000097,
+        1000017,
+        "2026-06-03 14:47:57"
        ],
        [
-        5000105,
-        1000044,
-        "2026-07-03 15:11:48",
-        "LIMIT",
-        "48260.00"
+        5000044,
+        1000056,
+        "2026-02-25 11:04:25"
        ],
        [
-        5000059,
-        1000032,
-        "2026-03-19 10:42:58",
-        "LIMIT",
-        "176230.00"
+        5000079,
+        1000030,
+        "2026-04-09 13:28:35"
        ]
       ],
-      "row_count": 10
+      "row_count": 15
      },
      "pass": true,
      "status": "OK"
     },
     {
-     "sql": "SELECT \"o\".\"ORDER_ID\", \"o\".\"ORDER_TS\", \"o\".\"ORDER_TYPE\", \"o\".\"ORDER_PRICE\" FROM \"FIN_DEMO\".\"ORDERS\" \"o\" LEFT JOIN \"FIN_DEMO\".\"EXECUTIONS\" \"e\" ON \"o\".\"ORDER_ID\" = \"e\".\"ORDER_ID\" WHERE \"e\".\"ORDER_ID\" IS NULL AND \"o\".\"ORDER_TYPE\" = 'LIMIT' AND TIMESTAMPDIFF(4, CHAR(CURRENT TIMESTAMP - \"o\".\"ORDER_TS\")) > 30",
-     "result": {
-      "columns": [
-       "ORDER_ID",
-       "ORDER_TS",
-       "ORDER_TYPE",
-       "ORDER_PRICE"
-      ],
-      "rows": [
-       [
-        5000069,
-        "2026-03-30 12:10:40",
-        "LIMIT",
-        "73380.00"
-       ],
-       [
-        5000082,
-        "2026-04-23 11:57:10",
-        "LIMIT",
-        "185860.00"
-       ],
-       [
-        5000005,
-        "2025-11-03 11:05:26",
-        "LIMIT",
-        "66650.00"
-       ],
-       [
-        5000105,
-        "2026-07-03 15:11:48",
-        "LIMIT",
-        "48260.00"
-       ],
-       [
-        5000059,
-        "2026-03-19 10:42:58",
-        "LIMIT",
-        "176230.00"
-       ]
-      ],
-      "row_count": 10
-     },
-     "pass": true,
-     "status": "OK"
+     "sql": "SELECT \"o\".\"ORDER_ID\", \"o\".\"ACCOUNT_ID\", \"o\".\"ORDER_TS\" FROM \"FIN_DEMO\".\"ORDERS\" \"o\" LEFT JOIN \"FIN_DEMO\".\"EXECUTIONS\" \"e\" ON \"e\".\"ORDER_ID\" = \"o\".\"ORDER_ID\" WHERE \"e\".\"ORDER_ID\" IS NULL AND \"o\".\"ORDER_TYPE\" = 'LIMIT' AND TIMESTAMPDIFF(4, CHAR(CURRENT TIMESTAMP - \"o\".\"ORDER_TS)) > 30",
+     "result": null,
+     "error": "[IBM][CLI Driver][DB2/LINUXX8664] SQL0010N  The string constant beginning with \"\"ORDER_TS)) > 30\" does not have an ending string delimiter.  SQLSTATE=42603 SQLCODE=-10",
+     "pass": false,
+     "status": "실행오류 TS)) > 30\" does not have an ending string delimiter.  SQLSTATE=42603 SQLCODE=-10"
     },
     {
-     "sql": "SELECT \"o\".\"ORDER_ID\", \"o\".\"ORDER_TS\", \"o\".\"ORDER_TYPE\", \"o\".\"ORDER_PRICE\" FROM \"FIN_DEMO\".\"ORDERS\" \"o\" WHERE \"o\".\"ORDER_TYPE\" = 'LIMIT' AND NOT EXISTS ( SELECT 1 FROM \"FIN_DEMO\".\"EXECUTIONS\" \"e\" WHERE \"e\".\"ORDER_ID\" = \"o\".\"ORDER_ID\" ) AND TIMESTAMPDIFF(4, CHAR(CURRENT TIMESTAMP - \"o\".\"ORDER_TS\")) > 30",
+     "sql": "SELECT \"o\".\"ORDER_ID\", \"o\".\"ACCOUNT_ID\", \"o\".\"ORDER_TS\" FROM \"FIN_DEMO\".\"ORDERS\" \"o\" LEFT JOIN \"FIN_DEMO\".\"EXECUTIONS\" \"e\" ON \"e\".\"ORDER_ID\" = \"o\".\"ORDER_ID\" WHERE \"e\".\"ORDER_ID\" IS NULL AND \"o\".\"ORDER_TYPE\" = 'LIMIT' AND TIMESTAMPDIFF(4, CHAR(CURRENT TIMESTAMP - \"o\".\"ORDER_TS\")) > 30",
      "result": {
       "columns": [
        "ORDER_ID",
-       "ORDER_TS",
-       "ORDER_TYPE",
-       "ORDER_PRICE"
+       "ACCOUNT_ID",
+       "ORDER_TS"
       ],
       "rows": [
        [
-        5000069,
-        "2026-03-30 12:10:40",
-        "LIMIT",
-        "73380.00"
+        5000049,
+        1000033,
+        "2026-03-06 14:05:54"
        ],
        [
-        5000082,
-        "2026-04-23 11:57:10",
-        "LIMIT",
-        "185860.00"
+        5000178,
+        1000003,
+        "2026-11-25 09:26:05"
        ],
        [
-        5000005,
-        "2025-11-03 11:05:26",
-        "LIMIT",
-        "66650.00"
+        5000097,
+        1000017,
+        "2026-06-03 14:47:57"
        ],
        [
-        5000105,
-        "2026-07-03 15:11:48",
-        "LIMIT",
-        "48260.00"
+        5000044,
+        1000056,
+        "2026-02-25 11:04:25"
        ],
        [
-        5000059,
-        "2026-03-19 10:42:58",
-        "LIMIT",
-        "176230.00"
+        5000079,
+        1000030,
+        "2026-04-09 13:28:35"
        ]
       ],
-      "row_count": 10
+      "row_count": 15
      },
      "pass": true,
      "status": "OK"
@@ -2217,7 +2141,7 @@ window.EVAL = {
       "rows": [
        [
         "주식2데스크",
-        "0.859985"
+        "0.860007"
        ]
       ],
       "row_count": 1
@@ -2235,7 +2159,27 @@ window.EVAL = {
       "rows": [
        [
         "주식2데스크",
-        "0.859985"
+        "0.860007"
+       ]
+      ],
+      "row_count": 1
+     },
+     "pass": true,
+     "status": "OK"
+    },
+    {
+     "sql": "SELECT \"d\".\"DESK_ID\", \"d\".\"DESK_NAME\", SUM(\"s\".\"EXPOSURE_AMOUNT\") / \"d\".\"LIMIT_AMOUNT\" AS \"USAGE_RATIO\" FROM \"FIN_DEMO\".\"DESK\" \"d\" JOIN \"FIN_DEMO\".\"ST_POSITIONS\" \"s\" ON \"d\".\"DESK_ID\" = \"s\".\"DESK_ID\" WHERE \"s\".\"BASE_DATE\" = (SELECT MAX(\"BASE_DATE\") FROM \"FIN_DEMO\".\"ST_POSITIONS\") GROUP BY \"d\".\"DESK_ID\", \"d\".\"DESK_NAME\", \"d\".\"LIMIT_AMOUNT\" HAVING SUM(\"s\".\"EXPOSURE_AMOUNT\") / \"d\".\"LIMIT_AMOUNT\" > 0.8",
+     "result": {
+      "columns": [
+       "DESK_ID",
+       "DESK_NAME",
+       "USAGE_RATIO"
+      ],
+      "rows": [
+       [
+        2,
+        "주식2데스크",
+        "0.860007"
        ]
       ],
       "row_count": 1
@@ -2253,7 +2197,7 @@ window.EVAL = {
       "rows": [
        [
         "주식2데스크",
-        "0.859985"
+        "0.860007"
        ]
       ],
       "row_count": 1
@@ -2271,25 +2215,7 @@ window.EVAL = {
       "rows": [
        [
         "주식2데스크",
-        "0.859985"
-       ]
-      ],
-      "row_count": 1
-     },
-     "pass": true,
-     "status": "OK"
-    },
-    {
-     "sql": "SELECT \"d\".\"DESK_NAME\", SUM(\"s\".\"EXPOSURE_AMOUNT\") / \"d\".\"LIMIT_AMOUNT\" AS \"USAGE_RATIO\" FROM \"FIN_DEMO\".\"ST_POSITIONS\" \"s\" JOIN \"FIN_DEMO\".\"DESK\" \"d\" ON \"s\".\"DESK_ID\" = \"d\".\"DESK_ID\" WHERE \"s\".\"BASE_DATE\" = (SELECT MAX(\"BASE_DATE\") FROM \"FIN_DEMO\".\"ST_POSITIONS\") GROUP BY \"d\".\"DESK_NAME\", \"d\".\"LIMIT_AMOUNT\" HAVING SUM(\"s\".\"EXPOSURE_AMOUNT\") / \"d\".\"LIMIT_AMOUNT\" > 0.8",
-     "result": {
-      "columns": [
-       "DESK_NAME",
-       "USAGE_RATIO"
-      ],
-      "rows": [
-       [
-        "주식2데스크",
-        "0.859985"
+        "0.860007"
        ]
       ],
       "row_count": 1

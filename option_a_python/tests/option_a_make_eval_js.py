@@ -18,7 +18,7 @@ from db2_conn import connect, fetch  # noqa: E402
 
 RES = ROOT / "option_a_python" / "tests" / "results"
 OUT = ROOT / "docs" / "option-a" / "eval_results.js"
-DATE = "2026-11-25"
+DATE = date.today().isoformat()
 
 
 def cell(v):

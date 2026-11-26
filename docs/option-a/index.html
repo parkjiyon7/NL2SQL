@@ -113,6 +113,7 @@
       <button class="sn" data-sec="questions">예상 질문</button>
       <button class="sn" data-sec="eval">Text-to-SQL 평가</button>
       <button class="sn" data-sec="qstatus">질문별 검증 현황</button>
+      <button class="sn" data-sec="compare">두 에이전트 비교</button>
     </nav>
     <main class="demo-main">
 
@@ -124,7 +125,7 @@
           <div class="stat"><b>9</b><span><strong class="st-t">테이블</strong>모두 300행 이내의 합성 데이터</span></div>
           <div class="stat"><b>25 + 35</b><span><strong class="st-t">용어집 용어</strong>표준 용어 25개와 동의어 용어 35개, wxdi 용어집 그대로 사용</span></div>
           <div class="stat"><b>0건</b><span><strong class="st-t">few-shot, Text-to-SQL 서비스</strong>wxdi의 SQL 예시와 Text-to-SQL REST를 쓰지 않고, SQL 규칙은 에이전트 지시문에 적음. <a href="#demo/diff" class="lnk">B안과 비교</a></span></div>
-          <div class="stat"><b>100%</b><span><strong class="st-t">골든 질문 정확도</strong>10문항 x 3회, 30/30(2026-11-25). 규칙 하나를 지시문에 추가하기 전 1회 시험은 9/10였음 (<a href="#demo/eval" class="lnk">상세 보기</a>)</span></div>
+          <div class="stat"><b>100%</b><span><strong class="st-t">골든 질문 정확도</strong>10문항 x 3회, 30/30(2026-11-25, 데이터 재적재 후 다시 실행). 규칙 하나를 지시문에 추가하기 전 1회 시험은 9/10였음 (<a href="#demo/eval" class="lnk">상세 보기</a>)</span></div>
         </div>
 
         <h3>에이전트 전체 구성도</h3>
@@ -287,9 +288,9 @@
         <h3>A안의 한계 (시험하면서 확인한 것)</h3>
         <ul class="plain">
           <li><b>골든 30/30은 규칙을 고친 뒤의 점수입니다</b>: 처음 1번은 9/10이었고, 실패한 문항을 보고 지시문을 고쳐 3번 모두 통과시켰습니다. 문항이 10개, 반복이 3번뿐이라 B안의 49/50(5번 반복)과 같은 기준의 비교는 아닙니다. 새로운 질문에서의 정확도는 따로 확인해야 합니다.</li>
-          <li><b>답변 표를 지어내는 경우가 있습니다</b>: Supervisor가 SQL 에이전트의 결과를 답변 표로 옮기면서, SQL은 맞는데 값이나 이름을 지어낸 경우가 있었습니다(지점별 체결 4번 중 2번, 상위 10명 4번 중 1번, 상위 5명 4번 중 1번(SQL 오류가 났는데도 지어냄), 수익률 4번 중 1번). 골든 평가는 이 단계를 거치지 않아 잡지 못합니다. B안에서도 비슷한 사례가 기록되어 있어 A안만의 문제는 아니지만, 이번 시험에서 확인된 빈도입니다. 자세한 내용은 <a href="#demo/qstatus">질문별 검증 현황</a>에 있습니다.</li>
+          <li><b>답변 표를 지어내는 경우가 있습니다</b>: Supervisor가 SQL 에이전트의 결과를 답변 표로 옮기면서, SQL은 맞는데 값이나 이름을 지어낸 경우가 있었습니다(데이터 재적재 전 시험에서 지점별 체결 4번 중 2번, 상위 10명 4번 중 1번, 상위 5명 4번 중 1번(SQL 오류가 났는데도 지어냄), 수익률 4번 중 1번이었고, 재적재 후에는 "상위 5명이 어느 지점 고객인지"를 물었을 때 SQL 오류가 났는데도 없는 고객과 지점을 지어냈음). 골든 평가는 이 단계를 거치지 않아 잡지 못합니다. B안에서도 비슷한 사례가 기록되어 있어 A안만의 문제는 아니지만, 이번 시험에서 확인된 빈도입니다. 자세한 내용은 <a href="#demo/qstatus">질문별 검증 현황</a>에 있습니다.</li>
           <li><b>개인정보가 가려지지 않습니다</b>: PII Filter를 붙이지 않았습니다.</li>
-          <li><b>같은 질문도 가끔 다르게 풀립니다</b>: "이번 달 약정 상위 고객 5명"은 4번 중 1번 기준을 되물었습니다.</li>
+          <li><b>같은 질문도 가끔 다르게 풀립니다</b>: "이번 달 약정 상위 고객 5명"은 재적재 전 4번 중 1번 기준을 되물었습니다.</li>
         </ul>
 
         <h3>같은 것</h3>
@@ -451,7 +452,7 @@
         <ul class="plain">
           <li><b>용어 정의</b>: map_terms가 wxdi 용어집에서 읽은 정의(예: 거래대금 = EXECUTIONS.EXEC_AMOUNT)를 모델이 읽고 그 컬럼으로 SQL을 씁니다.</li>
           <li><b>JOIN 조건</b>: get_catalog가 wxdi 카탈로그의 외래키 정보를 돌려주면 모델이 그 안의 테이블, 컬럼, 조건만 사용합니다.</li>
-          <li><b>지시문의 SQL 규칙</b>: Db2 문법(<code>FETCH FIRST</code>, 날짜 연산), 월별 집계는 연도와 월로 함께 묶기, 잔고류 스냅샷 테이블은 최근 기준일만 쓰기, 개수를 정하지 않은 질문에는 <code>FETCH FIRST</code>를 쓰지 않기 등. 마지막 규칙은 골든 평가에서 32행 중 20행만 나온 실패(S3-03)를 보고 추가했습니다.</li>
+          <li><b>지시문의 SQL 규칙</b>: Db2 문법(<code>FETCH FIRST</code>, 날짜 연산), 월별 집계는 연도와 월로 함께 묶기, 잔고류 스냅샷 테이블은 최근 기준일만 쓰기, 개수를 정하지 않은 질문에는 <code>FETCH FIRST</code>를 쓰지 않기 등. 마지막 규칙은 골든 평가에서 (당시 데이터로) 32행 중 20행만 나온 실패(S3-03)를 보고 추가했습니다.</li>
           <li><b>오류 재시도</b>: 실행 오류가 나면 오류 메시지를 읽고 SQL을 고쳐 최대 2번 다시 실행합니다.</li>
           <li><b>few-shot 없음</b>: wxdi에 SQL 예시를 올리지 않았고, 에이전트 지시문에도 질문-SQL 예시 쌍을 넣지 않았습니다. 위 규칙과 용어 정의, 카탈로그만으로 SQL을 씁니다.</li>
         </ul>
@@ -470,7 +471,7 @@
           <p class="muted">A안의 에이전트에는 wxO의 내장 컨트롤 <b>PII Filter를 연결하지 않았습니다.</b> B안은 컨트롤 <code>KR_PII_EMAIL_PN_SSN</code>을 에이전트 4개에 연결해 이메일, 휴대폰 번호, 주민등록번호를 <code>**********</code>로 가립니다. A안에서는 같은 컨트롤을 붙일 수 있지만 이번에는 붙이지 않았습니다.</p>
           <ul class="plain">
             <li><b>지시문의 약한 규칙</b>: SQL 에이전트 지시문에 "개인정보 컬럼은 질문이 직접 요구할 때만 SELECT"라고 적었습니다. 요구하면 값을 그대로 조회합니다.</li>
-            <li><b>시험 결과</b>: Supervisor에 "고객 주민번호 전체 보여줘"를 물으면 주민등록번호 40건이 그대로 나오고, "고객 3명의 이름, 전화번호, 이메일, 주민번호를 표로"에서도 네 값이 모두 그대로 나왔습니다.</li>
+            <li><b>시험 결과</b>: 데이터 재적재 전에는 "고객 주민번호 전체 보여줘"에 주민등록번호 40건이 그대로 나왔습니다. 재적재 후에는 같은 질문에 값을 보여주지 않고 SSN이 개인정보 컬럼이라고만 답해 결과가 일관되지 않았고, "고객 3명의 이름, 전화번호, 이메일, 주민번호를 표로"에서는 네 값이 모두 그대로 나왔습니다.</li>
             <li><b>운영에 쓰려면</b>: PII Filter 연결이나 컬럼 단위 접근 제어가 필요합니다. 데모 데이터는 모두 합성 데이터입니다.</li>
           </ul>
         </div>
@@ -498,7 +499,7 @@
           <li><b>평가 경로</b>: 질문 → <code>option_a_sql_agent</code>(wxO REST로 직접 호출) → 에이전트가 <code>map_terms</code>, <code>get_catalog</code>를 부르고 모델(gpt-oss-120b)이 SQL을 써 <code>run_sql</code>로 실행 → 답변에 붙은 마지막 SQL 블록을 꺼내 Db2에서 다시 실행합니다. 평가 대상은 에이전트의 모델이 쓴 SQL입니다(B안은 wxdi 내부 모델이 쓴 SQL).</li>
           <li><b>채점</b>: 골든 SQL과 생성 SQL을 Db2에서 실행해 <b>결과 값</b>을 비교합니다. 행 수가 같고 골든의 각 행 값이 생성 결과에 모두 들어 있으면 통과이며, 컬럼 순서와 이름, 추가 컬럼, SQL 문장 모양은 보지 않습니다. 실행 오류와 불일치는 실패입니다.</li>
           <li><b>반복</b>: 같은 질문을 3번씩 생성합니다. 생성형 AI 특성상 매번 다른 답이 나올 수 있기 때문입니다. B안(5번)보다 적어 표본이 더 작습니다.</li>
-          <li><b>튜닝 이력</b>: 처음 1번 시험은 9/10였고 S3-03이 실패했습니다(개수를 정하지 않았는데 <code>FETCH FIRST 20 ROWS ONLY</code>를 써서 32행 중 20행만 나옴). 지시문에 규칙을 추가한 뒤 3번 모두 10/10(30/30)이 됐습니다. 즉 이 30/30은 골든 문항에서 나온 실패를 보고 고친 뒤의 점수라, 새로운 질문에서의 정확도는 따로 봐야 합니다.</li>
+          <li><b>튜닝 이력</b>: 처음 1번 시험은 9/10였고 S3-03이 실패했습니다(개수를 정하지 않았는데 <code>FETCH FIRST 20 ROWS ONLY</code>를 써서 당시 데이터로 32행 중 20행만 나옴). 지시문에 규칙을 추가한 뒤 3번 모두 10/10(30/30)이 됐습니다. 즉 이 30/30은 골든 문항에서 나온 실패를 보고 고친 뒤의 점수라, 새로운 질문에서의 정확도는 따로 봐야 합니다.</li>
           <li><b>값 표시</b>: 데이터가 모두 합성 데이터라서 결과 값을 가리지 않고 그대로 보여줍니다. "어제", "이번 달"처럼 날짜에 따라 달라지는 질문의 결과는 실행일(2026-11-25) 기준입니다.</li>
         </ul>
         <div id="eval-body"><p class="muted">eval_results.js를 불러오지 못했습니다.</p></div>
@@ -506,7 +507,7 @@
 
       <section id="sec-qstatus" class="sec">
         <h2>질문별 검증 현황</h2>
-        <p class="muted">시나리오 질문 목록과 같은 번호입니다(B안 페이지의 표와 같은 질문). A안 Supervisor에 2026-11-25에 직접 물어 본 결과이며, 안 되는 질문도 함께 표시합니다. 오른쪽 설명은 에이전트가 어떻게 답하는지, 불안정한 질문은 어느 면이 불안정한지입니다.</p>
+        <p class="muted">시나리오 질문 목록과 같은 번호입니다(B안 페이지의 표와 같은 질문). A안 Supervisor에 2026-11-25에 데이터를 다시 적재한 뒤 직접 물어 본 결과이며(재적재 전에 여러 번 물어 본 기록은 "재적재 전"으로 구분해 적음), 안 되는 질문도 함께 표시합니다. 오른쪽 설명은 에이전트가 어떻게 답하는지, 불안정한 질문은 어느 면이 불안정한지입니다.</p>
         <ul class="plain">
           <li><b>골든 평가</b>: SQL 정답이 있는 10문항(S1-01, S1-02, S1-03, S2-01, S2-02, S2-04, S2-05, S3-03, S3-04, S5-02)을 3번씩 생성해, 생성한 SQL과 정답 SQL을 Db2에서 실행한 <b>결과 값</b>을 비교합니다. 결과는 30/30이며, 질문별 골든 SQL과 생성 SQL, 결과는 <a href="#demo/eval">Text-to-SQL 평가</a> 탭에 있습니다.</li>
           <li><b>골든 평가 탭과 다른 이유</b>: 골든 평가는 SQL 에이전트를 직접 호출해 그 SQL의 결과 값만 봅니다(Supervisor를 거치지 않음). 이 표의 상태는 Supervisor에 물어 본 결과라, 답변 표를 옮겨 적는 단계의 오류까지 포함합니다. 그래서 골든은 3/3인데 여기서는 "불안정"인 질문(S2-02)이 있고, 골든에 없는 질문(S3-02, S4-02, S4-03, S8-02)에서는 SQL은 맞는데 Supervisor가 답변 표의 값을 지어낸 경우가 있었습니다.</li>
@@ -521,6 +522,12 @@
         </table>
       </section>
 
+      <section id="sec-compare" class="sec">
+        <h2>두 에이전트 비교 (홀드아웃 골든)</h2>
+        <p class="muted">A안(wxO 전용)과 B안(wxdi Text-to-SQL)의 SQL 에이전트를, 지시문과 예시를 고치는 데 쓰지 않은 새 질문으로 같은 조건에서 비교한 결과입니다. 두 페이지(A안, B안)에 같은 내용이 들어 있습니다.</p>
+        <div id="cmp-body"><p class="muted">compare_holdout.js를 불러오지 못했습니다.</p></div>
+      </section>
+
     </main>
   </div>
 </div>
@@ -533,9 +540,9 @@
     <div class="mc-banner">임베디드 챗이 아직 연결되지 않았습니다. <code>docs/option-a/chat-config.js</code>에 값을 채우면 이 자리에 실제 에이전트가 나타납니다. 아래는 예시 화면입니다.</div>
     <div class="msg me">월별 거래대금 추이를 라인 차트로 보여줘</div>
     <div class="msg bot">
-      <p>월별 거래대금은 2025-10부터 2026-11까지 최소 31,182,690원, 최대 821,062,840원으로 변동했습니다.</p>
+      <p>월별 거래대금은 2025-10부터 2026-11까지 최소 32,414,100원, 최대 729,471,130원으로 변동했습니다.</p>
       <pre>total_transaction_amount: ▁▄▃▃▂▄▂▂▂▁▃▁▂█
-(최소 31,182,690 / 최대 821,062,840)</pre>
+(최소 32,414,100 / 최대 729,471,130)</pre>
       <details><summary>근거 보기</summary>
         <p>용어 매핑: 거래대금 → EXECUTIONS.EXEC_AMOUNT</p>
         <pre>SELECT YEAR(EXEC_TS), MONTH(EXEC_TS),
@@ -555,6 +562,7 @@ GROUP BY YEAR(EXEC_TS), MONTH(EXEC_TS)</pre>
 <script src="samples.js"></script>
 <script src="glossary.js"></script>
 <script src="eval_results.js"></script>
+<script src="compare_holdout.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 <script src="app.js"></script>
 </body>

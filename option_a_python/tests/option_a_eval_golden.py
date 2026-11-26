@@ -107,10 +107,11 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("-n", type=int, default=1)
     ap.add_argument("--agent", default="option_a_sql_agent")
+    ap.add_argument("--golden", default="shared/spec/golden/golden.json", help="골든 JSON 경로(ROOT 기준)")
     ap.add_argument("--json", help="질문별 생성 SQL과 판정을 JSON으로 저장")
     ap.add_argument("ids", nargs="*")
     args = ap.parse_args()
-    golden = [g for g in json.loads((ROOT / "shared/spec/golden/golden.json").read_text(encoding="utf-8"))
+    golden = [g for g in json.loads((ROOT / args.golden).read_text(encoding="utf-8"))
               if not args.ids or g["id"] in args.ids]
     aid = agent_id(args.agent)
     conn = connect()
